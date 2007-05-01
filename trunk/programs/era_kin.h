@@ -1,23 +1,42 @@
+/*	Header-file for 
+ *      Kinematic system model for BlueBotics ERA-5/1
+ *
+ * 	Fritz Stöckli   stfritz@ethz.ch
+ * 	Last change:    1.5.2007
+ */
+
+
 typedef struct {
-  double theta_1;
-  double theta_2;
-  double theta_3;
-  double theta_4;
-  double theta_6;
+  double theta1;
+  double theta2;
+  double theta3;
+  double theta4;
+  double theta6;
 } t_theta;
 
 typedef struct {
   double x;
   double y;
   double z;
+
 } t_cartesian;
 
+typedef struct {
+  double x;
+  double y;
+  double z;
+  double beta1;
+  double beta2;
+} t_target;
 
 
-void inverse_kinematics(t_cartesian* target_pos, double* beta_1, double* beta_2,  
-			t_theta* theta);
 
 
+void inverse_kinematics(t_target* target,t_theta* theta);
+void forward_kinematics(t_target* target,t_theta* theta);
+
+void theta_rad_to_tiks(t_theta* th);
+void target_init_starting_values(t_target* target);
 
 double sqr(double x);
 
