@@ -1,6 +1,6 @@
 /*	Test-file for serial EPOS-communication
  *	V0.5
- * 	© Marc Rauer ETHZ	marc.rauer@gmx.de
+ * 	ï¿½ Marc Rauer ETHZ	marc.rauer@gmx.de
  * 	Last change: 04/23/07
  */
 
@@ -34,7 +34,7 @@ int main(void)
 	float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01}; //
 	float i_arm[]={0,1,1,1,1,1,1};                     // bowdenzug getriebe
 	float v_max[]={0,20,20,20,20,20,20};               // rpm
-	float x_min[]={0,-90,-90,-90,-90,-90,-10};         // °
+	float x_min[]={0,-90,-90,-90,-90,-90,-10};         // ï¿½
 	float x_max[]={0,90,90,90,90,90,10};
 
 
@@ -70,7 +70,7 @@ int main(void)
 		if(scanf("%e",&v) == 0) break;
 		if(v < 0 || v > v_max[id]) continue;
 				
-		printf("Winkel °: ");
+		printf("Winkel ï¿½: ");
 		if(scanf("%e",&x) == 0) break;
 		if(x < x_min[id] || x > x_max[id]) continue;
 
@@ -91,7 +91,7 @@ int main(void)
 			get_actual_position(id);
 			get_current_actual_value(id);
 			
-			printf("I: %d\n", myepos_read.number[id-1].actual_position);
+			printf("x: %d\n", myepos_read.number[id-1].actual_position);
 		}
 		while(myepos_read.number[id-1].actual_position != (int) pos); 	
 	}
@@ -112,7 +112,7 @@ int main(void)
 /*
 	Firmware Seite 66:
 
-	Encoder-Auflösung 500 Impulse (*4 pro Flanke)
+	Encoder-Auflï¿½sung 500 Impulse (*4 pro Flanke)
 	
 	Geschwindigkeit in Umdrehungen pro Minute
 	

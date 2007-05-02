@@ -1,6 +1,6 @@
 /*	Test-file for serial EPOS-communication
  *	V0.5
- * 	© Marc Rauer ETHZ	marc.rauer@gmx.de
+ * 	ï¿½ Marc Rauer ETHZ	marc.rauer@gmx.de
  * 	Last change: 04/23/07
  */
 
@@ -72,7 +72,7 @@ int main(void)
 		if(scanf("%e",&v) == 0) break;
 		if(v < 0 || v > v_max[id]) continue;
 				
-		printf("Winkel °: ");
+		printf("Winkel ï¿½: ");
 		if(scanf("%e",&x) == 0) break;
 		if(x < x_min[id] || x > x_max[id]) continue;
 
@@ -92,7 +92,7 @@ int main(void)
 			get_actual_position(id);
 			get_current_actual_value(id);
 			
-			printf("I: %d\n", myepos_read.number[id-1].actual_current);
+			printf("x: soll: %d\tist: %d\n", (int) pos, myepos_read.number[id-1].actual_position);
 		}
 		while(myepos_read.number[id-1].actual_position != (int) pos); 	
 	}
@@ -110,20 +110,5 @@ int main(void)
 	return 0;
 }
 
-/*
-	Firmware Seite 66:
-
-	Encoder-Auflösung 500 Impulse (*4 pro Flanke)
-	
-	Geschwindigkeit in Umdrehungen pro Minute
-	
-	
-	Strom: Achse id
-	
-	
-	3:	400	410
-	
-
-*/
 
 

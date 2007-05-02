@@ -1,6 +1,6 @@
 /*	Header-file for serial EPOS-communication
  *	V0.4
- * 	© Marc Rauer ETHZ	marc.rauer@gmx.de
+ * 	ï¿½ Marc Rauer ETHZ	marc.rauer@gmx.de
  * 	Last change: 04/21/07
  */
 
@@ -13,7 +13,8 @@
 #define RESPONSE	0x00
 
 #define BAUDRATE B38400
-#define MODEMDEVICE "/dev/ttyUSB0"
+//#define MODEMDEVICE "/dev/ttyUSB0"
+#define MODEMDEVICE "/dev/ttyS0"
 #define TIMEOUTSEC 0
 #define TIMEOUTNSEC 500000 /* 500ms */
 #define MAXRETRY 10
