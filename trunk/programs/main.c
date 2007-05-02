@@ -47,10 +47,6 @@ int main(void)
 	
 	id = 2;
 	
-	//get_continous_current_limit(id);
-	//return 0;
-	
-	
 	for(id=1;id<7;id++)
 	{
 		fault_reset(id);
