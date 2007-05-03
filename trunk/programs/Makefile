@@ -1,5 +1,5 @@
 
-all: main test nullposition testmode
+all: main test nullposition testmode inverse
 
 main: main.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o main main.c libserial.o libepos.o
@@ -19,12 +19,18 @@ libepos.o: libepos.c
 test: test.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o test test.c libserial.o libepos.o
 	
-era_kin.o: era_kin.c era_kin.h
-	gcc -Wall -c era_kin.c -o era_kin.o
+kin.o: kin.c kin.h
+	gcc -Wall -c kin.c -o kin.o
+
+inverse: inverse.c kin.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h
+	gcc -Wall -lm -o inverse inverse.c kin.o libserial.o libepos.o
+
+
 
 clean:
 	rm main 
 	rm nullposition
 	rm testmode
 	rm test
+	rm inverse
 	rm  *.o

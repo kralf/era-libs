@@ -5,7 +5,7 @@
  */
 
 
-#include"era_kin.h"
+#include"kin.h"
 #include<math.h>
 #include<stdlib.h>
 #include<stdio.h>
@@ -16,27 +16,89 @@ double sqr(double x)
 
 
 
-
-
-void theta_rad_to_tiks(t_theta* th)
+void theta_print_rad(t_theta* th)
 {
+  printf("Joint Angles\n");
+  printf("  theta1: %f°\n", th->theta1*180/M_PI);
+  printf("  theta2: %f°\n", th->theta2*180/M_PI);
+  printf("  theta3: %f°\n", th->theta3*180/M_PI);
+  printf("  theta4: %f°\n", th->theta4*180/M_PI);
+  printf("  theta6: %f°\n", th->theta6*180/M_PI);
+  
+}
 
+void theta_print_tiks(t_theta* th)
+{
+  printf("Joint Angles\n");
+  printf("  theta1: %f tiks\n", th->theta1);
+  printf("  theta2: %f tiks\n", th->theta2);
+  printf("  theta3: %f tiks\n", th->theta3);
+  printf("  theta4: %f tiks\n", th->theta4);
+  printf("  theta6: %f tiks\n", th->theta6);
+  
+}
+
+
+void target_print(t_target* target)
+{
+  printf("End Effector state\n");
+  printf("  x:     %f\n", target->x);
+  printf("  y:     %f\n", target->y);
+  printf("  z:     %f\n", target->z);
+  printf("  beta1: %f°\n", target->beta1*180/M_PI);
+  printf("  beta2: %f°\n", target->beta2*180/M_PI);
+  
+}
+
+
+t_theta theta_rad_to_tiks(t_theta* th)
+{
+  
+  t_theta th_tiks;
   float enc_rev[]={0,500,500,500,500,500,500};
   float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
   float i_arm[]={0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
 
-  th->theta1 = th->theta1/(2*M_PI)/(i_gear[1]*i_arm[1])*(enc_rev[1]*4);  
-  th->theta2 = th->theta2/(2*M_PI)/(i_gear[2]*i_arm[2])*(enc_rev[2]*4);  
-  th->theta3 = th->theta3/(2*M_PI)/(i_gear[3]*i_arm[3])*(enc_rev[3]*4);  
-  th->theta4 = th->theta4/(2*M_PI)/(i_gear[4]*i_arm[4])*(enc_rev[4]*4);  
-  th->theta6 = th->theta6/(2*M_PI)/(i_gear[6]*i_arm[6])*(enc_rev[6]*4);  
-
+  th_tiks.theta1 = th->theta1/(2*M_PI)/(i_gear[1]*i_arm[1])*(enc_rev[1]*4);  
+  th_tiks.theta2 = th->theta2/(2*M_PI)/(i_gear[2]*i_arm[2])*(enc_rev[2]*4);  
+  th_tiks.theta3 = th->theta3/(2*M_PI)/(i_gear[3]*i_arm[3])*(enc_rev[3]*4);  
+  th_tiks.theta4 = th->theta4/(2*M_PI)/(i_gear[4]*i_arm[4])*(enc_rev[4]*4);  
+  th_tiks.theta6 = th->theta6/(2*M_PI)/(i_gear[6]*i_arm[6])*(enc_rev[6]*4);  
  
+  return th_tiks;
 }
 
 
+t_theta theta_tiks_to_rad(t_theta* th)
+{
+  
+  t_theta th_rad;
+  float enc_rev[]={0,500,500,500,500,500,500};
+  float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
+  float i_arm[]={0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
+
+  th_rad.theta1 = th->theta1*(2*M_PI)*(i_gear[1]*i_arm[1])/(enc_rev[1]*4);  
+  th_rad.theta2 = th->theta2*(2*M_PI)*(i_gear[2]*i_arm[2])/(enc_rev[2]*4);  
+  th_rad.theta3 = th->theta3*(2*M_PI)*(i_gear[3]*i_arm[3])/(enc_rev[3]*4);  
+  th_rad.theta4 = th->theta4*(2*M_PI)*(i_gear[4]*i_arm[4])/(enc_rev[4]*4);  
+  th_rad.theta6 = th->theta6*(2*M_PI)*(i_gear[6]*i_arm[6])/(enc_rev[6]*4);  
+ 
+  return th_rad;
+}
+
+void theta_init_start_tiks(t_theta* th)
+{
+  th->theta1 = -30000;
+  th->theta2 = 49000;
+  th->theta3 = 0;
+  th->theta4 = 50000;
+  th->theta6 = -35000;
+  //  long int home_offset[] = {0,50000,50000,50000,50000,180000,30000}; // starting position
+  //  long int zero_offset[] = {0,80000,1000,50000,0,215000,30000};      // down zero position
+}
 
 
+/*
 void target_init_starting_values(t_target* target)
 {
   target->x     = 20.931822;
@@ -45,7 +107,7 @@ void target_init_starting_values(t_target* target)
   target->beta1 = -0.204880;
   target->beta2 = -0.366508;
 }
-
+*/
 
 
 void forward_kinematics(t_target* target, t_theta* th)
@@ -55,7 +117,8 @@ void forward_kinematics(t_target* target, t_theta* th)
   double a5 = 18.8;
 
   target->x = -a4*cos(th->theta4)*sin(th->theta1)*sin(th->theta3)-a4*sin(th->theta4)*sin(th->theta1)*cos(th->theta3)
-              +a3*cos(th->theta1)*sin(th->theta2)*cos(th->theta3)+a4*cos(th->theta4)*cos(th->theta1)*sin(th->theta2)*cos(th->theta3)
+              +a3*cos(th->theta1)*sin(th->theta2)*cos(th->theta3)
+              +a4*cos(th->theta4)*cos(th->theta1)*sin(th->theta2)*cos(th->theta3)
               -a3*sin(th->theta1)*sin(th->theta3)-a4*sin(th->theta4)*cos(th->theta1)*sin(th->theta2)*sin(th->theta3)
               -sin(th->theta1)*a5;
   
@@ -89,13 +152,10 @@ void inverse_kinematics(t_target* target, t_theta* theta)
   t_cartesian v_sp;
   t_cartesian v_beta1;
   t_cartesian v_normal;
-  printf("b1 %f\n",target->beta1);
+
   v_beta1.x = -sin(target->beta1);
   v_beta1.y = cos(target->beta1);
   v_beta1.z = 0;
-  printf("b1.x %f\n",v_beta1.x);
-  printf("b1.y %f\n",v_beta1.y);
-  printf("b1.z %f\n",v_beta1.z);
 
 
   v_sp.x = target->x - a5*v_beta1.x ;
@@ -104,10 +164,6 @@ void inverse_kinematics(t_target* target, t_theta* theta)
   //v_sp.x = target->x ;
   //v_sp.y = target->y ;
   //v_sp.z = target->z - (a3+a4+a5);
-
-  printf("v_sp.x %f\n",v_sp.x);
-  printf("v_sp.y %f\n",v_sp.y);
-  printf("v_sp.z %f\n",v_sp.z);
 
 
   v_normal.x = ( v_sp.y * v_beta1.z  -  v_sp.z * v_beta1.y );
@@ -118,7 +174,7 @@ void inverse_kinematics(t_target* target, t_theta* theta)
 
   //  theta->theta1 = atan2(v_normal.y , v_normal.x);
   theta->theta1 = target->beta1;
-  theta->theta2 = ( (v_normal.z) / 
+  theta->theta2 = atan2( (v_normal.z) , 
   		  sqrt( sqr(v_normal.x)+sqr(v_normal.y) ) );
 
 

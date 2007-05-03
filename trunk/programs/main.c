@@ -23,7 +23,7 @@
 #include <errno.h>
 
 #include "libserial.h"  
-#include "era_kin.h"
+#include "kin.h"
 
 
 

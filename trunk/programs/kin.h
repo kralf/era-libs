@@ -35,8 +35,15 @@ typedef struct {
 void inverse_kinematics(t_target* target,t_theta* theta);
 void forward_kinematics(t_target* target,t_theta* theta);
 
-void theta_rad_to_tiks(t_theta* th);
+
+void theta_init_start_tiks(t_theta* th);
+t_theta theta_tiks_to_rad(t_theta* th);
+t_theta theta_rad_to_tiks(t_theta* th);
 void target_init_starting_values(t_target* target);
+
+void theta_print_rad(t_theta* th);
+void theta_print_tiks(t_theta* th);
+void target_print(t_target* th);
 
 double sqr(double x);
 
