@@ -21,125 +21,114 @@
 #include <asm/ioctl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <math.h>
+
 
 #include "libserial.h"  
 #include "kin.h"
+#include "kin2serial.h"
 
 
 
 int main(void) 
 {
 
+  int pos[7];
+  int id;
 
-  t_theta th_rad, th_tiks;
-  t_target target_rad, target_rad2;
+  t_theta th;
+  t_target target;
+  t_target target_add;
 
-  //  target_init_starting_values( &target_rad);
-
-  theta_init_start_tiks( &th_tiks);
-  th_rad = theta_tiks_to_rad( &th_tiks);
-
-  //  inverse_kinematics( &target_rad, &th_rad);
-
-  th_tiks = theta_rad_to_tiks( &th_rad);
-
-  theta_print_rad(&th_rad);
-  theta_print_tiks(&th_tiks);
-  target_print(&target_rad);
-
-  forward_kinematics( &target_rad2, &th_rad);
-  th_tiks = theta_rad_to_tiks( &th_rad);
-
-  //  theta_print_rad(&th_rad);
-  //  theta_print_tiks(&th_tiks);
-  target_print(&target_rad2);
-
-
-
-
-  //  system("clear");
-  printf("Testprogram ERA V0.1\n--------------------\nPlease wait for init...\n\n");
+  system("clear");
   
-  //  canHWInit();
+  canHWInit();
+  kin2s_init( &th, &target );
+
+
+  for(id=1;id<7;id++)
+    {
+      fault_reset(id);
+      shutdown(id);
+      enable_operation(id);	
+      set_mode_of_operation(id,1);
+      shutdown(id);		
+      enable_operation(id);	
+    }
+
+
+  while(1)
+    {
+      printf("Add to Position X [cm]: ");
+      if(scanf("%f",&(target_add.x)) == 0) break;
+      printf("Add to Position Y [cm]: ");
+      if(scanf("%f",&(target_add.y)) == 0) break;
+      printf("Add to Position Z [cm]: ");
+      if(scanf("%f",&(target_add.z)) == 0) break;
+      printf("Add to Angle beta1 [deg]: ");
+      if(scanf("%f",&(target_add.beta1)) == 0) break;
+      printf("Add to Angle beta2 [deg]: ");
+      if(scanf("%f",&(target_add.beta2)) == 0) break;
+
+      target.x += target_add.x;
+      target.y += target_add.y;
+      target.z += target_add.z;
+      target.beta1 += target_add.beta1/180*M_PI; 
+      target.beta2 += target_add.beta2/180*M_PI; 
+
+      target_print(&target);
+
+      inverse_kinematics( &target, &th);
+      theta_print_rad( &th );
+      theta_rad_to_tiks( &th );
+      theta_print_tiks( &th );
 
 
 
-    /*
-	int id=0;
-	float pos,vel,v=0,x=0;
+      pos[1] = (int)th.theta1;
+      pos[2] = (int)th.theta2;
+      pos[3] = (int)th.theta3;
+      pos[4] = (int)th.theta4;
+      pos[5] = (int)th.theta6;
 
-	float enc_rev[]={0,500,500,500,500,500,500};
-	float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
-	float i_arm[]={0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
-	float v_max[]={0,20,20,20,20,20,20};
-	float x_min[]={0,-10,-10,-10,-10,-90,-10};
-	float x_max[]={0,10,10,10,10,90,10};
-
-
-	system("clear");
-	printf("Testprogram ERA V0.1\n--------------------\nPlease wait for init...\n\n");
-	
-	canHWInit();
-	
-	id = 2;
-	
-	for(id=1;id<7;id++)
+      for(id=1;id<6;id++)
 	{
-		fault_reset(id);
-		shutdown(id);
-		enable_operation(id);	
-		set_mode_of_operation(id,1);
-		shutdown(id);		
-		enable_operation(id);	
+	  set_profile_velocity(id,1);
+	  set_target_position(id,pos[id]);
+	  activate_position(id);
+	  //get_statusword(id);
 	}	
-
-	
-	while(1)
+		
+      do
 	{
-		printf("(x) Exit\nNode-ID: ");
-		if(scanf("%d",&id) == 0) break;
-		if(id < 1 || id > 6) continue;
-
-		printf("Geschwindigkeit U/min: ");
-		if(scanf("%e",&v) == 0) break;
-		if(v < 0 || v > v_max[id]) continue;
-				
-		printf("Winkel �: ");
-		if(scanf("%e",&x) == 0) break;
-		if(x < x_min[id] || x > x_max[id]) continue;
-
-		pos = x/(360)/(i_gear[id]*i_arm[id])*(enc_rev[id]*4);
-		vel = v/(i_gear[id]*i_arm[id]);
-		
-		printf("Velocity: %f\n",vel);
-		printf("pos: %f\n\n",pos);
-		
-		set_profile_velocity(id,vel);
-		set_target_position(id,pos);
-		activate_position(id);
-		//get_statusword(id);	
-		
-		do
-		{
-			get_actual_position(id);
-			get_current_actual_value(id);
-			
-			printf("x: soll: %d\tist: %d\n", (int) pos, myepos_read.number[id-1].actual_position);
-		}
-		while(myepos_read.number[id-1].actual_position != (int) pos); 	
+	  for(id=1;id<6;id++)
+	    {
+	      get_actual_position(id);
+	      get_current_actual_value(id);
+	  
+	      printf("theta%i soll: %d\tist: %d\n", id, (int) pos[id], myepos_read.number[id-1].actual_position);
+	    }
 	}
-	
+      while(myepos_read.number[0].actual_position != (int) pos[1] ||
+	    myepos_read.number[1].actual_position != (int) pos[2] ||
+	    myepos_read.number[2].actual_position != (int) pos[3] ||
+	    myepos_read.number[3].actual_position != (int) pos[4] ||
+	    myepos_read.number[4].actual_position != (int) pos[5] );
+	    
+    }
 
-	for(id=1;id<7;id++)
-	{
-		shutdown(id);	
-	}	
 
-		
-	canHWEnd();
-    */
-	printf("end\n");
-	return 0;
+
+  for(id=1;id<7;id++)
+    {
+      shutdown(id);	
+    }	
+  
+  
+  canHWEnd();
+  
+  printf("end\n");
+  return 0;
 }
 
 

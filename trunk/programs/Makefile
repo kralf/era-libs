@@ -10,7 +10,7 @@ nullposition: nullposition.c libserial.o libserial.h libepos.h libepos.o libepos
 testmode: testmode.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o testmode testmode.c libserial.o libepos.o
 			
-libserial.o: libserial.c 
+libserial.o: libserial.c libserial.h
 	gcc -Wall -c libserial.c -o libserial.o
 	
 libepos.o: libepos.c
@@ -22,8 +22,11 @@ test: test.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 kin.o: kin.c kin.h
 	gcc -Wall -c kin.c -o kin.o
 
-inverse: inverse.c kin.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h
-	gcc -Wall -lm -o inverse inverse.c kin.o libserial.o libepos.o
+kin2serial.o: kin2serial.c kin2serial.h kin.c kin.h libserial.c libserial.h
+	gcc -Wall -c kin2serial.c -o kin2serial.o
+
+inverse: inverse.c kin.o kin2serial.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h
+	gcc -Wall -lm -o inverse inverse.c kin.o kin2serial.o libserial.o libepos.o
 
 
 
