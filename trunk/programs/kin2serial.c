@@ -170,12 +170,13 @@ void theta_rad_to_tiks(t_theta* th)
   float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
   float i_arm[]={0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
   long int zero_offset[] = {0,80000,1000,50000,0,215000,30000};      // down zero position
+  long int home_offset[] = {0,50000,50000,50000,50000,180000,30000}; // starting position
 
-  th->theta1 = th->theta1/(2*M_PI)/(i_gear[1]*i_arm[1])*(enc_rev[1]*4) + zero_offset[1];  
-  th->theta2 = th->theta2/(2*M_PI)/(i_gear[2]*i_arm[2])*(enc_rev[2]*4) + zero_offset[2];  
-  th->theta3 = th->theta3/(2*M_PI)/(i_gear[3]*i_arm[3])*(enc_rev[3]*4) + zero_offset[3]; 
-  th->theta4 = th->theta4/(2*M_PI)/(i_gear[4]*i_arm[4])*(enc_rev[4]*4) + zero_offset[4];  
-  th->theta6 = th->theta6/(2*M_PI)/(i_gear[6]*i_arm[6])*(enc_rev[6]*4) + zero_offset[5];  
+  th->theta1 = th->theta1/(2*M_PI)/(i_gear[1]*i_arm[1])*(enc_rev[1]*4) + zero_offset[1] - home_offset[1];  
+  th->theta2 = th->theta2/(2*M_PI)/(i_gear[2]*i_arm[2])*(enc_rev[2]*4) + zero_offset[2] - home_offset[2];  
+  th->theta3 = th->theta3/(2*M_PI)/(i_gear[3]*i_arm[3])*(enc_rev[3]*4) + zero_offset[3] - home_offset[3];  
+  th->theta4 = th->theta4/(2*M_PI)/(i_gear[4]*i_arm[4])*(enc_rev[4]*4) + zero_offset[4] - home_offset[4];  
+  th->theta6 = th->theta6/(2*M_PI)/(i_gear[6]*i_arm[6])*(enc_rev[6]*4) + zero_offset[5] - home_offset[5];  
  
 
 }
@@ -188,12 +189,13 @@ void theta_tiks_to_rad(t_theta* th)
   float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
   float i_arm[]={0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
   long int zero_offset[] = {0,80000,1000,50000,0,215000,30000};      // down zero position
+  long int home_offset[] = {0,50000,50000,50000,50000,180000,30000}; // starting position
 
-  th->theta1 = (th->theta1 - zero_offset[1]) *(2*M_PI)*(i_gear[1]*i_arm[1])/(enc_rev[1]*4);  
-  th->theta2 = (th->theta1 - zero_offset[2]) *(2*M_PI)*(i_gear[2]*i_arm[2])/(enc_rev[2]*4);  
-  th->theta3 = (th->theta1 - zero_offset[3]) *(2*M_PI)*(i_gear[3]*i_arm[3])/(enc_rev[3]*4);  
-  th->theta4 = (th->theta1 - zero_offset[4]) *(2*M_PI)*(i_gear[4]*i_arm[4])/(enc_rev[4]*4);  
-  th->theta6 = (th->theta1 - zero_offset[5]) *(2*M_PI)*(i_gear[6]*i_arm[6])/(enc_rev[6]*4);  
+  th->theta1 = (th->theta1 - zero_offset[1] +  home_offset[1]  ) *(2*M_PI)*(i_gear[1]*i_arm[1])/(enc_rev[1]*4);  
+  th->theta2 = (th->theta1 - zero_offset[2] +  home_offset[2]  ) *(2*M_PI)*(i_gear[2]*i_arm[2])/(enc_rev[2]*4);  
+  th->theta3 = (th->theta1 - zero_offset[3] +  home_offset[3]  ) *(2*M_PI)*(i_gear[3]*i_arm[3])/(enc_rev[3]*4);  
+  th->theta4 = (th->theta1 - zero_offset[4] +  home_offset[4]  ) *(2*M_PI)*(i_gear[4]*i_arm[4])/(enc_rev[4]*4);  
+  th->theta6 = (th->theta1 - zero_offset[5] +  home_offset[5]  ) *(2*M_PI)*(i_gear[6]*i_arm[6])/(enc_rev[6]*4);  
  
 }
 

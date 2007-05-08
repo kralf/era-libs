@@ -34,6 +34,7 @@ int main(void)
 {
 
   int pos[7];
+  float vel;
   int id;
 
   t_theta th;
@@ -45,7 +46,7 @@ int main(void)
   canHWInit();
   kin2s_init( &th, &target );
 
-
+  
   for(id=1;id<7;id++)
     {
       fault_reset(id);
@@ -59,6 +60,10 @@ int main(void)
 
   while(1)
     {
+      //Read change of desired position
+      target_print(&target);
+      theta_print_rad(&th);
+
       printf("Add to Position X [cm]: ");
       if(scanf("%f",&(target_add.x)) == 0) break;
       printf("Add to Position Y [cm]: ");
@@ -83,17 +88,29 @@ int main(void)
       theta_rad_to_tiks( &th );
       theta_print_tiks( &th );
 
+      // User check of plausibility
+      int count=0;
+      float usch;
+      printf("Type number to proceed or 'x' to break ");
+      if(scanf("%f",&usch) == 0) break;
 
 
-      pos[1] = (int)th.theta1;
-      pos[2] = (int)th.theta2;
-      pos[3] = (int)th.theta3;
-      pos[4] = (int)th.theta4;
-      pos[5] = (int)th.theta6;
 
+      pos[1] = (int)th.theta1 ;
+      pos[2] = (int)th.theta2 ;
+      pos[3] = (int)th.theta3 ;
+      pos[4] = (int)th.theta4 ;
+      pos[5] = (int)th.theta6 ;
+
+
+      float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
+      float i_arm[]={0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
+
+      
       for(id=1;id<6;id++)
 	{
-	  set_profile_velocity(id,1);
+	  vel = 1/(i_gear[id]*i_arm[id]);
+	  set_profile_velocity(id,vel);
 	  set_target_position(id,pos[id]);
 	  activate_position(id);
 	  //get_statusword(id);
@@ -101,6 +118,7 @@ int main(void)
 		
       do
 	{
+	  count++;
 	  for(id=1;id<6;id++)
 	    {
 	      get_actual_position(id);
@@ -109,11 +127,12 @@ int main(void)
 	      printf("theta%i soll: %d\tist: %d\n", id, (int) pos[id], myepos_read.number[id-1].actual_position);
 	    }
 	}
-      while(myepos_read.number[0].actual_position != (int) pos[1] ||
+      while((myepos_read.number[0].actual_position != (int) pos[1] ||
 	    myepos_read.number[1].actual_position != (int) pos[2] ||
 	    myepos_read.number[2].actual_position != (int) pos[3] ||
 	    myepos_read.number[3].actual_position != (int) pos[4] ||
-	    myepos_read.number[4].actual_position != (int) pos[5] );
+	    myepos_read.number[4].actual_position != (int) pos[5] )&&
+	    count<50);
 	    
     }
 
@@ -121,6 +140,7 @@ int main(void)
 
   for(id=1;id<7;id++)
     {
+
       shutdown(id);	
     }	
   
