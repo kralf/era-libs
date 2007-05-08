@@ -47,7 +47,15 @@ void target_user_read(t_target* target)
 		
 }
 
-void kin2s_position_mode(t_target* target)
+void kin2s_position_mode_set(t_target* target_start, t_target* target_add, int steps)
+{
+
+
+}
+
+
+
+void kin2s_position_mode_init()
 {
   int id=0;
 
