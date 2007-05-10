@@ -19,6 +19,9 @@ libepos.o: libepos.c
 test: test.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o test test.c libserial.o libepos.o
 	
+foo: foo.c
+	gcc -Wall -o foo foo.c
+	
 kin.o: kin.c kin.h
 	gcc -Wall -c kin.c -o kin.o
 

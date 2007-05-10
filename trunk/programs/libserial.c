@@ -1,6 +1,6 @@
 /*	Source-file for serial EPOS-communication
  *	V0.4
- * 	© Marc Rauer ETHZ	marc.rauer@gmx.de
+ * 	ï¿½ Marc Rauer ETHZ	marc.rauer@gmx.de
  * 	Last change: 21/09/07
  */
  
@@ -48,6 +48,39 @@ int fd=0;
 
 CPC_MSG_T cpcmsg;
 
+ERROR error[MAXERROR] = {
+		{ 0x00000000, "No error.\n" },
+		{ 0x06020000, "Object does not exist in the object dicionary.\n" },
+		{ 0x06090011, "Sub-index does not exist.\n" },											
+		{ 0x05040001, "Client/server command specifier not valid or unknown.\n" },										
+		{ 0x05030000, "Toggle bit not alternated.\n" },										
+		{ 0x05040000, "SDO protocol timed out.\n" },										
+		{ 0x05040005, "Out of memory\n" },										
+		{ 0x06010000, "Unsupported access to an object.\n" },										
+		{ 0x06010001, "Attempt to read a write only object.\n"  },										
+		{ 0x06010002, "Attempt to write a read only object.\n"  },										
+		{ 0x06040041, "Object cannot be mapped to the PDO.\n" },										
+		{ 0x06040042, "The number and length of the objects to be mapped would exceed PDO length.\n" },										
+		{ 0x06040043, "General parameter incompatibility reason.\n" },										
+		{ 0x06040047, "General internal incompatibility reason.\n" },										
+		{ 0x06060000, "Access failed due to an hardware error.\n" },										
+		{ 0x06070010, "Data type does not match, length of service parameter does not match.\n" },										
+		{ 0x06070012, "Data type does not match, length of service parameter too high.\n" },										
+		{ 0x06070013, "Data type does not match, length of service parameter too low.\n" },										
+		{ 0x06090030, "Value range of parameter exceeded (only for write access).\n" },
+		{ 0x06090031, "Value of parameter written too high.\n" },										
+		{ 0x06090032, "Value of parameter written too low.\n" },										
+		{ 0x06090036, "Maximum value is less than minimum value.\n" },										
+		{ 0x08000000, "General error.\n" },										
+		{ 0x08000020, "Data cannot be transferred or stored to the application.\n" },										
+		{ 0x08000021, "Data cannot be transferred or stored to the application because of local control.\n" },										
+		{ 0x08000022, "Data cannot be transferred or stored to the application because of the present device state.\n"},										
+		{ 0x0F00FFC0, "The device is in wrong NMT state.\n" },										
+		{ 0x0F00FFBF, "The RS232 command is illegal.\n" },										
+		{ 0x0F00FFBE, "The password is not correct.\n" },										
+		{ 0x0F00FFBC, "The device is not in service mode.\n" },										
+		{ 0x0F00FFB9, "Error Node-ID.\n" },										
+	}; 
 
 /* funktions: **************************************************************/
 void canHWInit()
@@ -92,24 +125,49 @@ void read_can_message()
 /*-----------------------------------*/
 void serial2epos(int can_id, char *data_send, char *data_recv)
 {
-		
+	
 	cpcmsg.msg.canmsg.id = (data_send[5] & 0x000000FF) + 0x580;
+	
+	if(data_recv[2] == 0x00 && data_recv[3] == 0x00 && data_recv[4] == 0x00 && data_recv[5] == 0x00)
+	{
 
-	cpcmsg.msg.canmsg.msg[0] = 0x00;			/* no error */
-	
-	cpcmsg.msg.canmsg.msg[1] = data_send[2];	/* high-byte index */
-	cpcmsg.msg.canmsg.msg[2] = data_send[3]; 	/* low-byte index */
-	
-	cpcmsg.msg.canmsg.msg[3] = data_send[4];	/* subindex */
-	
-	cpcmsg.msg.canmsg.msg[7] = data_recv[6];	/* high-byte of high-word data */
-	cpcmsg.msg.canmsg.msg[6] = data_recv[7];	/* low-byte of high-word data */
-	cpcmsg.msg.canmsg.msg[5] = data_recv[8];	/* high-byte of low-word data */
-	cpcmsg.msg.canmsg.msg[4] = data_recv[9];	/* low-byte of low-word data */
-	
-	//prtmsg("serial2epos",cpcmsg.msg.canmsg.msg,8);
+		cpcmsg.msg.canmsg.msg[0] = 0x00;			/* no error */
+		
+		cpcmsg.msg.canmsg.msg[1] = data_send[2];	/* high-byte index */
+		cpcmsg.msg.canmsg.msg[2] = data_send[3]; 	/* low-byte index */
+		
+		cpcmsg.msg.canmsg.msg[3] = data_send[4];	/* subindex */
+		
+		cpcmsg.msg.canmsg.msg[7] = data_recv[6];	/* high-byte of high-word data */
+		cpcmsg.msg.canmsg.msg[6] = data_recv[7];	/* low-byte of high-word data */
+		cpcmsg.msg.canmsg.msg[5] = data_recv[8];	/* high-byte of low-word data */
+		cpcmsg.msg.canmsg.msg[4] = data_recv[9];	/* low-byte of low-word data */
+		
+		//prtmsg("serial2epos",cpcmsg.msg.canmsg.msg,8);
+	}
+	else // ERROR occured see EPOS Communication Guide page 18	
+	{
+		cpcmsg.msg.canmsg.msg[0] = 0x80;			/* Configuration error */
+		
+		handle_serial_errorcode(data_recv);
+		return;
+	}
 	
 	read_SDO_msg_handler(0, &cpcmsg);
+}
+/*-----------------------------------*/
+int handle_serial_errorcode(char *data_recv)
+{
+	long int error_no = 0;
+	int i;
+	
+	error_no = (long int) ((data_recv[4]<<24)+(data_recv[5]<<16)+(data_recv[2]<<8)+data_recv[3]);
+	
+	for(i=0;i<MAXERROR;i++) 
+	{
+		if(error[i].no == error_no) printf("Serial ErrorCode 0x%08lX: %s\n", error[i].no, error[i].msg );
+	}
+	return i;
 }
 /*-----------------------------------*/
 int epos2serial(int id, char *msg, char *data)
@@ -743,6 +801,8 @@ int ClearIOBuffer(int fd)
 	}
 	return -1;
 }	
+
+
 	
 	
 

@@ -1560,7 +1560,7 @@ void read_SDO_msg_handler(int handle, const CPC_MSG_T * cpcmsg)
 	    {
 	      //PDEBUG("received maximum following error value ");
 	      //PDEBUG_SNIP("byte 0: %x value: ",cpcmsg->msg.canmsg.msg[0]);
-	      myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].position_window
+	      myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].maximum_following_error
 		=cpcmsg->msg.canmsg.msg[4]
 		+(cpcmsg->msg.canmsg.msg[5]<<8)
 		+(cpcmsg->msg.canmsg.msg[6]<<16)

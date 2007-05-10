@@ -90,7 +90,7 @@ int main(void)
 			
 			printf("x: soll: %d\tist: %d\n", (int) pos, myepos_read.number[id-1].actual_position);
 		}
-		while(myepos_read.number[id-1].actual_position != (int) pos); 	
+		while(abs(myepos_read.number[id-1].actual_position - (int) pos) > 1 ); 	
 	}
 	
 
@@ -98,6 +98,8 @@ int main(void)
 	{
 		shutdown(id);	
 	}	
+
+
 
 		
 	canHWEnd();

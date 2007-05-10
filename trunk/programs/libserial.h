@@ -13,13 +13,19 @@
 #define RESPONSE	0x00
 
 #define BAUDRATE B38400
-//#define MODEMDEVICE "/dev/ttyUSB0"
 #define MODEMDEVICE "/dev/ttyS0"
 #define TIMEOUTSEC 0
 #define TIMEOUTNSEC 500000 /* 500ms */
 #define MAXRETRY 10
+#define MAXERROR 31
 
 typedef unsigned short word; 
+
+typedef struct ERROR{
+	long int no;
+	char *msg;
+} ERROR;
+
 
 /* function-prototypes: */
 
@@ -31,6 +37,7 @@ void read_can_message();
 
 int epos2serial(int, char *, char *);
 void serial2epos(int can_id, char *data_send, char *data_recv);
+int handle_serial_errorcode(char *data_recv);
 
 int open_device();
 int close_device(int);
