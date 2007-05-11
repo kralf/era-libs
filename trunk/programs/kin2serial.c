@@ -19,6 +19,11 @@
 #include<math.h>
 
 
+void kin2s_(t_theta* th, t_target* target)
+{
+
+}
+
 void target_user_read(t_target* target)
 {
   t_target target_add;
@@ -47,10 +52,61 @@ void target_user_read(t_target* target)
 		
 }
 
-void kin2s_position_mode_set(t_target* target_start, t_target* target_add, int steps)
+float max(float m1, float m2)
+{
+  if(m1>m2)
+    return m1;
+  else
+    return m2;
+}
+
+void kin2s_position_mode_calc_vel(t_theta* pos, t_theta* pos_old, t_theta* vel, float vel_max)
 {
 
+  t_theta dpos;
+  dpos.theta1 = abs(pos->theta1 - pos_old->theta1);
+  dpos.theta2 = abs(pos->theta2 - pos_old->theta2);
+  dpos.theta3 = abs(pos->theta3 - pos_old->theta3);
+  dpos.theta4 = abs(pos->theta4 - pos_old->theta4);
+  // maximum position difference:
+  float max_dpos = max(max(dpos.theta1, dpos.theta2),
+                       max(dpos.theta3, dpos.theta4));
 
+  float i_gear[] = {0, 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
+  float i_arm[]  = {0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
+
+  vel->theta1 = vel_max * (dpos.theta1/max_dpos) / (i_gear[1]*i_arm[1]);
+  vel->theta2 = vel_max * (dpos.theta2/max_dpos) / (i_gear[2]*i_arm[2]);
+  vel->theta3 = vel_max * (dpos.theta3/max_dpos) / (i_gear[3]*i_arm[3]);
+  vel->theta4 = vel_max * (dpos.theta4/max_dpos) / (i_gear[4]*i_arm[4]);
+  vel->theta6 = vel_max / (i_gear[1]*i_arm[1]);
+
+
+}
+
+void kin2s_position_mode_set(t_theta* pos, t_theta* vel)
+{
+  
+  set_profile_velocity( 1, vel->theta1);
+  set_target_position(  1, pos->theta1);
+  activate_position(    1);
+
+  set_profile_velocity( 2, vel->theta2);
+  set_target_position(  2, pos->theta2);
+  activate_position(    2);
+
+  set_profile_velocity( 3, vel->theta3);
+  set_target_position(  3, pos->theta3);
+  activate_position(    3);
+
+  set_profile_velocity( 4, vel->theta4);
+  set_target_position(  4, pos->theta4);
+  activate_position(    4);
+
+  set_profile_velocity( 6, vel->theta6);
+  set_target_position(  6, pos->theta6);
+  activate_position(    6);
+       
 }
 
 
@@ -58,7 +114,6 @@ void kin2s_position_mode_set(t_target* target_start, t_target* target_add, int s
 void kin2s_position_mode_init()
 {
   int id=0;
-
 
   for(id=1;id<7;id++)
     {

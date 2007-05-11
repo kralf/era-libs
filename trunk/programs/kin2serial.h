@@ -22,6 +22,9 @@ void kin2s_init(t_theta* th, t_target* target);
 void target_user_read(t_target* target);
 
 void kin2s_position_mode(t_target* target);
+void kin2s_position_mode_init();
+void kin2s_position_mode_calc_vel(t_theta* pos, t_theta* pos_old, t_theta* vel, float vel_max);
+void kin2s_position_mode_set(t_theta* pos, t_theta* vel);
 
 
 /* print to screen */

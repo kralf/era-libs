@@ -34,13 +34,13 @@ int main(void)
 {
 
   int pos[7];
-  float vel;
+  float vel_max;
   int id;
   int steps;
   int i;
   int count=0;
 
-  t_theta th;
+  t_theta th,th_old,th_vel;
   t_target target;
   t_target target_add;
 
@@ -49,7 +49,9 @@ int main(void)
   canHWInit();
   kin2s_init( &th, &target );
 
-  
+
+  kin2s_position_mode_init();
+  /* replaced
   for(id=1;id<7;id++)
     {
       fault_reset(id);
@@ -58,7 +60,7 @@ int main(void)
       set_mode_of_operation(id,1);
       shutdown(id);		
       enable_operation(id);	
-    }
+      }*/
 
 
   while(1)
@@ -79,15 +81,18 @@ int main(void)
       if(scanf("%f",&(target_add.beta2)) == 0) break;
       printf("Position mode steps: ");
       if(scanf("%i",&steps) == 0) break;
+      printf("Maximal velocity: ");
+      if(scanf("%f",&vel_max) == 0) break;
 
 
       for(i=0; i<=steps;i++)
 	{
-	  target.x += (target_add.x / steps);
-	  target.y += (target_add.y / steps);
-	  target.z += (target_add.z / steps);
+	  target.x     += (target_add.x / steps);
+	  target.y     += (target_add.y / steps);
+	  target.z     += (target_add.z / steps);
 	  target.beta1 += (target_add.beta1/180*M_PI / steps);
 	  target.beta2 += (target_add.beta2/180*M_PI / steps);
+
 	    
 	  inverse_kinematics( &target, &th);
 
@@ -96,7 +101,7 @@ int main(void)
 	    
 	    
 	    //  theta_print_rad( &th );
-	    theta_rad_to_tiks( &th );
+	  theta_rad_to_tiks( &th );
 	    //theta_print_tiks( &th );
 	    
 	    // User check of plausibility
@@ -107,6 +112,10 @@ int main(void)
 	    */
 	  
 
+	  kin2s_position_mode_calc_vel(&th, &th_old, &th_vel, vel_max);
+	  kin2s_position_mode_set(&th, &th_vel);
+	  th_old = th;
+	    /* replaced
 	  pos[1] = (int)th.theta1 ;
 	  pos[2] = (int)th.theta2 ;
 	  pos[3] = (int)th.theta3 ;
@@ -114,8 +123,8 @@ int main(void)
 	  pos[5] = (int)th.theta6 ;
 	  
 	  
-	  float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
-	  float i_arm[]={0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
+	  float i_gear[] = {0, 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
+	  float i_arm[]  = {0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
 	    
 	    
 	  for(id=1;id<6;id++)
@@ -126,6 +135,7 @@ int main(void)
 	      activate_position(id);
 	      //get_statusword(id);
 	    }	
+	    */
 	    
 	  count=0;
 		
@@ -145,7 +155,7 @@ int main(void)
 		 myepos_read.number[2].actual_position != (int) pos[3] ||
 		 myepos_read.number[3].actual_position != (int) pos[4] ||
 		 myepos_read.number[4].actual_position != (int) pos[5] )&&
-		count<3);
+		 count<3);
 	}
 	    
     }
@@ -154,7 +164,6 @@ int main(void)
 
   for(id=1;id<7;id++)
     {
-
       shutdown(id);	
     }	
   
