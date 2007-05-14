@@ -5,7 +5,6 @@
  */
 
 #include "libepos.h"
-#include "libepos_type.h" 
  
 /* defines: */
 #define OKAY 		0x4F
@@ -17,14 +16,14 @@
 #define TIMEOUTSEC 0
 #define TIMEOUTNSEC 500000 /* 500ms */
 #define MAXRETRY 10
-#define MAXERROR 31
+#define MAXERRORSERIAL 31
+
 
 typedef unsigned short word; 
 
-typedef struct ERROR{
-	long int no;
-	char *msg;
-} ERROR;
+
+
+
 
 
 /* function-prototypes: */

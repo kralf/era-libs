@@ -3,6 +3,41 @@
 #include "libcan.h"
 #include "pdebug.h"
 
+
+EPOS_ERROR_HISTORY error_history[MAXERRORHISTORY] = {
+		{ 0x0000, 0x00, "No error.\n" },
+		{ 0x1000, 0x01, "Generic error.\n" },
+		{ 0x2310, 0x02, "Over current error.\n" },
+		{ 0x3210, 0x04, "Over voltage error.\n" },
+		{ 0x3220, 0x04, "Under voltage.\n" },	
+		{ 0x4210, 0x08, "Over temperature.\n" },	
+		{ 0x5113, 0x04, "Supply voltage (+5V) too low.\n" },	
+		{ 0x6100, 0x20, "Internal software error.\n" },	
+		{ 0x6320, 0x20, "Software parameter error.\n" },	
+		{ 0x7320, 0x20, "Sensor position error.\n" },	
+		{ 0x8110, 0x10, "CAN overrun error (objects lost).\n" },	
+		{ 0x8111, 0x10, "CAN overrun error.\n" },	
+		{ 0x8120, 0x10, "CAN passive mode error.\n" },	
+		{ 0x8130, 0x10, "CAN life guard error.\n" },	
+		{ 0x8150, 0x10, "CAN transmit COD-ID collision.\n" },	
+		{ 0x81FD, 0x10, "CAN bus off.\n" },	
+		{ 0x81FE, 0x10, "CAN Rx queue overrun.\n" },	
+		{ 0x81FF, 0x10, "CAN Tx queue overrun.\n" },	
+		{ 0x8210, 0x10, "CAN PDO length error.\n" },	
+		{ 0x8611, 0x20, "Following error.\n" },	
+		{ 0xFF01, 0x80, "Hall sensor error.\n" },	
+		{ 0xFF02, 0x80, "Index processing error.\n" },	
+		{ 0xFF03, 0x80, "Encoder resolution error.\n" },	
+		{ 0xFF04, 0x80, "Hallsensor not found error.\n" },	
+		{ 0xFF06, 0x80, "Negative limit error.\n" },	
+		{ 0xFF07, 0x80, "Positive limit error.\n" },	
+		{ 0xFF08, 0x80, "Hall angle detection error.\n" },	
+		{ 0xFF09, 0x80, "Software position limit error.\n" },	
+		{ 0xFF0A, 0x80, "Position sensor breach.\n" },	
+		{ 0xFF0B, 0x20, "System overloaded.\n" }
+	}; 
+
+
 /* *************************** */
 /* INIT / CONTROL OPERATIONS   */
 /* *************************** */
@@ -1312,7 +1347,7 @@ void get_profile_deceleration(int id)
   my_send_can_message(can_id, msg);  
 }
 
-void get_actual_error_register(int id)
+void get_error_register(int id)
 {
   PDEBUG("ask for actual error register\n");
   char msg[8];
@@ -1328,7 +1363,7 @@ void get_actual_error_register(int id)
   my_send_can_message(can_id, msg);  
 }
 
-void get_actual_error_history(int id)
+void get_error_history(int id, int index)
 {
   PDEBUG("ask for actual error history\n");
   char msg[8];
@@ -1336,12 +1371,23 @@ void get_actual_error_history(int id)
   msg[0]= READ;
   msg[1]= 0x03;
   msg[2]= 0x10;
-  msg[3]= 0x01;
+  msg[3]= (index & 0x00ff);
   msg[4]= 0x00;
   msg[5]= 0x00;
   msg[6]= 0x00;
   msg[7]= 0x00;
   my_send_can_message(can_id, msg);  
+}
+
+void get_error(int id)
+{
+  char index;
+  PDEBUG("ask for error\n");
+  
+  get_error_register(id);
+  
+  for(index=0;index<6;index++) get_error_history(id, index);		  
+	   
 }
 
 void get_continous_current_limit(int id)
@@ -1387,7 +1433,9 @@ void get_output_current_limit(int id)
    ----------------------------------------------------------------*/
 void read_SDO_msg_handler(int handle, const CPC_MSG_T * cpcmsg)
 { 
-  
+  int i=0;
+  int errorcode;
+	
   PDEBUG("mhm... something to read... ");
   PDEBUG_SNIP("id: %lx Data: ",cpcmsg->msg.canmsg.id);
   PDEBUG_SNIP("%x ",cpcmsg->msg.canmsg.msg[0]);
@@ -1404,57 +1452,30 @@ void read_SDO_msg_handler(int handle, const CPC_MSG_T * cpcmsg)
 		//EMERGERNCY object
 		PDEBUG("ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR\n");
 		int errorfound=0;
-		if ((cpcmsg->msg.canmsg.msg[0]==0x00)&&(cpcmsg->msg.canmsg.msg[1]==0x10))
-		{
-			PDEBUG("==> generic error <==\n"); 
+		
+		errorcode = (cpcmsg->msg.canmsg.msg[0]	
+				   +(cpcmsg->msg.canmsg.msg[1]<<8));
+		
+		for(i=0;i<MAXERRORHISTORY;i++)  
+		{  
+			if(errorcode == error_history[i].code)
+			{	
+			printf("Device ErrorCode 0x%04X: %s\n", error_history[i].code, error_history[i].msg);   
+			myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error
+			.device.history[cpcmsg->msg.canmsg.msg[3]-1].code = error_history[i].code; 			
+			myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error
+			.device.history[cpcmsg->msg.canmsg.msg[3]-1].reg = error_history[i].reg; 				
+			myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error
+			.device.history[cpcmsg->msg.canmsg.msg[3]-1].msg = error_history[i].msg; 
 			errorfound=1;
+			}	
 		}
-		if ((cpcmsg->msg.canmsg.msg[0]==0x10)&&(cpcmsg->msg.canmsg.msg[1]==0x23))
-		{
-			PDEBUG("==> over current error <==\n"); 
-			errorfound=1;
-		}
-		if ((cpcmsg->msg.canmsg.msg[0]==0x20)&&(cpcmsg->msg.canmsg.msg[1]==0x32))
-		{
-			PDEBUG("==> under voltage error <==\n"); 
-			errorfound=1;
-		}
-		if ((cpcmsg->msg.canmsg.msg[0]==0x10)&&(cpcmsg->msg.canmsg.msg[1]==0x42))
-		{
-			PDEBUG("==> over temperature error <==\n"); 
-			errorfound=1;
-		} 
-		if ((cpcmsg->msg.canmsg.msg[0]==0x13)&&(cpcmsg->msg.canmsg.msg[1]==0x51))
-		{
-			PDEBUG("==> supply voltage too low error <==\n"); 
-			errorfound=1;
-		} 
-		if ((cpcmsg->msg.canmsg.msg[0]==0x00)&&(cpcmsg->msg.canmsg.msg[1]==0x61))
-		{
-			PDEBUG("==> internal software error <==\n"); 
-			errorfound=1;
-		}
-		if ((cpcmsg->msg.canmsg.msg[0]==0x00)&&(cpcmsg->msg.canmsg.msg[1]==0x61))
-		{
-			PDEBUG("==> internal software error <==\n"); 
-			errorfound=1;
-		} 
-			if ((cpcmsg->msg.canmsg.msg[0]==0x11)&&(cpcmsg->msg.canmsg.msg[1]==0x86))
-		{
-			PDEBUG("==> Following error <==\n");
-			errorfound=1;
-		}
-		if (errorfound==0)
-			PDEBUG("==> Error not specified in libepos.c <==");
 		
 		faultreset(1);
 		activate_position(1);
 		faultreset(1);
 		activate(1);
 		faultreset(1);
-		//shutdown(1);
-		//faultreset(1);
-		//shutdown(1);
     }
 
   if (cpcmsg->msg.canmsg.msg[0] == 0x80) //We have an error message --> print for debug
@@ -1469,6 +1490,7 @@ void read_SDO_msg_handler(int handle, const CPC_MSG_T * cpcmsg)
       PDEBUG_SNIP("%x ",cpcmsg->msg.canmsg.msg[5]);
       PDEBUG_SNIP("%x ",cpcmsg->msg.canmsg.msg[6]);
       PDEBUG_SNIP("%x \n",cpcmsg->msg.canmsg.msg[7]);
+
   }
   else
   {
@@ -1765,7 +1787,52 @@ void read_SDO_msg_handler(int handle, const CPC_MSG_T * cpcmsg)
 		}
 	    } 
 
-	}
+		if ((cpcmsg->msg.canmsg.msg[1]==0x01) 
+	      	&& (cpcmsg->msg.canmsg.msg[2]==0x10)
+			&& (cpcmsg->msg.canmsg.msg[3]==0x00))
+	    {
+	    	myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error.device.reg
+		    =cpcmsg->msg.canmsg.msg[4]; 
+		  	//PDEBUG_SNIP("0x%x\n",myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error.device.reg);
+		}
+
+				
+		if ((cpcmsg->msg.canmsg.msg[1]==0x03) 
+	      && (cpcmsg->msg.canmsg.msg[2]==0x10))
+	    {
+	      PDEBUG("received error history "); 
+	      if (cpcmsg->msg.canmsg.msg[3]==0x00)
+		  {
+		    myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error.device.number
+		    =cpcmsg->msg.canmsg.msg[4]; 
+		  //PDEBUG_SNIP("0x%x\n",myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error.device.number);
+		  }
+	  	  else
+		  {
+			errorcode = ((cpcmsg->msg.canmsg.msg[4]
+						+(cpcmsg->msg.canmsg.msg[5]<<8)
+						+(cpcmsg->msg.canmsg.msg[6]<<16)
+						+(cpcmsg->msg.canmsg.msg[7]<<24)) & 0xFFFF0000)>>16;
+			
+			for(i=0;i<MAXERRORHISTORY;i++)  
+			{  
+			  if(errorcode == error_history[i].code)
+			  {	 
+				printf("Device ErrorCode 0x%04X: %s\n", error_history[i].code, error_history[i].msg);   
+		    	myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error
+				.device.history[cpcmsg->msg.canmsg.msg[3]-1].code = error_history[i].code; 			
+		    	myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error
+				.device.history[cpcmsg->msg.canmsg.msg[3]-1].reg = error_history[i].reg; 				
+		    	myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error
+				.device.history[cpcmsg->msg.canmsg.msg[3]-1].msg = error_history[i].msg; 
+			  }
+		  
+			}
+			
+		  }
+	    }
+
+	  }
     }
 }
 

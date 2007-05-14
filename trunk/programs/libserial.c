@@ -35,20 +35,15 @@
 #include <fcntl.h>
 
 #include "libserial.h"
-#include "libepos.h"
-#include "libepos_type.h"
 
 //#define ASL_DEBUG
 //#define DEBUG
 #include "pdebug.h"
 
-
-
 int fd=0;
-
 CPC_MSG_T cpcmsg;
 
-ERROR error[MAXERROR] = {
+EPOS_ERROR_SERIAL error_serial[MAXERRORSERIAL] = {
 		{ 0x00000000, "No error.\n" },
 		{ 0x06020000, "Object does not exist in the object dicionary.\n" },
 		{ 0x06090011, "Sub-index does not exist.\n" },											
@@ -79,8 +74,9 @@ ERROR error[MAXERROR] = {
 		{ 0x0F00FFBF, "The RS232 command is illegal.\n" },										
 		{ 0x0F00FFBE, "The password is not correct.\n" },										
 		{ 0x0F00FFBC, "The device is not in service mode.\n" },										
-		{ 0x0F00FFB9, "Error Node-ID.\n" },										
+		{ 0x0F00FFB9, "Error Node-ID.\n" }								
 	}; 
+
 
 /* funktions: **************************************************************/
 void canHWInit()
@@ -125,6 +121,8 @@ void read_can_message()
 /*-----------------------------------*/
 void serial2epos(int can_id, char *data_send, char *data_recv)
 {
+	long int error_no = 0;
+	int i;
 	
 	cpcmsg.msg.canmsg.id = (data_send[5] & 0x000000FF) + 0x580;
 	
@@ -145,11 +143,21 @@ void serial2epos(int can_id, char *data_send, char *data_recv)
 		
 		//prtmsg("serial2epos",cpcmsg.msg.canmsg.msg,8);
 	}
-	else // ERROR occured see EPOS Communication Guide page 18	
+	else // Serial error occured see EPOS Communication Guide page 18	
 	{
-		cpcmsg.msg.canmsg.msg[0] = 0x80;			/* Configuration error */
+		//cpcmsg.msg.canmsg.msg[0] = 0x80;			/* Configuration error */
 		
-		handle_serial_errorcode(data_recv);
+		error_no = (long int) ((data_recv[4]<<24)+(data_recv[5]<<16)+(data_recv[2]<<8)+data_recv[3]);
+	
+		for(i=0;i<MAXERRORSERIAL;i++) 
+		{
+			if(error_serial[i].code == error_no) 
+			{
+				printf("Serial ErrorCode 0x%08lX: %s\n", error_serial[i].code, error_serial[i].msg);
+				myepos_read.number[(cpcmsg.msg.canmsg.id - 0x581)].error.serial.code = error_serial[i].code; 			
+				myepos_read.number[(cpcmsg.msg.canmsg.id - 0x581)].error.serial.msg = error_serial[i].msg; 			
+			}
+		}
 		return;
 	}
 	
@@ -158,16 +166,8 @@ void serial2epos(int can_id, char *data_send, char *data_recv)
 /*-----------------------------------*/
 int handle_serial_errorcode(char *data_recv)
 {
-	long int error_no = 0;
-	int i;
 	
-	error_no = (long int) ((data_recv[4]<<24)+(data_recv[5]<<16)+(data_recv[2]<<8)+data_recv[3]);
-	
-	for(i=0;i<MAXERROR;i++) 
-	{
-		if(error[i].no == error_no) printf("Serial ErrorCode 0x%08lX: %s\n", error[i].no, error[i].msg );
-	}
-	return i;
+	return 0;
 }
 /*-----------------------------------*/
 int epos2serial(int id, char *msg, char *data)

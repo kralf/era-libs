@@ -1,12 +1,15 @@
 #ifndef _LIB_EPOS_H
 #define _LIB_EPOS_H
 
+#define MAXERRORHISTORY 30
+
 #include "non-asl/cpc.h"
 #include "non-asl/cpclib.h"
 #include "libepos_type.h"
 
 ALL_EPOS_READ myepos_read;
 ALL_EPOS_SET myepos_set;	/* not yet used in libepos */
+
 
 
 /* *************************** */
@@ -101,6 +104,8 @@ void get_software_minimal_position_limit(int id);
 void get_software_maximal_position_limit(int id);
 void get_profile_acceleration(int id);
 void get_profile_deceleration(int id);
+void get_error_register(int id);
+void get_error_history(int id, int index);
 void get_error(int id);
 void get_actual_error_register(int id);
 void get_actual_error_history(int id);

@@ -40,6 +40,29 @@ typedef struct EPOS_MOTOR_DATA_STR {
 } EPOS_MOTOR_DATA_STR;
 
 
+typedef struct EPOS_ERROR_HISTORY{
+	int code;
+	unsigned char reg;
+	char *msg;
+	
+} EPOS_ERROR_HISTORY;
+
+typedef struct EPOS_ERROR_DEVICE{
+	int number;
+	unsigned char reg;
+	EPOS_ERROR_HISTORY history[5];
+} EPOS_ERROR_DEVICE;
+
+typedef struct EPOS_ERROR_SERIAL{
+	long int code;
+	char *msg;
+} EPOS_ERROR_SERIAL;
+
+typedef struct EPOS_ERROR {
+	EPOS_ERROR_DEVICE device;	
+	EPOS_ERROR_SERIAL serial;
+} EPOS_ERROR;
+
 ///////////////////////////////////////
 
 /* EPOS READ */
@@ -64,7 +87,9 @@ typedef struct EPOS_READ{
   EPOS_VELOCITY_CONFIG_STR velocity_config;	/*velocity mode configuration*/
   EPOS_POSITION_CONFIG_STR position_config;	/*position mode configuration*/
 
-int max_profile_velocity;
+  int max_profile_velocity;
+	
+  EPOS_ERROR error;		/* Epos errors */	
 
 }EPOS_READ;
 
