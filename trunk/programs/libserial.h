@@ -1,7 +1,7 @@
 /*	Header-file for serial EPOS-communication
  *	V0.4
- * 	� Marc Rauer ETHZ	marc.rauer@gmx.de
- * 	Last change: 04/21/07
+ * 	(C) Marc Rauer ETHZ	marc.rauer(at)gmx.de
+ * 	Last change: 05/16/07
  */
 
 
@@ -26,13 +26,7 @@
 #define MAXRETRY 10
 #define MAXERRORSERIAL 31
 
-
 typedef unsigned short word; 
-
-
-
-
-
 
 /* function-prototypes: */
 

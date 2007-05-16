@@ -16,6 +16,7 @@
 #include"kin.h"
 #include"libserial.h"  
 #include<stdio.h>
+#include<stdlib.h>
 #include<math.h>
 
 

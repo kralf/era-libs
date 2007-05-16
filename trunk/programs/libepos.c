@@ -5,36 +5,36 @@
 
 
 EPOS_ERROR_HISTORY error_history[MAXERRORHISTORY] = {
-		{ 0x0000, 0x00, "No error.\n" },
-		{ 0x1000, 0x01, "Generic error.\n" },
-		{ 0x2310, 0x02, "Over current error.\n" },
-		{ 0x3210, 0x04, "Over voltage error.\n" },
-		{ 0x3220, 0x04, "Under voltage.\n" },	
-		{ 0x4210, 0x08, "Over temperature.\n" },	
-		{ 0x5113, 0x04, "Supply voltage (+5V) too low.\n" },	
-		{ 0x6100, 0x20, "Internal software error.\n" },	
-		{ 0x6320, 0x20, "Software parameter error.\n" },	
-		{ 0x7320, 0x20, "Sensor position error.\n" },	
-		{ 0x8110, 0x10, "CAN overrun error (objects lost).\n" },	
-		{ 0x8111, 0x10, "CAN overrun error.\n" },	
-		{ 0x8120, 0x10, "CAN passive mode error.\n" },	
-		{ 0x8130, 0x10, "CAN life guard error.\n" },	
-		{ 0x8150, 0x10, "CAN transmit COD-ID collision.\n" },	
-		{ 0x81FD, 0x10, "CAN bus off.\n" },	
-		{ 0x81FE, 0x10, "CAN Rx queue overrun.\n" },	
-		{ 0x81FF, 0x10, "CAN Tx queue overrun.\n" },	
-		{ 0x8210, 0x10, "CAN PDO length error.\n" },	
-		{ 0x8611, 0x20, "Following error.\n" },	
-		{ 0xFF01, 0x80, "Hall sensor error.\n" },	
-		{ 0xFF02, 0x80, "Index processing error.\n" },	
-		{ 0xFF03, 0x80, "Encoder resolution error.\n" },	
-		{ 0xFF04, 0x80, "Hallsensor not found error.\n" },	
-		{ 0xFF06, 0x80, "Negative limit error.\n" },	
-		{ 0xFF07, 0x80, "Positive limit error.\n" },	
-		{ 0xFF08, 0x80, "Hall angle detection error.\n" },	
-		{ 0xFF09, 0x80, "Software position limit error.\n" },	
-		{ 0xFF0A, 0x80, "Position sensor breach.\n" },	
-		{ 0xFF0B, 0x20, "System overloaded.\n" }
+		{ 0x0000, 0x00, "No error." },
+		{ 0x1000, 0x01, "Generic error." },
+		{ 0x2310, 0x02, "Over current error." },
+		{ 0x3210, 0x04, "Over voltage error." },
+		{ 0x3220, 0x04, "Under voltage." },	
+		{ 0x4210, 0x08, "Over temperature." },	
+		{ 0x5113, 0x04, "Supply voltage (+5V) too low." },	
+		{ 0x6100, 0x20, "Internal software error." },	
+		{ 0x6320, 0x20, "Software parameter error." },	
+		{ 0x7320, 0x20, "Sensor position error." },	
+		{ 0x8110, 0x10, "CAN overrun error (objects lost)." },	
+		{ 0x8111, 0x10, "CAN overrun error." },	
+		{ 0x8120, 0x10, "CAN passive mode error." },	
+		{ 0x8130, 0x10, "CAN life guard error." },	
+		{ 0x8150, 0x10, "CAN transmit COD-ID collision." },	
+		{ 0x81FD, 0x10, "CAN bus off." },	
+		{ 0x81FE, 0x10, "CAN Rx queue overrun." },	
+		{ 0x81FF, 0x10, "CAN Tx queue overrun." },	
+		{ 0x8210, 0x10, "CAN PDO length error." },	
+		{ 0x8611, 0x20, "Following error." },	
+		{ 0xFF01, 0x80, "Hall sensor error." },	
+		{ 0xFF02, 0x80, "Index processing error." },	
+		{ 0xFF03, 0x80, "Encoder resolution error." },	
+		{ 0xFF04, 0x80, "Hallsensor not found error." },	
+		{ 0xFF06, 0x80, "Negative limit error." },	
+		{ 0xFF07, 0x80, "Positive limit error." },	
+		{ 0xFF08, 0x80, "Hall angle detection error." },	
+		{ 0xFF09, 0x80, "Software position limit error." },	
+		{ 0xFF0A, 0x80, "Position sensor breach." },	
+		{ 0xFF0B, 0x20, "System overloaded." }
 	}; 
 
 
@@ -1801,9 +1801,10 @@ void read_SDO_msg_handler(int handle, const CPC_MSG_T * cpcmsg)
 	      && (cpcmsg->msg.canmsg.msg[2]==0x10))
 	    {
 	      PDEBUG("received error history "); 
+		  //printf("cpcmsg->msg.canmsg.msg[3]: %d\n", cpcmsg->msg.canmsg.msg[3]);
 	      if (cpcmsg->msg.canmsg.msg[3]==0x00)
 		  {
-		    myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error.device.number
+		    myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error.device.count
 		    =cpcmsg->msg.canmsg.msg[4]; 
 		  //PDEBUG_SNIP("0x%x\n",myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error.device.number);
 		  }
@@ -1812,17 +1813,19 @@ void read_SDO_msg_handler(int handle, const CPC_MSG_T * cpcmsg)
 			errorcode = ((cpcmsg->msg.canmsg.msg[4]
 						+(cpcmsg->msg.canmsg.msg[5]<<8)
 						+(cpcmsg->msg.canmsg.msg[6]<<16)
-						+(cpcmsg->msg.canmsg.msg[7]<<24)) & 0xFFFF0000)>>16;
+						+(cpcmsg->msg.canmsg.msg[7]<<24)) & 0x0000FFFF);
+
+			//printf("errorcode: %d\n",errorcode);
 			
 			for(i=0;i<MAXERRORHISTORY;i++)  
 			{  
 			  if(errorcode == error_history[i].code)
 			  {	 
-				printf("Device ErrorCode 0x%04X: %s\n", error_history[i].code, error_history[i].msg);   
+				printf("%s => Device ErrorCode 0x%04X: %s\n", __FILE__, error_history[i].code, error_history[i].msg);   
 		    	myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error
 				.device.history[cpcmsg->msg.canmsg.msg[3]-1].code = error_history[i].code; 			
 		    	myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error
-				.device.history[cpcmsg->msg.canmsg.msg[3]-1].reg = error_history[i].reg; 				
+				.device.history[cpcmsg->msg.canmsg.msg[3]-1].reg = error_history[i].reg; 	
 		    	myepos_read.number[(cpcmsg->msg.canmsg.id - 0x581)].error
 				.device.history[cpcmsg->msg.canmsg.msg[3]-1].msg = error_history[i].msg; 
 			  }

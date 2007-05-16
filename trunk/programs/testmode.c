@@ -1,6 +1,6 @@
 /*	Test-file for serial EPOS-communication
  *	V0.5
- * 	ï¿½ Marc Rauer ETHZ	marc.rauer@gmx.de
+ * 	© Marc Rauer ETHZ	marc.rauer@gmx.de
  * 	Last change: 04/23/07
  */
 
@@ -30,18 +30,18 @@ int main(void)
 	int id=0;
 	float pos,vel,v=0,x=0;
 
-	float enc_rev[]={0,500,500,500,500,500,500};       // encoder revolution
-	float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01}; //
-	float i_arm[]={0,1,1,1,1,1,1};                     // bowdenzug getriebe
-	float v_max[]={0,20,20,20,20,20,20};               // rpm
-	float x_min[]={0,-90,-90,-90,-90,-90,-10};         // ï¿½
+	float enc_rev[]={0,500,500,500,500,500,500};
+	float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
+	float i_arm[]={0,1,1,1,1,1,1};
+	float v_max[]={0,20,20,20,20,20,20};
+	float x_min[]={0,-90,-90,-90,-90,-90,-10};
 	float x_max[]={0,90,90,90,90,90,10};
 
 
-	system("clear");  //terminal clear
+	system("clear");
 	printf("Testprogram ERA V0.1\n--------------------\nPlease wait for init...\n\n");
 	
-	canHWInit(); // can hardware init
+	canHWInit();
 	
 	id = 2;
 	
@@ -49,7 +49,7 @@ int main(void)
 	//return 0;
 	
 	
-	for(id=1;id<7;id++)  // standard init
+	for(id=1;id<7;id++)
 	{
 		fault_reset(id);
 		shutdown(id);
@@ -70,12 +70,11 @@ int main(void)
 		if(scanf("%e",&v) == 0) break;
 		if(v < 0 || v > v_max[id]) continue;
 				
-		printf("Winkel ï¿½: ");
+		printf("Winkel °: ");
 		if(scanf("%e",&x) == 0) break;
 		if(x < x_min[id] || x > x_max[id]) continue;
 
-		pos   = x/(360)/(i_gear[id]*i_arm[id])*(enc_rev[id]*4);  
-		//tiks:                                 Encoder revs 500per rot, 4 flanken
+		pos = x/(360)/(i_gear[id]*i_arm[id])*(enc_rev[id]*4);
 		vel = v/(i_gear[id]*i_arm[id]);
 		
 		printf("Velocity: %f\n",vel);
@@ -91,7 +90,7 @@ int main(void)
 			get_actual_position(id);
 			get_current_actual_value(id);
 			
-			printf("x: %d\n", myepos_read.number[id-1].actual_position);
+			printf("I: %d\n", myepos_read.number[id-1].actual_current);
 		}
 		while(myepos_read.number[id-1].actual_position != (int) pos); 	
 	}
@@ -112,7 +111,7 @@ int main(void)
 /*
 	Firmware Seite 66:
 
-	Encoder-Auflï¿½sung 500 Impulse (*4 pro Flanke)
+	Encoder-Auflösung 500 Impulse (*4 pro Flanke)
 	
 	Geschwindigkeit in Umdrehungen pro Minute
 	

@@ -1,10 +1,12 @@
 /*	Source-file for serial EPOS-communication
  *	V0.4
- * 	� Marc Rauer ETHZ	marc.rauer@gmx.de
- * 	Last change: 21/09/07
+ * 	(C) Marc Rauer ETHZ	marc.rauer(at)gmx.de
+ * 	Last change: 05/16/07
  */
  
-/*	message-structure within libserial:
+/** \file
+	\note
+	message-structure within libserial:
 
 	message[0]	OpCode	CG p.15
 	message[1]	length of data - 1!	
@@ -26,15 +28,21 @@
 	message[11] low-byte CRC
 */
 
+/** \file
+ *  \brief
+ *  Library for communication with EPOS Controller over RS232.
+ */
+
+
 /* includes: */
+#include "libserial.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
 #include <termios.h>
 #include <fcntl.h>
-
-#include "libserial.h"
 
 //#define ASL_DEBUG
 //#define DEBUG
@@ -44,37 +52,37 @@ int fd=0;
 CPC_MSG_T cpcmsg;
 
 EPOS_ERROR_SERIAL error_serial[MAXERRORSERIAL] = {
-		{ 0x00000000, "No error.\n" },
-		{ 0x06020000, "Object does not exist in the object dicionary.\n" },
-		{ 0x06090011, "Sub-index does not exist.\n" },											
-		{ 0x05040001, "Client/server command specifier not valid or unknown.\n" },										
-		{ 0x05030000, "Toggle bit not alternated.\n" },										
-		{ 0x05040000, "SDO protocol timed out.\n" },										
-		{ 0x05040005, "Out of memory\n" },										
-		{ 0x06010000, "Unsupported access to an object.\n" },										
-		{ 0x06010001, "Attempt to read a write only object.\n"  },										
-		{ 0x06010002, "Attempt to write a read only object.\n"  },										
-		{ 0x06040041, "Object cannot be mapped to the PDO.\n" },										
-		{ 0x06040042, "The number and length of the objects to be mapped would exceed PDO length.\n" },										
-		{ 0x06040043, "General parameter incompatibility reason.\n" },										
-		{ 0x06040047, "General internal incompatibility reason.\n" },										
-		{ 0x06060000, "Access failed due to an hardware error.\n" },										
-		{ 0x06070010, "Data type does not match, length of service parameter does not match.\n" },										
-		{ 0x06070012, "Data type does not match, length of service parameter too high.\n" },										
-		{ 0x06070013, "Data type does not match, length of service parameter too low.\n" },										
-		{ 0x06090030, "Value range of parameter exceeded (only for write access).\n" },
-		{ 0x06090031, "Value of parameter written too high.\n" },										
-		{ 0x06090032, "Value of parameter written too low.\n" },										
-		{ 0x06090036, "Maximum value is less than minimum value.\n" },										
-		{ 0x08000000, "General error.\n" },										
-		{ 0x08000020, "Data cannot be transferred or stored to the application.\n" },										
-		{ 0x08000021, "Data cannot be transferred or stored to the application because of local control.\n" },										
-		{ 0x08000022, "Data cannot be transferred or stored to the application because of the present device state.\n"},										
-		{ 0x0F00FFC0, "The device is in wrong NMT state.\n" },										
-		{ 0x0F00FFBF, "The RS232 command is illegal.\n" },										
-		{ 0x0F00FFBE, "The password is not correct.\n" },										
-		{ 0x0F00FFBC, "The device is not in service mode.\n" },										
-		{ 0x0F00FFB9, "Error Node-ID.\n" }								
+		{ 0x00000000, "No error." },
+		{ 0x06020000, "Object does not exist in the object dicionary." },
+		{ 0x06090011, "Sub-index does not exist." },											
+		{ 0x05040001, "Client/server command specifier not valid or unknown." },										
+		{ 0x05030000, "Toggle bit not alternated." },										
+		{ 0x05040000, "SDO protocol timed out." },										
+		{ 0x05040005, "Out of memory" },										
+		{ 0x06010000, "Unsupported access to an object." },										
+		{ 0x06010001, "Attempt to read a write only object."  },										
+		{ 0x06010002, "Attempt to write a read only object."  },										
+		{ 0x06040041, "Object cannot be mapped to the PDO." },										
+		{ 0x06040042, "The number and length of the objects to be mapped would exceed PDO length." },										
+		{ 0x06040043, "General parameter incompatibility reason." },										
+		{ 0x06040047, "General internal incompatibility reason." },										
+		{ 0x06060000, "Access failed due to an hardware error." },										
+		{ 0x06070010, "Data type does not match, length of service parameter does not match." },										
+		{ 0x06070012, "Data type does not match, length of service parameter too high." },										
+		{ 0x06070013, "Data type does not match, length of service parameter too low." },										
+		{ 0x06090030, "Value range of parameter exceeded (only for write access)." },
+		{ 0x06090031, "Value of parameter written too high." },										
+		{ 0x06090032, "Value of parameter written too low." },										
+		{ 0x06090036, "Maximum value is less than minimum value." },										
+		{ 0x08000000, "General error." },										
+		{ 0x08000020, "Data cannot be transferred or stored to the application." },										
+		{ 0x08000021, "Data cannot be transferred or stored to the application because of local control." },										
+		{ 0x08000022, "Data cannot be transferred or stored to the application because of the present device state."},										
+		{ 0x0F00FFC0, "The device is in wrong NMT state." },										
+		{ 0x0F00FFBF, "The RS232 command is illegal." },										
+		{ 0x0F00FFBE, "The password is not correct." },										
+		{ 0x0F00FFBC, "The device is not in service mode." },										
+		{ 0x0F00FFB9, "Error Node-ID." }								
 	}; 
 
 
@@ -757,9 +765,6 @@ int calc_crc(char *data, char *crc_value, int no_char)
 	#endif	
 	return no_words;
 }
-
-
-
 
 void prtmsg(char *desc, char *msg, int no)
 {	
