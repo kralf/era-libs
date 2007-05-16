@@ -4,6 +4,14 @@
  * 	Last change: 04/21/07
  */
 
+
+/**
+   \mainpage
+   
+   text for the main doxy page.
+*/
+
+
 #include "libepos.h"
  
 /* defines: */
