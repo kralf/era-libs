@@ -4,30 +4,31 @@
  *      with libserial
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
- * 	Last change:    3.5.2007
+ * 	Last change:    20.5.2007
  */
 
 
 #include"kin.h"
 
 
-void target_init_starting_values(t_target* target);
-void theta_init_start_tiks(t_theta* th);
+void target_init_starting_values(float target[]);
+void theta_init_start_tiks(float theta[]);
 
-void theta_tiks_to_rad(t_theta* th);
-void theta_rad_to_tiks(t_theta* th);
+void theta_tiks_to_rad(float theta[]);
+void theta_rad_to_tiks(float theta[]);
 
-void kin2s_init(t_theta* th, t_target* target);
+void kin2s_init(float theta[], float target[]);
 
-void target_user_read(t_target* target);
+void target_user_read(float target[]);
 
-void kin2s_position_mode(t_target* target);
+void kin2s_position_mode(float target[]);
 void kin2s_position_mode_init();
-void kin2s_position_mode_calc_vel(t_theta* pos, t_theta* pos_old, t_theta* vel, float vel_max);
-void kin2s_position_mode_set(t_theta* pos, t_theta* vel);
+void kin2s_position_mode_calc_vel(float pos[], float pos_old[], float vel[], float vel_max);
+void kin2s_position_mode_set(float pos[], float vel[]);
 
+float kin2s_position_error(float pos[]);
 
 /* print to screen */
-void theta_print_rad(t_theta* th);
-void theta_print_tiks(t_theta* th);
-void target_print(t_target* th);
+void theta_print_rad(float theta[]);
+void theta_print_tiks(float theta[]);
+void target_print(float target[]);

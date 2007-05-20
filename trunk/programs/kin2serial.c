@@ -1,9 +1,8 @@
-/*	Connecting
- *      Kinematic system model for BlueBotics ERA-5/1
+/*	Connecting Kinematic system model for BlueBotics ERA-5/1
  *      with libserial
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
- * 	Last change:    3.5.2007
+ * 	Last change:    20.5.2007
  */
 
 #ifndef _KIN2SERIAL_H
@@ -20,38 +19,7 @@
 #include<math.h>
 
 
-void kin2s_(t_theta* th, t_target* target)
-{
 
-}
-
-void target_user_read(t_target* target)
-{
-  t_target target_add;
-  while(1)
-    {
-      printf("Add to Position X [cm]: ");
-      if(scanf("%f",&(target_add.x)) == 0) break;
-      printf("Add to Position Y [cm]: ");
-      if(scanf("%f",&(target_add.y)) == 0) break;
-      printf("Add to Position Z [cm]: ");
-      if(scanf("%f",&(target_add.z)) == 0) break;
-      printf("Add to Angle beta1 [deg]: ");
-      if(scanf("%f",&(target_add.beta1)) == 0) break;
-      printf("Add to Angle beta2 [deg]: ");
-      if(scanf("%f",&(target_add.beta2)) == 0) break;
-
-      target->x += target_add.x;
-      target->y += target_add.y;
-      target->z += target_add.z;
-      target->beta1 += target_add.beta1/180*M_PI; 
-      target->beta2 += target_add.beta2/180*M_PI; 
-
-      target_print(target);
-
-    }
-		
-}
 
 float max(float m1, float m2)
 {
@@ -61,53 +29,55 @@ float max(float m1, float m2)
     return m2;
 }
 
-void kin2s_position_mode_calc_vel(t_theta* pos, t_theta* pos_old, t_theta* vel, float vel_max)
+/*
+float abs(float a)
+{
+  if(a>0)
+    return a;
+  else
+    return -a;
+}*/
+
+float kin2s_position_error(float pos_err[])
+{
+ return  sqrt( pos_err[0]*pos_err[0] + pos_err[1]*pos_err[1] + pos_err[2]*pos_err[2] + pos_err[3]*pos_err[3] );
+}
+
+void kin2s_position_mode_calc_vel(float pos[], float pos_old[], float vel[], float vel_max)
 {
 
-  t_theta dpos;
-  dpos.theta1 = abs(pos->theta1 - pos_old->theta1);
-  dpos.theta2 = abs(pos->theta2 - pos_old->theta2);
-  dpos.theta3 = abs(pos->theta3 - pos_old->theta3);
-  dpos.theta4 = abs(pos->theta4 - pos_old->theta4);
+  float dpos[4];
+  int i=0;
+  for(i=0;i<=3;i++)
+    dpos[i] = abs( (pos[i] - pos_old[i]) );
+
   // maximum position difference:
-  float max_dpos = max(max(dpos.theta1, dpos.theta2),
-                       max(dpos.theta3, dpos.theta4));
+  float max_dpos = max(max(dpos[0], dpos[1]),
+                       max(dpos[2], dpos[3]));
 
-  float i_gear[] = {0, 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
-  float i_arm[]  = {0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
+  float i_gear[] = { 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
+  float i_arm[]  = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
 
-  vel->theta1 = vel_max * (dpos.theta1/max_dpos) / (i_gear[1]*i_arm[1]);
-  vel->theta2 = vel_max * (dpos.theta2/max_dpos) / (i_gear[2]*i_arm[2]);
-  vel->theta3 = vel_max * (dpos.theta3/max_dpos) / (i_gear[3]*i_arm[3]);
-  vel->theta4 = vel_max * (dpos.theta4/max_dpos) / (i_gear[4]*i_arm[4]);
-  vel->theta6 = vel_max / (i_gear[1]*i_arm[1]);
+  for(i=0;i<=3;i++)
+    vel[i] = vel_max * (dpos[i]/max_dpos) / (i_gear[i]*i_arm[i]);
 
+  vel[4] = vel_max / (i_gear[4]*i_arm[4]);
+  vel[5] = vel_max / (i_gear[5]*i_arm[5]);
 
 }
 
-void kin2s_position_mode_set(t_theta* pos, t_theta* vel)
+void kin2s_position_mode_set(float pos[], float vel[])
 {
+ 
+  int id=0;
+  for(id=1;id<=6;id++)
+    {      
+      set_profile_velocity( id, vel[id-1]);
+      set_target_position(  id, pos[id-1]);
+      activate_position(    id);
+    }
+
   
-  set_profile_velocity( 1, vel->theta1);
-  set_target_position(  1, pos->theta1);
-  activate_position(    1);
-
-  set_profile_velocity( 2, vel->theta2);
-  set_target_position(  2, pos->theta2);
-  activate_position(    2);
-
-  set_profile_velocity( 3, vel->theta3);
-  set_target_position(  3, pos->theta3);
-  activate_position(    3);
-
-  set_profile_velocity( 4, vel->theta4);
-  set_target_position(  4, pos->theta4);
-  activate_position(    4);
-
-  set_profile_velocity( 6, vel->theta6);
-  set_target_position(  6, pos->theta6);
-  activate_position(    6);
-       
 }
 
 
@@ -115,8 +85,7 @@ void kin2s_position_mode_set(t_theta* pos, t_theta* vel)
 void kin2s_position_mode_init()
 {
   int id=0;
-
-  for(id=1;id<7;id++)
+  for(id=1;id<=6;id++)
     {
       fault_reset(id);
       shutdown(id);
@@ -129,16 +98,17 @@ void kin2s_position_mode_init()
  
 }
 
-void kin2s_init(t_theta* th, t_target* target)
+
+void kin2s_init(float theta[], float target[])
 {
 
 
   target_init_starting_values( target );
-  inverse_kinematics( target, th);
+  inverse_kinematics( target, theta);
   target_print( target );
-  theta_print_rad( th );
-  theta_rad_to_tiks( th );
-  theta_print_tiks( th );
+  theta_print_rad( theta );
+  theta_rad_to_tiks( theta );
+  theta_print_tiks( theta );
 
   /*
   theta_init_start_tiks( &th );
@@ -167,99 +137,98 @@ void kin2s_init(t_theta* th, t_target* target)
 }
 
 
-void theta_init_start_tiks(t_theta* th)
+void theta_init_start_tiks(float theta[])
 {
-  th->theta1 = -30000;
-  th->theta2 =  49000;
-  th->theta3 =  0;
-  th->theta4 =  50000;
-  th->theta6 = -35000;
-  //  long int home_offset[] = {0,50000,50000,50000,50000,180000,30000}; // starting position
-  //  long int zero_offset[] = {0,80000,1000,50000,0,215000,30000};      // down zero position
+  theta[0] = -30000;
+  theta[1] =  49000;
+  theta[2] =  0;
+  theta[3] =  50000;
+  theta[4] = -35000;
+  //  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
+  //  long int zero_offset[] = {80000,1000,50000,0,215000,30000};      // down zero position
 }
 
 
 
-void target_init_starting_values(t_target* target)
+void target_init_starting_values(float target[])
 {
-  target->x     =  20.932410; //20.931822;
-  target->y     =  23.874095; //23.874062;
-  target->z     =  23.513540; //23.513273;
-  target->beta1 =  -0.204886; //-0.204880;
-  target->beta2 =  -1.466077; //-0.366508;
+  target[0]     =  20.932410; //20.931822;
+  target[1]     =  23.874095; //23.874062;
+  target[2]     =  23.513540; //23.513273;
+  target[3]     =  -0.204886; //-0.204880;
+  target[4]     =  -1.466077; //-0.366508;
 }
 
 
 
-void theta_print_rad(t_theta* th)
+void theta_print_rad(float theta[])
 {
+
   printf("Joint Angles\n");
-  printf("  theta1: %f°\n", th->theta1*180/M_PI);
-  printf("  theta2: %f°\n", th->theta2*180/M_PI);
-  printf("  theta3: %f°\n", th->theta3*180/M_PI);
-  printf("  theta4: %f°\n", th->theta4*180/M_PI);
-  printf("  theta6: %f°\n", th->theta6*180/M_PI);
+  printf("  theta1: %f°\n", theta[0]*180/M_PI);
+  printf("  theta2: %f°\n", theta[1]*180/M_PI);
+  printf("  theta3: %f°\n", theta[2]*180/M_PI);
+  printf("  theta4: %f°\n", theta[3]*180/M_PI);
+  printf("  theta6: %f°\n", theta[4]*180/M_PI);
+  printf("  Gripper: %f\n", theta[5]);
+
   
 }
 
-void theta_print_tiks(t_theta* th)
+void theta_print_tiks(float theta[])
 {
+
   printf("Joint Angles\n");
-  printf("  theta1: %f tiks\n", th->theta1);
-  printf("  theta2: %f tiks\n", th->theta2);
-  printf("  theta3: %f tiks\n", th->theta3);
-  printf("  theta4: %f tiks\n", th->theta4);
-  printf("  theta6: %f tiks\n", th->theta6);
+  printf("  theta1: %f tiks\n", theta[0]);
+  printf("  theta2: %f tiks\n", theta[1]);
+  printf("  theta3: %f tiks\n", theta[2]);
+  printf("  theta4: %f tiks\n", theta[3]);
+  printf("  theta6: %f tiks\n", theta[4]);
+  printf("  Gripper: %f tiks\n", theta[5]);
   
 }
 
 
-void target_print(t_target* target)
+void target_print(float target[])
 {
   printf("End Effector state\n");
-  printf("  x:     %f\n", target->x);
-  printf("  y:     %f\n", target->y);
-  printf("  z:     %f\n", target->z);
-  printf("  beta1: %f° %f rad \n", target->beta1*180/M_PI, target->beta1);
-  printf("  beta2: %f° %f rad \n", target->beta2*180/M_PI, target->beta2);
+  printf("  x:     %f\n", target[0]);
+  printf("  y:     %f\n", target[1]);
+  printf("  z:     %f\n", target[2]);
+  printf("  beta1: %f° %f rad \n", target[3]*180/M_PI, target[3]);
+  printf("  beta2: %f° %f rad \n", target[4]*180/M_PI, target[4]);
   
 }
 
 
-void theta_rad_to_tiks(t_theta* th)
+void theta_rad_to_tiks(float theta[])
 {
-  
+  int i=0;
 
-  float enc_rev[]={0,500,500,500,500,500,500};
-  float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
-  float i_arm[]={0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
-  long int zero_offset[] = {0,80000,1000,50000,0,215000,30000};      // down zero position
-  long int home_offset[] = {0,50000,50000,50000,50000,180000,30000}; // starting position
+  float enc_rev[]={500,500,500,500,500,500};
+  float i_gear[]={0.02,0.02,0.02,0.02,0.005,0.01};
+  float i_arm[]={ 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
+  long int zero_offset[] = {80000,1000,50000,0,215000,30000};      // down zero position
+  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
 
-  th->theta1 = th->theta1/(2*M_PI)/(i_gear[1]*i_arm[1])*(enc_rev[1]*4) + zero_offset[1] - home_offset[1];  
-  th->theta2 = th->theta2/(2*M_PI)/(i_gear[2]*i_arm[2])*(enc_rev[2]*4) + zero_offset[2] - home_offset[2];  
-  th->theta3 = th->theta3/(2*M_PI)/(i_gear[3]*i_arm[3])*(enc_rev[3]*4) + zero_offset[3] - home_offset[3];  
-  th->theta4 = th->theta4/(2*M_PI)/(i_gear[4]*i_arm[4])*(enc_rev[4]*4) + zero_offset[4] - home_offset[4];  
-  th->theta6 = th->theta6/(2*M_PI)/(i_gear[6]*i_arm[6])*(enc_rev[6]*4) + zero_offset[5] - home_offset[5];  
+  for(i=0; i<=4; i++)
+    theta[i] = theta[i]/(2*M_PI)/(i_gear[i]*i_arm[i])*(enc_rev[i]*4) + zero_offset[i] - home_offset[i];
  
 
 }
 
 
-void theta_tiks_to_rad(t_theta* th)
+void theta_tiks_to_rad(float theta[])
 {
-  
-  float enc_rev[]={0,500,500,500,500,500,500};
-  float i_gear[]={0,0.02,0.02,0.02,0.02,0.005,0.01};
-  float i_arm[]={0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
-  long int zero_offset[] = {0,80000,1000,50000,0,215000,30000};      // down zero position
-  long int home_offset[] = {0,50000,50000,50000,50000,180000,30000}; // starting position
+  int i=0;
+  float enc_rev[]={500,500,500,500,500,500};
+  float i_gear[]={0.02,0.02,0.02,0.02,0.005,0.01};
+  float i_arm[]={ 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
+  long int zero_offset[] = {80000,1000,50000,0,215000,30000};      // down zero position
+  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
 
-  th->theta1 = (th->theta1 - zero_offset[1] +  home_offset[1]  ) *(2*M_PI)*(i_gear[1]*i_arm[1])/(enc_rev[1]*4);  
-  th->theta2 = (th->theta1 - zero_offset[2] +  home_offset[2]  ) *(2*M_PI)*(i_gear[2]*i_arm[2])/(enc_rev[2]*4);  
-  th->theta3 = (th->theta1 - zero_offset[3] +  home_offset[3]  ) *(2*M_PI)*(i_gear[3]*i_arm[3])/(enc_rev[3]*4);  
-  th->theta4 = (th->theta1 - zero_offset[4] +  home_offset[4]  ) *(2*M_PI)*(i_gear[4]*i_arm[4])/(enc_rev[4]*4);  
-  th->theta6 = (th->theta1 - zero_offset[5] +  home_offset[5]  ) *(2*M_PI)*(i_gear[6]*i_arm[6])/(enc_rev[6]*4);  
+  for(i=0; i<=4; i++)
+    theta[i] = (theta[i] - zero_offset[i] +  home_offset[i] ) *(2*M_PI)*(i_gear[i]*i_arm[i])/(enc_rev[i]*4);  
  
 }
 

@@ -1,7 +1,7 @@
 /*	Kinematic system model for BlueBotics ERA-5/1
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
- * 	Last change:    3.5.2007
+ * 	Last change:    20.5.2007
  */
 
 
@@ -32,135 +32,121 @@
 
 int main(void) 
 {
-
-  int pos[7];
-  float vel_max;
-  int id;
-  int steps;
-  int i;
-  int count=0;
-
-  t_theta th,th_old,th_vel;
-  t_target target;
-  t_target target_add;
-
   system("clear");
+
+  float theta[6];
+  float target[6];
+  float pos_err[6];
+  int i=0;
+  int id=0;
+  int path_lenght = 10;
+  float vel_max   = 1; //rad/s
+
+
+  //  inverse_kinematics( &target, &th);
+  //  target_print(&target);
+
+  theta_init_start_tiks( theta );
+  theta_print_tiks(theta);
+  theta_tiks_to_rad(theta);
+  forward_kinematics( target, theta);
+
+  target_print(target);
+  //  theta_print_rad(theta);
+  inverse_kinematics( target, theta);
+  // 
+  theta_rad_to_tiks(theta);
+  //target_print(target);
+  theta_print_tiks(theta);
   
-  canHWInit();
-  kin2s_init( &th, &target );
 
 
-  kin2s_position_mode_init();
-  /* replaced
-  for(id=1;id<7;id++)
+  float target_path[10][6] = { {37.576370, 21.875977, 35.651661, -0.409773 , -0.733066, 0},
+			       {37.576370, 21.875977, 36.151661, -0.409773 , -0.733066, 0},
+			       {37.576370, 21.875977, 36.651661, -0.409773 , -0.733066, 0},
+			       {37.576370, 21.875977, 37.151661, -0.409773 , -0.733066, 0},
+			       {37.576370, 21.875977, 37.651661, -0.409773 , -0.733066, 0},
+			       {37.576370, 21.875977, 38.151661, -0.409773 , -0.733066, 0},
+			       {37.576370, 21.875977, 38.651661, -0.409773 , -0.733066, 0},
+			       {37.576370, 21.875977, 39.151661, -0.409773 , -0.733066, 0},
+			       {37.576370, 21.875977, 39.651661, -0.409773 , -0.733066, 0},
+			       {37.576370, 21.875977, 40.151661, -0.409773 , -0.733066, 0} };
+
+  //{20.932409, 23.874096, 23.513540, -0.204886, -1.466077, 0},
+  float theta_path_pos[10][6];
+  float theta_path_vel[9][6];
+
+  for(i=0;i<path_lenght;i++)
     {
-      fault_reset(id);
-      shutdown(id);
-      enable_operation(id);	
-      set_mode_of_operation(id,1);
-      shutdown(id);		
-      enable_operation(id);	
-      }*/
+      inverse_kinematics( target_path[i], theta_path_pos[i]);
+      theta_path_pos[i][5]=0; //Gripper
+      theta_rad_to_tiks( theta_path_pos[i] );
+      theta_print_tiks( theta_path_pos[i] );
+    }
 
-
-  while(1)
+  for(i=0;i<path_lenght-1;i++)
     {
-      //Read change of desired position
-      target_print(&target);
-      theta_print_rad(&th);
-      
-      printf("Add to Position X [cm]: ");
-      if(scanf("%f",&(target_add.x)) == 0) break;
-      printf("Add to Position Y [cm]: ");
-      if(scanf("%f",&(target_add.y)) == 0) break;
-      printf("Add to Position Z [cm]: ");
-      if(scanf("%f",&(target_add.z)) == 0) break;
-      printf("Add to Angle beta1 [deg]: ");
-      if(scanf("%f",&(target_add.beta1)) == 0) break;
-      printf("Add to Angle beta2 [deg]: ");
-      if(scanf("%f",&(target_add.beta2)) == 0) break;
-      printf("Position mode steps: ");
-      if(scanf("%i",&steps) == 0) break;
-      printf("Maximal velocity: ");
-      if(scanf("%f",&vel_max) == 0) break;
-
-
-      for(i=0; i<=steps;i++)
-	{
-	  target.x     += (target_add.x / steps);
-	  target.y     += (target_add.y / steps);
-	  target.z     += (target_add.z / steps);
-	  target.beta1 += (target_add.beta1/180*M_PI / steps);
-	  target.beta2 += (target_add.beta2/180*M_PI / steps);
-
-	    
-	  inverse_kinematics( &target, &th);
-
-	  
-	  //target_print(&target);
-	    
-	    
-	    //  theta_print_rad( &th );
-	  theta_rad_to_tiks( &th );
-	    //theta_print_tiks( &th );
-	    
-	    // User check of plausibility
-	    /*  
-	    float usch;
-	    printf("Type number to proceed or 'x' to break ");
-	    if(scanf("%f",&usch) == 0) break;
-	    */
-	  
-
-	  kin2s_position_mode_calc_vel(&th, &th_old, &th_vel, vel_max);
-	  kin2s_position_mode_set(&th, &th_vel);
-	  th_old = th;
-	    /* replaced
-	  pos[1] = (int)th.theta1 ;
-	  pos[2] = (int)th.theta2 ;
-	  pos[3] = (int)th.theta3 ;
-	  pos[4] = (int)th.theta4 ;
-	  pos[5] = (int)th.theta6 ;
-	  
-	  
-	  float i_gear[] = {0, 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
-	  float i_arm[]  = {0, 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
-	    
-	    
-	  for(id=1;id<6;id++)
-	    {
-	      vel = 1/(i_gear[id]*i_arm[id]);
-	      set_profile_velocity(id,vel);
-	      set_target_position(id,pos[id]);
-	      activate_position(id);
-	      //get_statusword(id);
-	    }	
-	    */
-	    
-	  count=0;
-		
-	  do
-	    {
-	      count++;
-	      for(id=1;id<6;id++)
-		{
-		  get_actual_position(id);
-		  get_current_actual_value(id);
-		  
-		  printf("theta%i soll: %d\tist: %d\n", id, (int) pos[id], myepos_read.number[id-1].actual_position);
-		}
-	    }
-	  while((myepos_read.number[0].actual_position != (int) pos[1] ||
-		 myepos_read.number[1].actual_position != (int) pos[2] ||
-		 myepos_read.number[2].actual_position != (int) pos[3] ||
-		 myepos_read.number[3].actual_position != (int) pos[4] ||
-		 myepos_read.number[4].actual_position != (int) pos[5] )&&
-		 count<3);
-	}
-	    
+      kin2s_position_mode_calc_vel( theta_path_pos[i+1], theta_path_pos[i], theta_path_vel[i],  vel_max);
+      printf("vel%i: %f %f %f %f %f %f \n", i, theta_path_vel[i][0], theta_path_vel[i][1], 
+	     theta_path_vel[i][2], theta_path_vel[i][3], theta_path_vel[i][4], theta_path_vel[i][5]);
     }
 
   
+			
+		       
+  
+  // User check 
+  while(1)
+    {
+      char c;
+      printf("Kinematic Calculations finished.\n Start Hardware Connection? <type 'y'>\n");
+      scanf("%c",&c);
+      if(c=='y' ) break;
+    }
+  
+  
+
+  /* Starting Hardware Connection */
+
+  canHWInit();
+  kin2s_position_mode_init();
+
+
+  
+  for(i=0; i< path_lenght-1; i++)
+    {
+
+      kin2s_position_mode_set( theta_path_pos[i], theta_path_vel[i]);
+      
+      
+      do
+	{
+	  for(id=1;id<=5;id++)
+	    {
+	      get_actual_position(id);
+	      get_current_actual_value(id);
+	      pos_err[id-1] = myepos_read.number[id-1].actual_position  -  theta_path_pos[i][id-1];
+	      printf("theta%i soll: %d\tist: %d\n", id, (int) theta_path_pos[i][id-1], myepos_read.number[id-1].actual_position);
+	    }
+	}
+      while(  kin2s_position_error(  pos_err  ) > 100);
+    }
+
+  
+  do
+    {
+      for(id=1;id<=5;id++)
+	{
+	  get_actual_position(id);
+	  get_current_actual_value(id);
+	  pos_err[id-1] = myepos_read.number[id-1].actual_position  -  theta_path_pos[i][id-1];
+	  printf("last theta%i soll: %d\tist: %d\n", id, (int) theta_path_pos[i][id-1], myepos_read.number[id-1].actual_position);
+	}
+    }
+  while(  kin2s_position_error(  pos_err  ) > 5);
+  
+
+
 
   for(id=1;id<7;id++)
     {
@@ -169,10 +155,26 @@ int main(void)
   
   
   canHWEnd();
+
+
+
+
   
   printf("end\n");
   return 0;
 }
 
+
+
+
+
+
+/** gives back vellocity value of smooth polynomial profile */
+float vel_polynomial(float vmax, 
+		     float T, 
+		     float x)
+{
+  return 0;
+}
 
 

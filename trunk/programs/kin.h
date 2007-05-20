@@ -2,7 +2,7 @@
  *      Kinematic system model for BlueBotics ERA-5/1
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
- * 	Last change:    1.5.2007
+ * 	Last change:    20.5.2007
  */
 
 
@@ -40,8 +40,9 @@ typedef struct {
 
 
 /* calculate kinematic model */
-void inverse_kinematics(t_target* target,t_theta* theta);
-void forward_kinematics(t_target* target,t_theta* theta);
+void forward_kinematics(float target[], float theta[]);
+void inverse_kinematics(float target[], float theta[]);
+
 
 
 
