@@ -11,6 +11,14 @@
 #include"kin.h"
 
 
+
+
+
+
+
+
+
+
 void target_init_starting_values(float target[]);
 void theta_init_start_tiks(float theta[]);
 

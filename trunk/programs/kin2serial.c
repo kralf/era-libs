@@ -21,6 +21,14 @@
 
 
 
+const  float enc_rev[]=         {500,500,500,500,500,500};
+const  float i_gear[]=          {0.02,0.02,0.02,0.02,0.005,0.01};
+const  float i_arm[]=           { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
+const  long int zero_offset[] = {80000, 1000,50000,    0,215000,30000};      // down zero position
+const  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
+const  int sign_switch[]      = {   -1,    1,    1,    1,    -1,    1}; 
+
+
 float max(float m1, float m2)
 {
   if(m1>m2)
@@ -98,7 +106,7 @@ void kin2s_position_mode_init()
  
 }
 
-
+/*
 void kin2s_init(float theta[], float target[])
 {
 
@@ -110,7 +118,7 @@ void kin2s_init(float theta[], float target[])
   theta_rad_to_tiks( theta );
   theta_print_tiks( theta );
 
-  /*
+  /-*
   theta_init_start_tiks( &th );
   th_rad = theta_tiks_to_rad( &th_tiks);
 
@@ -132,10 +140,10 @@ void kin2s_init(float theta[], float target[])
   //  theta_print_rad(&th_rad);
   //  theta_print_tiks(&th_tiks);
   target_print(&target_rad2);
-
-  */
+  *-/
+  
 }
-
+*/
 
 void theta_init_start_tiks(float theta[])
 {
@@ -144,11 +152,12 @@ void theta_init_start_tiks(float theta[])
   theta[2] = 0; //0;
   theta[3] = 0; // 50000;
   theta[4] = 0; //-35000;
-  //  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
-  //  long int zero_offset[] = {80000,1000,50000,0,215000,30000};      // down zero position
+  theta[5] = 0; //-35000;
+
 }
 
 
+/*
 
 void target_init_starting_values(float target[])
 {
@@ -157,7 +166,7 @@ void target_init_starting_values(float target[])
   target[2]     =  23.513540; //23.513273;
   target[3]     =  -0.204886; //-0.204880;
   target[4]     =  -1.466077; //-0.366508;
-}
+}*/
 
 
 
@@ -195,8 +204,8 @@ void target_print(float target[])
   printf("  x:     %f\n", target[0]);
   printf("  y:     %f\n", target[1]);
   printf("  z:     %f\n", target[2]);
-  printf("  beta1: %f° %f rad \n", target[3]*180/M_PI, target[3]);
-  printf("  beta2: %f° %f rad \n", target[4]*180/M_PI, target[4]);
+  printf("  beta1: %f° %f rad \n", target[3], target[3]/180*M_PI);
+  printf("  beta2: %f° %f rad \n", target[4], target[4]/180*M_PI);
   
 }
 
@@ -204,15 +213,8 @@ void target_print(float target[])
 void theta_rad_to_tiks(float theta[])
 {
   int i=0;
-
-  float enc_rev[]={500,500,500,500,500,500};
-  float i_gear[]={0.02,0.02,0.02,0.02,0.005,0.01};
-  float i_arm[]={ 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
-  long int zero_offset[] = {80000,1000,50000,0,215000,30000};      // down zero position
-  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
-
   for(i=0; i<=5; i++)
-    theta[i] = theta[i]/(2*M_PI)/(i_gear[i]*i_arm[i])*(enc_rev[i]*4) + zero_offset[i] - home_offset[i];
+    theta[i] =sign_switch[i]* ( theta[i]/(2*M_PI)/(i_gear[i]*i_arm[i])*(enc_rev[i]*4))  + zero_offset[i] - home_offset[i] ;
  
 
 }
@@ -221,14 +223,8 @@ void theta_rad_to_tiks(float theta[])
 void theta_tiks_to_rad(float theta[])
 {
   int i=0;
-  float enc_rev[]={500,500,500,500,500,500};
-  float i_gear[]={0.02,0.02,0.02,0.02,0.005,0.01};
-  float i_arm[]={ 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
-  long int zero_offset[] = {80000,1000,50000,0,215000,30000};      // down zero position
-  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
-
   for(i=0; i<=5; i++)
-    theta[i] = (theta[i] - zero_offset[i] +  home_offset[i] ) *(2*M_PI)*(i_gear[i]*i_arm[i])/(enc_rev[i]*4);  
+    theta[i] = sign_switch[i]*(theta[i] - zero_offset[i] +  home_offset[i] ) *(2*M_PI)*(i_gear[i]*i_arm[i])/(enc_rev[i]*4);  
  
 }
 

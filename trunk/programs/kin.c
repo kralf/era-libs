@@ -37,13 +37,18 @@ void forward_kinematics(float target[], float theta[])
              -cos(theta[1])*cos(theta[2])*a3+a3+a4+a5;
   
   target[3] = theta[0];
-  target[4] = theta[6] - theta[1];
+  target[4] = theta[4] - theta[1];
 
+  target[3] = target[3]*180/M_PI;
+  target[4] = target[4]*180/M_PI;
 
 }
 
 void inverse_kinematics(float target[], float* theta)
 {
+  target[3] = target[3]/180*M_PI;
+  target[4] = target[4]/180*M_PI;
+
   // Arm parameters
   double a3 = 23.05;
   double a4 = 22.4;

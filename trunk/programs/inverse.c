@@ -34,12 +34,14 @@ int main(void)
 {
   system("clear");
 
+
+
   float theta[6];
   float target[6];
   float pos_err[6];
   int i=0;
   int id=0;
-  int path_lenght = 10;
+  const int path_lenght = 21;
   float vel_max   = 1; //rad/s
 
 
@@ -47,50 +49,67 @@ int main(void)
   //  target_print(&target);
 
   theta_init_start_tiks( theta );
-  theta_print_tiks(theta);
-  theta_tiks_to_rad(theta);
+  theta_print_tiks( theta );
+  theta_tiks_to_rad( theta );
+  theta_print_rad( theta );
   forward_kinematics( target, theta);
 
   target_print(target);
   //  theta_print_rad(theta);
   inverse_kinematics( target, theta);
   // 
+  theta_print_rad(theta);
   theta_rad_to_tiks(theta);
+
   //target_print(target);
   theta_print_tiks(theta);
   
 
 
-  float target_path[10][6] = { {20.932409, 23.874096, 23.513540, -0.204886, -1.466077, 0},
-			       {20.932409, 23.874096, 24.013540, -0.204886, -1.466077, 0},
-			       {20.932409, 23.874096, 24.513540, -0.204886, -1.466077, 0},
-			       {20.932409, 23.874096, 25.013540, -0.204886, -1.466077, 0},
-			       {20.932409, 23.874096, 25.513540, -0.204886, -1.466077, 0},
-			       {20.932409, 23.874096, 26.013540, -0.204886, -1.466077, 0},
-			       {20.932409, 23.874096, 26.513540, -0.204886, -1.466077, 0},
-			       {20.932409, 23.874096, 27.013540, -0.204886, -1.466077, 0},
-			       {20.932409, 23.874096, 27.513540, -0.204886, -1.466077, 0},
-			       {20.932409, 23.874096, 28.013540, -0.204886, -1.466077, 0}};
+  float target_path[21][6] = { {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 24.0     , 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 24.5     , 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 25.0     , 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 25.5     , 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 26.0     , 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 26.5     , 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 27.0     , 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 27.5     , 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 28.0     , 11.739130, 10.5, 0}, //10
+			       {9.0     , 30.237083, 28.0     , 11.739130, 10.5, 0},
+			       {8.0     , 30.237083, 28.0     , 11.739130, 10.5, 0},
+			       {7.0     , 30.237083, 28.0     , 11.739130, 10.5, 0},
+			       {6.0     , 30.237083, 28.0     , 11.739130, 10.5, 0},
+			       {5.0     , 30.237083, 28.0     , 11.739130, 10.5, 0}, //15
+			       {5.0     , 30.237083, 28.0     , 15.0     , 10.5, 0}, 
+			       {5.0     , 30.237083, 28.0     , 20.0     , 10.5, 0}, 
+			       {5.0     , 30.237083, 28.0     , 25.0     , 10.5, 0}, 
+			       {5.0     , 30.237083, 28.0     , 30.0     , 10.5, 0}, 
+			       {5.0     , 30.237083, 28.0     , 35.0     , 10.5, 0}, 
+			       {5.0     , 30.237083, 28.0     , 40.0     , 10.5, 0} }; //21
+
 
   //{37.576370, 21.875977, 40.151661, -0.409773 , -0.733066, 0} 
   //{20.932409, 23.874096, 23.513540, -0.204886, -1.466077, 0}
 
-  float theta_path_pos[10][6];
-  float theta_path_vel[9][6];
+  float theta_path_pos[21][6];
+  float theta_path_vel[21-1][6];
 
   for(i=0;i<path_lenght;i++)
     {
       inverse_kinematics( target_path[i], theta_path_pos[i]);
       theta_path_pos[i][5]=0; //Gripper
+      theta_print_rad( theta_path_pos[i] );
+      printf("point %i\n",i);
       theta_rad_to_tiks( theta_path_pos[i] );
-      theta_print_tiks( theta_path_pos[i] );
+      //       theta_print_tiks( theta_path_pos[i] );
     }
 
   for(i=0;i<path_lenght-1;i++)
     {
       kin2s_position_mode_calc_vel( theta_path_pos[i+1], theta_path_pos[i], theta_path_vel[i],  vel_max);
-      printf("vel%i: %f %f %f %f %f %f \n", i, theta_path_vel[i][0], theta_path_vel[i][1], 
-	     theta_path_vel[i][2], theta_path_vel[i][3], theta_path_vel[i][4], theta_path_vel[i][5]);
+          printf("vel%i: %f %f %f %f %f %f \n", i, theta_path_vel[i][0], theta_path_vel[i][1], 
+         theta_path_vel[i][2], theta_path_vel[i][3], theta_path_vel[i][4], theta_path_vel[i][5]);
     }
 
   
@@ -108,7 +127,7 @@ int main(void)
   
   
 
-  /* Starting Hardware Connection 
+  /* Starting Hardware Connection  */
 
   canHWInit();
   kin2s_position_mode_init();
