@@ -139,11 +139,11 @@ void kin2s_init(float theta[], float target[])
 
 void theta_init_start_tiks(float theta[])
 {
-  theta[0] = -30000;
-  theta[1] =  49000;
-  theta[2] =  0;
-  theta[3] =  50000;
-  theta[4] = -35000;
+  theta[0] = 0; //-30000;
+  theta[1] = 0; // 49000;
+  theta[2] = 0; //0;
+  theta[3] = 0; // 50000;
+  theta[4] = 0; //-35000;
   //  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
   //  long int zero_offset[] = {80000,1000,50000,0,215000,30000};      // down zero position
 }
@@ -211,7 +211,7 @@ void theta_rad_to_tiks(float theta[])
   long int zero_offset[] = {80000,1000,50000,0,215000,30000};      // down zero position
   long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
 
-  for(i=0; i<=4; i++)
+  for(i=0; i<=5; i++)
     theta[i] = theta[i]/(2*M_PI)/(i_gear[i]*i_arm[i])*(enc_rev[i]*4) + zero_offset[i] - home_offset[i];
  
 
@@ -227,7 +227,7 @@ void theta_tiks_to_rad(float theta[])
   long int zero_offset[] = {80000,1000,50000,0,215000,30000};      // down zero position
   long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
 
-  for(i=0; i<=4; i++)
+  for(i=0; i<=5; i++)
     theta[i] = (theta[i] - zero_offset[i] +  home_offset[i] ) *(2*M_PI)*(i_gear[i]*i_arm[i])/(enc_rev[i]*4);  
  
 }
