@@ -66,11 +66,11 @@ int main(void)
   theta_print_tiks(theta);
   
 
-  const int path_lenght = 3;
+  const int path_lenght = 5;
   float target_path[40][6] = { {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
 			       {0.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
-			       /*			       {0.687978, 30.237083, 28.513540, 11.739130, 10.5, 0},
-							       {9.687978, 30.237083, 28.513540, 11.739130, 10.5, 0},*/
+			       {0.687978, 30.237083, 28.513540, 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 28.513540, 11.739130, 10.5, 0},
 			       {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0} };
 
 
@@ -149,7 +149,7 @@ int main(void)
   for(i=1; i< path_lenght; i++)
     {
 
-      kin2s_position_mode_set( theta_path_pos[i], theta_path_vel[i]);
+      kin2s_position_mode_set( theta_path_pos[i], theta_path_vel[i-1]);
       
       
       do
