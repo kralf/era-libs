@@ -24,9 +24,10 @@
 const  float enc_rev[]=         {500,500,500,500,500,500};
 const  float i_gear[]=          {0.02,0.02,0.02,0.02,0.005,0.01};
 const  float i_arm[]=           { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
-const  long int zero_offset[] = {80000, 1000,50000,    0,215000,30000};      // down zero position
+//const  long int zero_offset[] = {80000, 1000,50000,    0,215000,30000};      // down zero position
+const  long int zero_offset[] = {80000,99000,50000,    0,145000,30000};      // down zero position
 const  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
-const  int sign_switch[]      = {   -1,    1,    1,    1,    -1,    1}; 
+const  int sign_switch[]      = {   -1,   -1,    1,    1,     1,    1}; 
 
 
 float max(float m1, float m2)
@@ -62,9 +63,10 @@ void kin2s_position_mode_calc_vel(float pos[], float pos_old[], float vel[], flo
   // maximum position difference:
   float max_dpos = max(max(dpos[0], dpos[1]),
                        max(dpos[2], dpos[3]));
-
-  float i_gear[] = { 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
-  float i_arm[]  = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
+  /*
+    float i_gear[] = { 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
+      float i_arm[]  = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
+  */
 
   for(i=0;i<=3;i++)
     vel[i] = vel_max * (dpos[i]/max_dpos) / (i_gear[i]*i_arm[i]);
