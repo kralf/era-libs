@@ -1,5 +1,5 @@
 
-all: main test nullposition testmode inverse test_error
+all: main test nullposition testmode inverse inverse_vel test_error
 
 main: main.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o main main.c libserial.o libepos.o
@@ -34,6 +34,9 @@ kin2serial.o: kin2serial.c kin2serial.h kin.c kin.h libserial.c libserial.h
 inverse: inverse.c kin.o kin2serial.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -lm -o inverse inverse.c kin.o kin2serial.o libserial.o libepos.o
 
+inverse_vel: inverse_vel.c kin.o kin2serial.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h
+	gcc -Wall -lm -o inverse_vel inverse_vel.c kin.o kin2serial.o libserial.o libepos.o
+
 
 
 clean:
@@ -42,5 +45,6 @@ clean:
 	rm main 
 	rm nullposition
 	rm inverse
+	rm inverse_vel
 	
 	
