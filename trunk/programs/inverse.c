@@ -38,7 +38,7 @@ int main(void)
 
 
   float theta[6];
-  float target[6];
+  float tool[6];
   float pos_err[6];
   int i=0;
   int id=0;
@@ -46,37 +46,43 @@ int main(void)
   float vel_max   = 1; //rad/s
 
 
-  //  inverse_kinematics( &target, &th);
-  //  target_print(&target);
+  //  inverse_kinematics( &tool, &th);
+  //  tool_print(&tool);
 
   theta_init_start_tiks( theta );
   theta_print_tiks( theta );
   theta_tiks_to_rad( theta );
   theta_print_rad( theta );
-  forward_kinematics( target, theta);
+  forward_kinematics( tool, theta);
 
-  target_print(target);
+  tool_print(tool);
   //  theta_print_rad(theta);
-  inverse_kinematics( target, theta);
+  inverse_kinematics( tool, theta);
   // 
   theta_print_rad(theta);
   theta_rad_to_tiks(theta);
 
-  //target_print(target);
+  //tool_print(tool);
   theta_print_tiks(theta);
   
 
-  const int path_lenght = 5;
-
-  float target_path[40][6] = { {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
+  const int path_lenght = 3;
+  /* 
+  float tool_path[40][6] = { {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
 			       {9.687978, 27.237083, 23.513540, 11.739130, 10.5, 0},
 			       {9.687978, 27.237083, 23.513540, -4, 10.5, 0},
 			       {9.687978, 27.237083, 23.513540, 11.739130, 10.5, 0},
 			       {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0} };
 
+  */
+      
+  float tool_path[40][6] = { {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
+			       {-9.687978, 30.237083, 43.513540, 11.739130, 10.5, 0},
+			       {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0} };
 
+  
   /*
-  float target_path[40][6] = { {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
+  float tool_path[40][6] = { {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
 			       {0.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
 			       {0.687978, 30.237083, 28.513540, 11.739130, 10.5, 0},
 			       {9.687978, 30.237083, 28.513540, 11.739130, 10.5, 0},
@@ -85,7 +91,7 @@ int main(void)
 
   //			       {0, 19.0, 19.0, 0, 0, 0}, // down zero position
 			       /*
-  float target_path[40][6] = { {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
+  float tool_path[40][6] = { {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0},
 			       {9.687978, 30.237083, 24.0     , 11.739130, 10.5, 0},
 			       {9.687978, 30.237083, 24.5     , 11.739130, 10.5, 0},
 			       {9.687978, 30.237083, 25.0     , 11.739130, 10.5, 0},
@@ -118,7 +124,7 @@ int main(void)
 
   for(i=0;i<path_lenght;i++)
     {
-      inverse_kinematics( target_path[i], theta_path_pos[i]);
+      inverse_kinematics( tool_path[i], theta_path_pos[i]);
       theta_path_pos[i][5]=0; //Gripper
       theta_print_rad( theta_path_pos[i] );
       printf("point %i\n",i);

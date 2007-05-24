@@ -5,6 +5,16 @@
  * 	Last change:    20.5.2007
  */
 
+
+/** \file
+ *  \brief 
+ *   Kinematic system model 
+ *
+ *   Inverse and forward calculations for BlueBotics ERA-5/1 robot arm.
+*/
+
+
+
 #ifndef _KIN2SERIAL_H
 #define _KIN2SERIAL_H
 
@@ -21,13 +31,15 @@
 
 
 
-const  float enc_rev[]=         {500,500,500,500,500,500};
-const  float i_gear[]=          {0.02,0.02,0.02,0.02,0.005,0.01};
-const  float i_arm[]=           { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
+const  float enc_rev[]        = {500,500,500,500,500,500};
+const  float i_gear[]         = {0.02,0.02,0.02,0.02,0.005,0.01};
+const  float i_arm[]          = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
 //const  long int zero_offset[] = {80000, 1000,50000,    0,215000,30000};      // down zero position
 const  long int zero_offset[] = {80000,99000,50000,    0,145000,30000};      // down zero position
 const  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
 const  int sign_switch[]      = {   -1,   -1,    1,    1,     1,    1}; 
+
+
 
 
 float max(float m1, float m2)
@@ -84,10 +96,9 @@ void kin2s_position_mode_set(float pos[], float vel[])
     {      
       set_profile_velocity( id, vel[id-1]);
       set_target_position(  id, pos[id-1]);
-      activate_position(    id);
     }
-
-  
+  for(id=1;id<=6;id++)
+      activate_position(    id);  
 }
 
 
@@ -109,13 +120,13 @@ void kin2s_position_mode_init()
 }
 
 /*
-void kin2s_init(float theta[], float target[])
+void kin2s_init(float theta[], float tool[])
 {
 
 
-  target_init_starting_values( target );
-  inverse_kinematics( target, theta);
-  target_print( target );
+  tool_init_starting_values( tool );
+  inverse_kinematics( tool, theta);
+  tool_print( tool );
   theta_print_rad( theta );
   theta_rad_to_tiks( theta );
   theta_print_tiks( theta );
@@ -125,7 +136,7 @@ void kin2s_init(float theta[], float target[])
   th_rad = theta_tiks_to_rad( &th_tiks);
 
 
-  forward_kinematics( &target_rad2, &th_rad);
+  forward_kinematics( &tool_rad2, &th_rad);
 
 
 
@@ -134,14 +145,14 @@ void kin2s_init(float theta[], float target[])
 
   theta_print_rad(&th_rad);
   theta_print_tiks(&th_tiks);
-  target_print(&target_rad);
+  tool_print(&tool_rad);
 
 
   th_tiks = theta_rad_to_tiks( &th_rad);
 
   //  theta_print_rad(&th_rad);
   //  theta_print_tiks(&th_tiks);
-  target_print(&target_rad2);
+  tool_print(&tool_rad2);
   *-/
   
 }
@@ -161,13 +172,13 @@ void theta_init_start_tiks(float theta[])
 
 /*
 
-void target_init_starting_values(float target[])
+void tool_init_starting_values(float tool[])
 {
-  target[0]     =  20.932410; //20.931822;
-  target[1]     =  23.874095; //23.874062;
-  target[2]     =  23.513540; //23.513273;
-  target[3]     =  -0.204886; //-0.204880;
-  target[4]     =  -1.466077; //-0.366508;
+  tool[0]     =  20.932410; //20.931822;
+  tool[1]     =  23.874095; //23.874062;
+  tool[2]     =  23.513540; //23.513273;
+  tool[3]     =  -0.204886; //-0.204880;
+  tool[4]     =  -1.466077; //-0.366508;
 }*/
 
 
@@ -200,14 +211,14 @@ void theta_print_tiks(float theta[])
 }
 
 
-void target_print(float target[])
+void tool_print(float tool[])
 {
   printf("End Effector state\n");
-  printf("  x:     %f\n", target[0]);
-  printf("  y:     %f\n", target[1]);
-  printf("  z:     %f\n", target[2]);
-  printf("  beta1: %f° %f rad \n", target[3], target[3]/180*M_PI);
-  printf("  beta2: %f° %f rad \n", target[4], target[4]/180*M_PI);
+  printf("  x:     %f\n", tool[0]);
+  printf("  y:     %f\n", tool[1]);
+  printf("  z:     %f\n", tool[2]);
+  printf("  beta1: %f° %f rad \n", tool[3], tool[3]/180*M_PI);
+  printf("  beta2: %f° %f rad \n", tool[4], tool[4]/180*M_PI);
   
 }
 
