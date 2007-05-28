@@ -36,6 +36,7 @@ int main(void)
   system("clear");
 
 
+  int error;
 
   float theta[6];
   float tool[6];
@@ -57,7 +58,7 @@ int main(void)
 
   tool_print(tool);
   //  theta_print_rad(theta);
-  inverse_kinematics( tool, theta);
+  error = inverse_kinematics( tool, theta);
   // 
   theta_print_rad(theta);
   theta_rad_to_tiks(theta);
@@ -124,7 +125,7 @@ int main(void)
 
   for(i=0;i<path_lenght;i++)
     {
-      inverse_kinematics( tool_path[i], theta_path_pos[i]);
+      error = inverse_kinematics( tool_path[i], theta_path_pos[i]);
       theta_path_pos[i][5]=0; //Gripper
       theta_print_rad( theta_path_pos[i] );
       printf("point %i\n",i);
@@ -217,13 +218,5 @@ int main(void)
 
 
 
-
-/** gives back vellocity value of smooth polynomial profile */
-float vel_polynomial(float vmax, 
-		     float T, 
-		     float x)
-{
-  return 0;
-}
 
 

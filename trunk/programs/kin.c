@@ -11,11 +11,13 @@
 #include<stdio.h>
 
 
-const float theta_min[]     = {    -M_PI/6,        0,   -M_PI/9,         0, -M_PI*8/9};
-const float theta_max[]     = {     M_PI/2,   M_PI/2,    M_PI/2,  M_PI*2/3,  M_PI*8/9};
-const float theta_vel_max[] = {-M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,     -M_PI};
+
+const float theta_min[]     = {    -M_PI/6,        0,   -M_PI/9,         0, -M_PI*8/9}; //[rad]
+const float theta_max[]     = {     M_PI/2,   M_PI/2,    M_PI/2,  M_PI*2/3,  M_PI*8/9}; //[rad]
+//const float theta_vel_max[] = { M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,      M_PI}; //[rad/s]
 
 const float arm_lenght[]    = { 23.05, 22.4, 18.8 };
+
 
 double sqr(double x) 
 {return x*x;}
@@ -56,24 +58,31 @@ void forward_kinematics(float tool[],
   tool[3] = tool[3]*180/M_PI;
   tool[4] = tool[4]*180/M_PI;
 
+  /* this is the gripper status: */
+  tool[5] = theta[5];
+
+
 }
 
 int theta_workspacecheck(float theta[])
 {
-  int inside = 1;
+  int outside = 0;
   int i;
-  for(i=0; i<=5; i++)
+  for(i=0; i<=4; i++)
     {
-      if( theta[i] < theta_min[i] || theta[i] > theta_max[i] ) 
-	inside = 0;
+      if( !(theta[i] > theta_min[i] && theta[i] < theta_max[i]) ) 
+	{
+	  outside = 1;
+	  printf("ERROR: pose out of work space: theta%i = %f\n\n", i+1, theta[i]*180/M_PI);
+	}
     }
 
-  return inside;
+  return outside;
 }
     
 
 
-void inverse_kinematics(float tool[], 
+int inverse_kinematics(float tool[], 
 			float theta[])  
 {
   tool[3] = tool[3]/180*M_PI;
@@ -133,5 +142,9 @@ void inverse_kinematics(float tool[],
 
   /* this is theta6: */
   theta[4] = theta[1] + tool[4];          
-  
+  /* this is the gripper status: */
+  theta[5] = tool[5];
+
+  return theta_workspacecheck( theta) ;
+     
 }

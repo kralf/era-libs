@@ -20,6 +20,16 @@
 
 
 
+void kin2s_velocity_mode_set(float vel[]
+			     );
+
+
+void kin2s_velocity_mode_set_zero();
+
+
+
+void kin2s_velocity_mode_init();
+
 
 /** Returns the maximum of the two inputs */
 float max(float m1, 

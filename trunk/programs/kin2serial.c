@@ -101,6 +101,23 @@ void kin2s_position_mode_set(float pos[], float vel[])
       activate_position(    id);  
 }
 
+void kin2s_velocity_mode_set(float vel[])
+{
+  int id=0;
+  for(id=1;id<=6;id++)
+    {      
+      set_velocity_mode_setting_value(id, vel[id-1]);
+    }
+}
+
+void kin2s_velocity_mode_set_zero()
+{
+  int id=0;
+  for(id=1;id<=6;id++)
+    {      
+      set_velocity_mode_setting_value(id, 0);
+    }
+}
 
 
 void kin2s_position_mode_init()
@@ -118,6 +135,25 @@ void kin2s_position_mode_init()
 
  
 }
+
+void kin2s_velocity_mode_init()
+{
+  int id=0;
+  for(id=1;id<=6;id++)
+    {
+      fault_reset(id);
+      shutdown(id);
+      enable_operation(id);	
+      set_velocity_mode_setting_value(id, 0);
+      set_mode_of_operation(id,-2);
+      shutdown(id);		
+      enable_operation(id);	
+    }
+
+ 
+}
+
+
 
 /*
 void kin2s_init(float theta[], float tool[])

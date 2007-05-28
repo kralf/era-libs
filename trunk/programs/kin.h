@@ -18,6 +18,8 @@
 #ifndef _KIN_H
 #define _KIN_H
 
+#include<math.h>
+
 
 /* define data typ for joint angles *-/
 typedef struct {
@@ -62,8 +64,13 @@ void forward_kinematics(float tool[],   /**< (Output) array contains the end eff
 			);
 
 
-/** Inverse kinematic calculations */
-void inverse_kinematics(float tool[],   /**< (Input) array contains the end effector 
+/** Inverse kinematic calculations 
+ *
+ * \return
+ * 0 if one of the thetas exceeds its maximal values<br>
+ * 1 if all thetas are inside their borders
+ */
+int inverse_kinematics(float tool[],   /**< (Input) array contains the end effector 
 					 *   position and orientation coordinates <br>
 					 *   x[cm], y[cm], z[cm], gamma1[deg] and gamma2[deg] <br>
 					 *   and the gripper opening 

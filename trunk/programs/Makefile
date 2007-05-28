@@ -31,11 +31,14 @@ kin.o: kin.c kin.h
 kin2serial.o: kin2serial.c kin2serial.h kin.c kin.h libserial.c libserial.h
 	gcc -Wall -c kin2serial.c -o kin2serial.o
 
+trajectory.o: trajectory.c trajectory.h kin.c kin.h 
+	gcc -Wall -c trajectory.c -o trajectory.o
+
 inverse: inverse.c kin.o kin2serial.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -lm -o inverse inverse.c kin.o kin2serial.o libserial.o libepos.o
 
-inverse_vel: inverse_vel.c kin.o kin2serial.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h
-	gcc -Wall -lm -o inverse_vel inverse_vel.c kin.o kin2serial.o libserial.o libepos.o
+inverse_vel: inverse_vel.c kin.o kin2serial.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h trajectory.h trajectory.c trajectory.o
+	gcc -Wall -lm -o inverse_vel inverse_vel.c kin.o kin2serial.o libserial.o libepos.o trajectory.o
 
 
 
@@ -46,5 +49,6 @@ clean:
 	rm nullposition
 	rm inverse
 	rm inverse_vel
+	
 	
 	
