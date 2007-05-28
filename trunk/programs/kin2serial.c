@@ -2,16 +2,8 @@
  *      with libserial
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
- * 	Last change:    20.5.2007
+ * 	Last change:    28.5.2007
  */
-
-
-/** \file
- *  \brief 
- *   Kinematic system model 
- *
- *   Inverse and forward calculations for BlueBotics ERA-5/1 robot arm.
-*/
 
 
 
@@ -21,14 +13,11 @@
 
 
 #include"kin2serial.h"
-
 #include"kin.h"
 #include"libserial.h"  
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-
-
 
 
 const  float enc_rev[]        = {500,500,500,500,500,500};
@@ -50,14 +39,6 @@ float max(float m1, float m2)
     return m2;
 }
 
-/*
-float abs(float a)
-{
-  if(a>0)
-    return a;
-  else
-    return -a;
-}*/
 
 float kin2s_position_error(float pos_err[])
 {
@@ -119,7 +100,6 @@ void kin2s_velocity_mode_set_zero()
     }
 }
 
-
 void kin2s_position_mode_init()
 {
   int id=0;
@@ -132,8 +112,6 @@ void kin2s_position_mode_init()
       shutdown(id);		
       enable_operation(id);	
     }
-
- 
 }
 
 void kin2s_velocity_mode_init()
@@ -149,50 +127,9 @@ void kin2s_velocity_mode_init()
       shutdown(id);		
       enable_operation(id);	
     }
-
- 
 }
 
 
-
-/*
-void kin2s_init(float theta[], float tool[])
-{
-
-
-  tool_init_starting_values( tool );
-  inverse_kinematics( tool, theta);
-  tool_print( tool );
-  theta_print_rad( theta );
-  theta_rad_to_tiks( theta );
-  theta_print_tiks( theta );
-
-  /-*
-  theta_init_start_tiks( &th );
-  th_rad = theta_tiks_to_rad( &th_tiks);
-
-
-  forward_kinematics( &tool_rad2, &th_rad);
-
-
-
-
-  th_tiks = theta_rad_to_tiks( &th_rad);
-
-  theta_print_rad(&th_rad);
-  theta_print_tiks(&th_tiks);
-  tool_print(&tool_rad);
-
-
-  th_tiks = theta_rad_to_tiks( &th_rad);
-
-  //  theta_print_rad(&th_rad);
-  //  theta_print_tiks(&th_tiks);
-  tool_print(&tool_rad2);
-  *-/
-  
-}
-*/
 
 void theta_init_start_tiks(float theta[])
 {
@@ -263,7 +200,8 @@ void theta_rad_to_tiks(float theta[])
 {
   int i=0;
   for(i=0; i<=5; i++)
-    theta[i] =sign_switch[i]* ( theta[i]/(2*M_PI)/(i_gear[i]*i_arm[i])*(enc_rev[i]*4))  + zero_offset[i] - home_offset[i] ;
+    theta[i] = sign_switch[i]* ( theta[i]/(2*M_PI)/(i_gear[i]*i_arm[i])*(enc_rev[i]*4))  
+               + zero_offset[i] - home_offset[i] ;
  
 
 }
@@ -273,7 +211,8 @@ void theta_tiks_to_rad(float theta[])
 {
   int i=0;
   for(i=0; i<=5; i++)
-    theta[i] = sign_switch[i]*(theta[i] - zero_offset[i] +  home_offset[i] ) *(2*M_PI)*(i_gear[i]*i_arm[i])/(enc_rev[i]*4);  
+    theta[i] = sign_switch[i]*(theta[i] - zero_offset[i] +  home_offset[i] ) 
+               *(2*M_PI)*(i_gear[i]*i_arm[i])/(enc_rev[i]*4);  
  
 }
 

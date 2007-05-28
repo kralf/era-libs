@@ -4,42 +4,35 @@
  *      with libserial
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
- * 	Last change:    20.5.2007
+ * 	Last change:    28.5.2007
  */
 
 
-/** \file
- *  \brief 
- *   Kinematic system model 
+/**     \file
+ *      \brief 
+ *      Connecting libserial and Kinematics
  *
- *   Inverse and forward calculations for BlueBotics ERA-5/1 robot arm.
+ *      Providing a set of funcions to use libserial
+ *      with the Kinematic system model for BlueBotics ERA-5/1
 */
 
 
-#include"kin.h"
+
+#ifndef _KIN2SERIAL_H
+#define _KIN2SERIAL_H
+
+
+//#include"kin.h"
 
 
 
-void kin2s_velocity_mode_set(float vel[]
-			     );
 
+//void tool_init_starting_values(float tool[]);
 
-void kin2s_velocity_mode_set_zero();
+/** Set all theta values to their starting values (zero) */
+void theta_init_start_tiks(float theta[] /**< joint angles */
+			   );
 
-
-
-void kin2s_velocity_mode_init();
-
-
-/** Returns the maximum of the two inputs */
-float max(float m1, 
-	  float m2);
-
-
-void tool_init_starting_values(float tool[]);
-
-
-void theta_init_start_tiks(float theta[]);
 
 /** Convertes all input angles from tiks to radians */
 void theta_tiks_to_rad(float theta[]   /**< array contains the 5 joint angles <br> 
@@ -54,13 +47,6 @@ void theta_rad_to_tiks(float theta[]   /**< array contains the 5 joint angles <b
 					 *  and the gripper opening 
 					 */
 		       );
-
-
-
-/* void kin2s_init(float theta[], float tool[]); */
-
-
-
 
 
 /** Set all motors to Profile Position mode */
@@ -93,13 +79,28 @@ void kin2s_position_mode_set(float pos[],  /**< Target Positions<br>
 					    *   theta1[rad] to theta4[rad] and theta6[rad] <br>
 					    *   and the gripper opening 
 					    */
-			     float vel[]); /**  Profile Velocities<br>
+			     float vel[]); /**< Profile Velocities<br>
 					    *   array contains the 5 joint angles <br> 
 					    *   theta1[rad] to theta4[rad] and theta6[rad] <br>
 					    *   and the gripper opening 
 					    */
 
-float kin2s_position_error(float pos[]);
+/** \return
+ *  the square root of the squared elements of pos_err
+ */
+float kin2s_position_error(float pos_err[]);
+
+
+
+/** Set all motors to Velocity mode */
+void kin2s_velocity_mode_init();
+
+/** Set the velocity mode setting values(=demanded velocities) of all motors */
+void kin2s_velocity_mode_set(float vel[] /**< array contains the velocity values */
+			     );
+
+/** Set the velocity mode setting values(=demanded velocities) of all motors to zero*/
+void kin2s_velocity_mode_set_zero();
 
 
 
@@ -119,3 +120,11 @@ void theta_print_tiks(float theta[]   /**< array contains the 5 joint angles <br
 
 /* Prints the end effector position and orientation */
 void tool_print(float tool[]); 
+
+
+/** Returns the maximum of the two inputs */
+float max(float m1, 
+	  float m2);
+
+
+#endif

@@ -1,7 +1,7 @@
 /*	Kinematic system model for BlueBotics ERA-5/1
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
- * 	Last change:    20.5.2007
+ * 	Last change:    28.5.2007
  */
 
 

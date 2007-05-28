@@ -1,4 +1,4 @@
-/*	Kinematic system model for BlueBotics ERA-5/1
+/*	Implementing velocity mode
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
  * 	Last change:    28.5.2007
@@ -42,19 +42,17 @@ int main(void)
   system("clear");
 
   int error=0;
-
+  int i;
   int id;
-
   float pos_err[6];  
-		
 
-       
+  struct timeval  time1, time2;
+  struct timezone timez;		
 
   /* follow circle */
   float r = 1;
   float sp[] = {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0}; //starting point
-
-
+  int number_of_via_points = 16;
   float tool_path[MCI_MAX_VIA_POINTS][6] = { {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] },
 					     {sp[0], sp[1], sp[2], 0, sp[4], sp[5] },
 					     {sp[0], sp[1], sp[2], 0, sp[4], sp[5] },
@@ -70,24 +68,18 @@ int main(void)
 					     {sp[0]+r*(1-cos(10*M_PI/6)), sp[1], sp[2]+r*sin(10*M_PI/6), 0, sp[4], sp[5] },
 					     {sp[0]+r*(1-cos(11*M_PI/6)), sp[1], sp[2]+r*sin(11*M_PI/6), 0, sp[4], sp[5] },
 					     {sp[0], sp[1], sp[2], 0, sp[4], sp[5] },
-					     {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] } };
-			     
-			     
-			     
+					     {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] } };		     
+
   float tool_path_time[MCI_MAX_VIA_POINTS-1] = {1, 0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1 };
   
   float theta_vel[MCI_MAX_VEL_INTERVALS][6];
-
   float dt = 0.1; //seconds
 
-  int number_of_via_points = 16;
   int number_vel_intervals;
 
 
   error =  mci(tool_path, tool_path_time, number_of_via_points, theta_vel, &number_vel_intervals, dt);
 
-
-  int i;
 
   for(i=0; i<number_vel_intervals; i++)
     printf("vel%i: %f, %f, %f, %f, %f, %f\n", i, theta_vel[i][0], theta_vel[i][1], theta_vel[i][2],
@@ -97,31 +89,12 @@ int main(void)
 
 
 
-  struct timeval time, time1, time2;
-  struct timezone timez;
-
-  if(gettimeofday(&time, &timez) == 0)
-     usleep(50000);
-  /* test timeofday *-/
-  if(gettimeofday(&time, &timez) == 0)
-    printf("time micro: %06u\n", (long int)time.tv_usec);
-  usleep(50000);
-  if(gettimeofday(&time, &timez) == 0)
-    printf("time micro: %06u\n", (long int)time.tv_usec);
-  usleep(50000);
-  if(gettimeofday(&time, &timez) == 0)
-    printf("time micro: %06u\n", (long int)time.tv_usec);
-  usleep(50000);
-  if(gettimeofday(&time, &timez) == 0)
-    printf("time micro: %06u\n", (long int)time.tv_usec);
-  usleep(50000);
-  */
 
   /* Starting Hardware Connection  */
-  // User check 
 
+  // User check 
   if(error!=0)
-    printf("Error occured\n");
+    printf("Error occured!!\n");
   while(1)
     {
       char c;
@@ -131,10 +104,8 @@ int main(void)
     }
   /* */
 
-
   
   kin2s_velocity_mode_init();
-
   
   error = gettimeofday(&time1, &timez);
   for(i=0; i<number_vel_intervals; i++)
@@ -145,6 +116,8 @@ int main(void)
       error = gettimeofday(&time1, &timez);
     }
   kin2s_velocity_mode_set_zero();
+
+
   printf("velocity mode finished, starting profile position mode\n\n");
   sleep(2);
 
@@ -226,6 +199,21 @@ int main(void)
   */
   
 
+
+  /* test timeofday *-/
+  if(gettimeofday(&time, &timez) == 0)
+    printf("time micro: %06u\n", (long int)time.tv_usec);
+  usleep(50000);
+  if(gettimeofday(&time, &timez) == 0)
+    printf("time micro: %06u\n", (long int)time.tv_usec);
+  usleep(50000);
+  if(gettimeofday(&time, &timez) == 0)
+    printf("time micro: %06u\n", (long int)time.tv_usec);
+  usleep(50000);
+  if(gettimeofday(&time, &timez) == 0)
+    printf("time micro: %06u\n", (long int)time.tv_usec);
+  usleep(50000);
+  */
 
 
 
