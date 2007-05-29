@@ -96,7 +96,7 @@ float kin2s_position_error(float pos_err[]);
 void kin2s_velocity_mode_init();
 
 /** Set the velocity mode setting values(=demanded velocities) of all motors */
-void kin2s_velocity_mode_set(float vel[] /**< array contains the velocity values */
+void kin2s_velocity_mode_set(float vel[] /**< array contains the velocity values in [rad/s]*/
 			     );
 
 /** Set the velocity mode setting values(=demanded velocities) of all motors to zero*/

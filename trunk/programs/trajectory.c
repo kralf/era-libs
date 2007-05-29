@@ -172,9 +172,9 @@ int mci(float via_points[][6],
   mci_slope(via_points, number_of_via_points, m);
 
   for(i=0; i<6; i++)
-  printf("m: %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", 
+  printf("m: %f, %f, %f, %f, %f, %f, %f, %f, %f, %f,  %f, %f, %f, %f, %f, %f\n", 
      m[0][i], m[1][i], m[2][i], m[3][i], m[4][i], m[5][i], m[6][i], m[7][i], m[8][i], m[9][i], 
-     m[10][i], m[11][i], m[12][i]);
+     m[10][i], m[11][i], m[12][i], m[13][i], m[14][i], m[15][i]);
   
 
   if( mci_theta_vel( via_points,  via_points_time,  number_of_via_points, 

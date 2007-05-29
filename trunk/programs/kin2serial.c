@@ -87,7 +87,7 @@ void kin2s_velocity_mode_set(float vel[])
   int id=0;
   for(id=1;id<=6;id++)
     {      
-      set_velocity_mode_setting_value(id, vel[id-1]);
+      set_velocity_mode_setting_value(id, (vel[id-1]/ (i_gear[id-1]*i_arm[id-1])) );
     }
 }
 
