@@ -90,7 +90,7 @@ EPOS_ERROR_SERIAL error_serial[MAXERRORSERIAL] = {
 void canHWInit()
 {
 	fd = open_device();
-	ClearIOBuffer(fd);
+	clear_iobuffer(fd);
 	bzero(&cpcmsg, sizeof(cpcmsg));		/* for security reasons set all in struct to 0 */
 
 }
@@ -114,7 +114,7 @@ void my_send_can_message(int can_id, char *msg)
 		
 	serial2epos(can_id, data_send, data_recv);
 
-	//	prtmsg("datafr. recv",data_recv,len);
+		prtmsg("datafr. recv",data_recv,len);
 	//	prtmsg("\tError Code",data_recv+2,2);
 	//	prtmsg("\tError Reg.",data_recv+4,2);
 		PDEBUG_SNIP("\n--------------------------------------------------------------------------------\n");
@@ -778,7 +778,7 @@ void prtmsg(char *desc, char *msg, int no)
 	printf("\n");
 }
 
-int ClearIOBuffer(int fd)
+int clear_iobuffer(int fd)
 {
 	int i=0;
 	unsigned char IOBuffer;

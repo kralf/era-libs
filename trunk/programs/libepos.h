@@ -61,6 +61,7 @@ void set_software_maximal_position_limit(int id, long int x);
 void set_continous_current_limit(int id, int i);
 void set_output_current_limit(int id, int i);
 void set_homing_current_threshold(int id, int i);
+void set_RS232_baudrate(int id, int val);
 
 /* end new functions ----------------------------------------------------------------- */
 

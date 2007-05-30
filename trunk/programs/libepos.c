@@ -3,6 +3,8 @@
 #include "libcan.h"
 #include "pdebug.h"
 
+//#define ASL_DEBUG
+
 
 EPOS_ERROR_HISTORY error_history[MAXERRORHISTORY] = {
 		{ 0x0000, 0x00, "No error." },
@@ -715,7 +717,7 @@ void set_homing_method(int id, int method)
   msg[5]= 0x00;
   msg[6]= 0x00;
   msg[7]= 0x00;
-  PDEBUG_SNIP("%d\n",x);
+  PDEBUG_SNIP("%d\n",method);
   my_send_can_message(can_id, msg);  
 }
 
@@ -783,7 +785,7 @@ void set_output_current_limit(int id, int i)
   msg[5]= ((i & 0x0000ff00)>>8);
   msg[6]= 0;
   msg[7]= 0;
-  PDEBUG_SNIP("%x\n",val);
+  PDEBUG_SNIP("%x\n",i);
   my_send_can_message(can_id, msg);  
 } 
 
@@ -800,10 +802,26 @@ void set_homing_current_threshold(int id, int i)
   msg[5]= ((i & 0x0000ff00)>>8);
   msg[6]= 0;
   msg[7]= 0;
-  PDEBUG_SNIP("%x\n",val);
+  PDEBUG_SNIP("%x\n",i);
   my_send_can_message(can_id, msg);  
 } 
 
+void set_RS232_baudrate(int id, int val)
+{
+  PDEBUG("set RS232 baudrate to no. ");
+  char msg[8];
+  int can_id = 0x600+id;
+  msg[0]= WRITE_2_BYTE;
+  msg[1]= 0x02;
+  msg[2]= 0x20;
+  msg[3]= 0x00;
+  msg[4]= (val & 0x000000ff);
+  msg[5]= ((val & 0x0000ff00)>>8);
+  msg[6]= 0;
+  msg[7]= 0;
+  PDEBUG_SNIP("%x\n",val);
+  my_send_can_message(can_id, msg);  
+} 
 
 
 
@@ -1422,6 +1440,21 @@ void get_output_current_limit(int id)
   my_send_can_message(can_id, msg);  
 }
 
+void get_RS232_baudrate(int id)
+{
+  PDEBUG("ask for actual RS232 baudrate\n");
+  char msg[8];
+  int can_id = 0x600+id;
+  msg[0]= READ;
+  msg[1]= 0x02;
+  msg[2]= 0x20;
+  msg[3]= 0x00;
+  msg[4]= 0x00;
+  msg[5]= 0x00;
+  msg[6]= 0x00;
+  msg[7]= 0x00;
+  my_send_can_message(can_id, msg);  
+}
 
 
 /* end new functions ----------------------------------------------------------------- */

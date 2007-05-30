@@ -1,5 +1,5 @@
 
-all: main test nullposition testmode inverse inverse_vel test_error
+all: main test nullposition testmode inverse inverse_vel test_error test_function_time
 
 main: main.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o main main.c libserial.o libepos.o
@@ -21,9 +21,18 @@ test: test.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 
 test_error: test_error.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o test_error test_error.c libserial.o libepos.o
+
+test_function_time: test_function_time.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
+	gcc -Wall -o test_function_time test_function_time.c libserial.o libepos.o
 		
 foo: foo.c
 	gcc -Wall -o foo foo.c
+
+datafile: datafile.c
+	gcc -Wall -o datafile datafile.c
+
+clean_datafile:
+	rm datafile
 	
 kin.o: kin.c kin.h
 	gcc -Wall -c kin.c -o kin.o
@@ -45,6 +54,7 @@ inverse_vel: inverse_vel.c kin.o kin2serial.o kin.c kin.h libserial.o libserial.
 clean:
 	rm  *.o
 	rm test
+	rm test_function_time
 	rm main 
 	rm nullposition
 	rm inverse

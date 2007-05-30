@@ -21,13 +21,12 @@ int main(void)
 	
 	canHWInit();
 	
-	fault_reset(id);
-	shutdown(id);
+	//fault_reset(id);
+	//shutdown(id);
 	//enable_operation(id);	
-	
-	set_maximum_following_error(id, 0x80002000);
-	get_maximum_following_error(id);
-	printf("value: 0x%08X\n", myepos_read.number[id-1].maximum_following_error);
+	get_error(id);
+	//get_maximum_following_error(id);
+	//printf("value: 0x%08X\n", myepos_read.number[id-1].maximum_following_error);
 
 	canHWEnd();
 	

@@ -119,5 +119,5 @@ int chg_word_order(/** Array of words for which change order*/ char *data,
 int calc_crc(char *, char *, int);
 
 void prtmsg(char *, char *, int);
-int ClearIOBuffer(int);
+int clear_iobuffer(int fd);
 

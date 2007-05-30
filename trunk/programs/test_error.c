@@ -55,7 +55,7 @@ int main(void)
 				myepos_read.number[id-1].error.device.reg); 			
 	for(i=0;i<5;i++)
 	{
-		printf("history[%d]: code: 0x%02X\treg: 0x%02d\tmsg: %s\n", i, myepos_read.number[id-1].error.device.history[i].code
+		printf("history[%d]: code: 0x%02X\treg: 0x%02X\tmsg: %s\n", i, myepos_read.number[id-1].error.device.history[i].code
 		, myepos_read.number[id-1].error.device.history[i].reg, myepos_read.number[id-1].error.device.history[i].msg);	
 	}
 
