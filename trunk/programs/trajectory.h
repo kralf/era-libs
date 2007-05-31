@@ -22,6 +22,14 @@
 
 
 
+
+
+void trajectory_auto_angle(float via_points[][6], 
+			   int number_of_via_points);
+
+
+
+
 /** Monotone Cubic Interpolation:<br>
  *  Main function 
  */

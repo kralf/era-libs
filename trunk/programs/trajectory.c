@@ -26,6 +26,20 @@ const float theta_vel_max[] = {M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,     M
 
 
 
+void trajectory_auto_angle(float via_points[][6], 
+			   int number_of_via_points)
+{
+  int i;
+  for(i=0; i<number_of_via_points; i++)
+    {
+      if(via_points[i][3] == 999)
+	via_points[i][3] = -180/M_PI*tan(via_points[i][0] /via_points[i][1]);
+      printf("angle auto: %f \n", via_points[i][3]);
+    }
+}
+
+
+
 void mci_slope(float via_points[][6], 
 	       int number_of_via_points, 
 	       float m[][6])
@@ -129,8 +143,10 @@ int mci_theta_vel(float via_points[][6],
 	    }
 	  if(inverse_kinematics(  tool_b, theta_b  )) 
 	    error = 1;
+	  printf("theta2 %f\n", theta_b[1]);
 	  if(inverse_kinematics(  tool_a, theta_a  )) 
 	    error = 1;
+	  printf("theta2 %f\n", theta_a[1]);
 	  // theta_print_rad( theta_a  );
 
 	  for(k=0; k<6; k++)

@@ -39,6 +39,7 @@
 
 int main(void) 
 {
+  int output_current_limit[]           = {0,2500,2000,2000,2000,300,300};
   system("clear");
 
   int error=0;
@@ -50,37 +51,41 @@ int main(void)
   struct timezone timez;		
 
   /* follow circle */
-  float r = 1;
+  float r = 0.5;
   float sp[] = {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0}; //starting point
   int number_of_via_points = 16;
   float tool_path[MCI_MAX_VIA_POINTS][6] = { {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] },
-					     {sp[0], sp[1], sp[2], 0, sp[4], sp[5] },
-					     {sp[0], sp[1], sp[2], 0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(M_PI/6)),    sp[1], sp[2]+r*sin(M_PI/6),    0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(M_PI/3)),    sp[1], sp[2]+r*sin(M_PI/3),    0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(M_PI/2)),    sp[1], sp[2]+r*sin(M_PI/2),    0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(4*M_PI/6)),  sp[1], sp[2]+r*sin(4*M_PI/6),  0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(5*M_PI/6)),  sp[1], sp[2]+r*sin(5*M_PI/6),  0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(M_PI)),      sp[1], sp[2]+r*sin(M_PI),      0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(7*M_PI/6)),  sp[1], sp[2]+r*sin(7*M_PI/6),  0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(8*M_PI/6)),  sp[1], sp[2]+r*sin(8*M_PI/6),  0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(9*M_PI/6)),  sp[1], sp[2]+r*sin(9*M_PI/6),  0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(10*M_PI/6)), sp[1], sp[2]+r*sin(10*M_PI/6), 0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(11*M_PI/6)), sp[1], sp[2]+r*sin(11*M_PI/6), 0, sp[4], sp[5] },
-					     {sp[0], sp[1], sp[2], 0, sp[4], sp[5] },
+					     {sp[0], sp[1], sp[2], 999, sp[4], sp[5] },
+					     {sp[0], sp[1], sp[2], 999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(M_PI/6)),    sp[1], sp[2]+r*sin(M_PI/6),    999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(M_PI/3)),    sp[1], sp[2]+r*sin(M_PI/3),    999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(M_PI/2)),    sp[1], sp[2]+r*sin(M_PI/2),    999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(4*M_PI/6)),  sp[1], sp[2]+r*sin(4*M_PI/6),  999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(5*M_PI/6)),  sp[1], sp[2]+r*sin(5*M_PI/6),  999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(M_PI)),      sp[1], sp[2]+r*sin(M_PI),      999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(7*M_PI/6)),  sp[1], sp[2]+r*sin(7*M_PI/6),  999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(8*M_PI/6)),  sp[1], sp[2]+r*sin(8*M_PI/6),  999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(9*M_PI/6)),  sp[1], sp[2]+r*sin(9*M_PI/6),  999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(10*M_PI/6)), sp[1], sp[2]+r*sin(10*M_PI/6), 999, sp[4], sp[5] },
+					     {sp[0]+r*(1-cos(11*M_PI/6)), sp[1], sp[2]+r*sin(11*M_PI/6), 999, sp[4], sp[5] },
+					     {sp[0], sp[1], sp[2], 999, sp[4], sp[5] },
 					     {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] } };		     
 
-  float tool_path_time[MCI_MAX_VIA_POINTS-1] = {1, 0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1 };
+  
+  //  trajectory_auto_angle( tool_path,  number_of_via_points);
+
+
+  float tool_path_time[MCI_MAX_VIA_POINTS-1] = {3, 0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 3 };
   
   float theta_vel[MCI_MAX_VEL_INTERVALS][6];
-  float dt = 0.1; //seconds
+  float dt = 0.2; //seconds
 
   int number_vel_intervals;
 
 
   error =  mci(tool_path, tool_path_time, number_of_via_points, theta_vel, &number_vel_intervals, dt);
-
-
+  if (error !=0)
+    return 1;
   for(i=0; i<number_vel_intervals; i++)
     printf("vel%i: %f, %f, %f, %f, %f, %f\n", i, theta_vel[i][0], theta_vel[i][1], theta_vel[i][2],
 	   theta_vel[i][3], theta_vel[i][4], theta_vel[i][5]);
@@ -104,7 +109,14 @@ int main(void)
     }
   /* */
 
-  
+  canHWInit();
+
+
+  for(id=1;id<7;id++)
+    {
+      set_output_current_limit(id, output_current_limit[id]);
+    }
+
   kin2s_velocity_mode_init();
   
   error = gettimeofday(&time1, &timez);
@@ -113,6 +125,7 @@ int main(void)
       kin2s_velocity_mode_set( theta_vel[i]);
       error = gettimeofday(&time2, &timez);
       usleep( dt*1000000 - (time2.tv_usec-time1.tv_usec) );
+      printf("sleep %f\n", ( dt*1000000 - (time2.tv_usec-time1.tv_usec) ) );
       error = gettimeofday(&time1, &timez);
     }
   kin2s_velocity_mode_set_zero();

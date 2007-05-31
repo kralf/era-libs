@@ -20,7 +20,7 @@ int main(void)
 {
 	int id=1;
 	int i;	
-	int n=0;
+	int n=10;
 
 	struct timeval tp;
 	struct timezone tzp;
@@ -29,16 +29,14 @@ int main(void)
 
 	canHWInit();
 
-	fault_reset(id);
-	shutdown(id);
-//	enable_operation(id);	
+	for(i=1;i<7;i++)
+	{
+		fault_reset(i);
+		shutdown(i);
+		//enable_operation(i);	
+	}
 
-//set_RS232_baudrate(id, 5);
-	get_RS232_baudrate(id);
-//	shutdown(id);
-//	enable_operation(id);	
 
-/*
 	for(i=0;i<n;i++) 
 	{
 		gettimeofday(&tp,&tzp);
@@ -46,7 +44,7 @@ int main(void)
 		t_sec = tp.tv_sec;
 		{
 			//set_velocity_mode_setting_value(id, 0x0A);
-			//get_actual_position(id);
+			get_actual_position(id);
 			//get_error(id);
 
 		}
@@ -57,7 +55,7 @@ int main(void)
 		t_end += delta_t;
 	}
 	printf("average delta_t: %ld µs\n",t_end/n);
-*/	
+	
 	canHWEnd();
 
 	printf("end\n");

@@ -44,7 +44,7 @@
 #include <termios.h>
 #include <fcntl.h>
 
-//#define ASL_DEBUG
+#define ASL_DEBUG
 //#define DEBUG
 #include "pdebug.h"
 
@@ -92,7 +92,6 @@ void canHWInit()
 	fd = open_device();
 	clear_iobuffer(fd);
 	bzero(&cpcmsg, sizeof(cpcmsg));		/* for security reasons set all in struct to 0 */
-
 }
 /*-----------------------------------*/
 void canHWEnd()
@@ -108,18 +107,12 @@ void my_send_can_message(int can_id, char *msg)
 	
 	len = epos2serial(can_id, msg, data_send);
 	
-	send_dataframe(fd, data_send, len);
+		send_dataframe(fd, data_send, len);
 	
-	len = receive_dataframe(fd, data_recv);
+		len = receive_dataframe(fd, data_recv);
 		
 	serial2epos(can_id, data_send, data_recv);
 
-		prtmsg("datafr. recv",data_recv,len);
-	//	prtmsg("\tError Code",data_recv+2,2);
-	//	prtmsg("\tError Reg.",data_recv+4,2);
-		PDEBUG_SNIP("\n--------------------------------------------------------------------------------\n");
-	
-	// TO DO :void serial2epos(int can_id, char *data_send, char *data_recv);
 }
 /*-----------------------------------*/
 void read_can_message()
@@ -136,7 +129,6 @@ void serial2epos(int can_id, char *data_send, char *data_recv)
 	
 	if(data_recv[2] == 0x00 && data_recv[3] == 0x00 && data_recv[4] == 0x00 && data_recv[5] == 0x00)
 	{
-
 		cpcmsg.msg.canmsg.msg[0] = 0x00;			/* no error */
 		
 		cpcmsg.msg.canmsg.msg[1] = data_send[2];	/* high-byte index */
@@ -148,8 +140,6 @@ void serial2epos(int can_id, char *data_send, char *data_recv)
 		cpcmsg.msg.canmsg.msg[6] = data_recv[7];	/* low-byte of high-word data */
 		cpcmsg.msg.canmsg.msg[5] = data_recv[8];	/* high-byte of low-word data */
 		cpcmsg.msg.canmsg.msg[4] = data_recv[9];	/* low-byte of low-word data */
-		
-		//prtmsg("serial2epos",cpcmsg.msg.canmsg.msg,8);
 	}
 	else // Serial error occured see EPOS Communication Guide page 18	
 	{
@@ -170,12 +160,6 @@ void serial2epos(int can_id, char *data_send, char *data_recv)
 	}
 	
 	read_SDO_msg_handler(0, &cpcmsg);
-}
-/*-----------------------------------*/
-int handle_serial_errorcode(char *data_recv)
-{
-	
-	return 0;
 }
 /*-----------------------------------*/
 int epos2serial(int id, char *msg, char *data)
@@ -521,11 +505,7 @@ int send_dataframe(int fd, char *data, int no_bytes_send)
 		PDEBUG_SNIP("Failure at sending rest of data!!!\n");
 		return -1;
 	}
-	
-	
-	//ClearIOBuffer(fd);
-	
-	
+
 	return no_bytes_send;
 }
 /*-----------------------------------*/
@@ -615,14 +595,13 @@ int read_byte(int fd, char *buffer)
 /*-----------------------------------*/
 int write_byte(int fd, char data)
 {
+	int ret;
 	#ifdef SERIAL_DUMMY
 		PDEBUG_SNIP("==> serial Out:|0x%02X|\n",data);
 		return 0;
 	#else
-	int ret;
 	
 	ret = write(fd,  &data , 1);
-	//PDEBUG_SNIP("==> serial Out:|0x%02X|\n",data);
 	
 	if(ret == 1) return 1;
 	
@@ -640,7 +619,6 @@ int write_string(int fd, char *data, int len)
 	#else
 	
 	length= write(fd, (const void*) data , len);
-	//PDEBUG_SNIP("==> serial Out %d:|%s|\n",length,data);
 	
 	if(length < 0 || length != len)
 	{
@@ -651,23 +629,18 @@ int write_string(int fd, char *data, int len)
 	#endif
 }
 /*-----------------------------------*/
-int c2w(char *data, word *buffer, int no_chars)	/* works! */
+int c2w(char *data, word *buffer, int no_chars)
 {
 	int n,i=0;
 	
 	for(n=0;n<no_chars;n+=2)
 	{			
-			//PDEBUG_SNIP("c2w vor :0x%02X\t0x%02X\n",(unsigned char) data[n], (unsigned char) data[n+1]);
-			//PDEBUG_SNIP("c2w buffer: 0x%04hx\n",buffer[i]);
-			//val= (data[n]<<8);
-			//PDEBUG_SNIP("val: 0x%04X\n",val);
 		buffer[i++] = (data[n+1] & 0x00FF) | ((data[n]<<8) & 0xFF00);
-			//PDEBUG_SNIP("c2w nach: 0x%04x\n",buffer[i-1]);			
 	}
 	return i;
 }
 /*-----------------------------------*/
-int w2c(word *buffer, char *data, int no_words)	/* works! */
+int w2c(word *buffer, char *data, int no_words)
 {
 	int n;
 	
@@ -752,12 +725,7 @@ int calc_crc(char *data, char *crc_value, int no_char)
 	int no_words;
 	
 	no_words = c2w(data, buffer, no_char);	/* change data char[] to word[] */
-	
-		//PDEBUG_SNIP("\n\nbuffer:\t\t");
-		//for(i=0;i<no_words;i++) PDEBUG_SNIP("0x%04hx\t",buffer[i]);
-		//PDEBUG_SNIP("\n\n");
-	
-	crc_word = crc_alg(buffer, no_words); 		/* calculate crc */
+	crc_word = crc_alg(buffer, no_words); 	/* calculate crc */
 	w2c(&crc_word, crc_value, 1);			/* change crc word[] to char[] */
 	
 	#ifdef DEBUG_CRC
@@ -777,7 +745,7 @@ void prtmsg(char *desc, char *msg, int no)
 	}
 	printf("\n");
 }
-
+/*-----------------------------------*/
 int clear_iobuffer(int fd)
 {
 	int i=0;
@@ -806,8 +774,4 @@ int clear_iobuffer(int fd)
 	}
 	return -1;
 }	
-
-
-	
-	
-
+/* end of libserial.c -----------------------------------*/

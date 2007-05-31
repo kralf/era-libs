@@ -56,15 +56,21 @@ typedef unsigned short word;
 
 /* function-prototypes: */
 
-/**
-*	Initialize the serial port
+/** Initialize the serial connection by opening the device and clearing the IO-buffer.
+*
+*	\note
+*	Same function name in libserial.c than in libcan.c to easy switch from CAN to RS232 using libepos.c
+*/
+void canHWInit();
+
+
+/** Stops the serial connection by opening the device and clearing the IO-buffer.
 *
 *	\note
 *	Same function name in libserial.c than in libcan.c to easy switch from CAN to RS232 using libepos.c
 */
 
 
-void canHWInit();
 void canHWEnd();
 
 void my_send_can_message(int can_id, char *msg);
@@ -72,7 +78,6 @@ void read_can_message();
 
 int epos2serial(int, char *, char *);
 void serial2epos(int can_id, char *data_send, char *data_recv);
-int handle_serial_errorcode(char *data_recv);
 
 int open_device();
 int close_device(int);
@@ -85,39 +90,109 @@ int send_dataframe(int, char *, int);
 *	Uses select() for non-infinit blocking (see TIMEOUTSEC).
 *
 *  	\return
-*
-*    	- 0 : timeout reading a byte
-*    	- 0 : number of read bytes
-*    	- -1 : unspecified error in read()
+*   - 0: Timeout reading a byte
+*   - >0: Number of bytes read
+*   - -1: Unspecified error in read()
 */
 int read_byte(/** File descriptor */ int fd,
-				/** Array containing read bytes */ char *buffer);
+				/** Array of char containing read bytes */ char *buffer);
 
 
-int write_byte(int, char);
-int write_string(int, char *, int);
-//int c2w(char *, word *, int);
-int w2c(word *, char *, int);
+/** Write one byte to a device.
+*
+*	\return 
+*	- 1: Byte successfully written
+*	- 0: Error at writing
+*/
+int write_byte(/** File descriptor */ int fd,
+				/** Byte to send */ char data);
 
-/** Change order of databytes in the dataframe.
+
+/** Write a string represented by an array of char to a device.
+*
+*	\return 
+*	- >0: Number of bytes successfully written
+*	- 0: Error at writing
+*/
+int write_string(/** File descriptor */ int fd,
+				/** Array of char to send */ char *data,
+				/** Number of chars to send */ int len);
+
+
+/** Converts an array of char to an array of word by taking two char as a word.
 *
 *	\return
-*	Number of changed bytes within the dataframe.
+*	Number of words in the array
+*/ 
+int c2w(/** Array of char to convert */ char *data,
+		/** Array of word to store converted values */ word *buffer,
+		/** Number of chars to convert */ int no_chars);
+
+
+/** Converts an array of word to an array of char by dividing a word into two char.
+*
+*	\return
+*	Number of chars in the array
+*/ 
+int w2c(/** Array of word to convert */ word *buffer,
+		/** Array of char to store converted values */ char *data,
+		/** Number of words to convert */ int no_words);
+
+
+/** Change order of databytes in the dataframe. The first two char will be ignored, the
+* 	following chars will be changed by each other.
+*
+*	\Note 
+*	Necessary according EPOS Communication guide.
+*	\return
+*	Number of changed bytes within the dataframe
 */
 int chg_byte_order(/** Array of bytes for which change order*/ char *data,
 					/** Number of bytes in the array (length)*/ int no_chars);
 
-/** Change order of datawords in the dataframe.
+
+
+/** Change order of datawords (two char) in the dataframe. The first two char will be ignored, the
+* 	following chars will be grouped by two and these groups changed by each other.
 *
+*	\Note 
+*	Necessary according EPOS Communication guide.
 *	\return
 *	Number of changed bytes within the dataframe.
 */
-int chg_word_order(/** Array of words for which change order*/ char *data,
+int chg_word_order(/** Array of char for which change order*/ char *data,
 					/** Number of bytes! in the array (length)*/ int no_chars);
 
 
-int calc_crc(char *, char *, int);
+/** Calculate 16-bit CRC checksum using CRC-CCITT algorithm.
+*
+*	\note
+*	Calculation has to include all bytes in the dataframe. Internally the array of char
+*   is transformed to an array of words to calculate the CRC. The CRC value as a word is
+*	then tranformed back to an array of char.
+*
+*	\return
+*	Number of words build from the array.
+*/
+int calc_crc(/** Array of bytes representing the dataframe */ char *data,
+			/** Array of two bytes to store the CRC-word*/ char *crc_value,
+			/** Number of bytes in the dataframe*/ int no_char); 
 
-void prtmsg(char *, char *, int);
-int clear_iobuffer(int fd);
+
+/** Implementation of the CRC-CCITT algorithm.
+*
+*	\return 
+*	Calculated CRC-value.
+*/
+word crc_alg(/** Array of words containing the dataframe */ word *buffer, 
+			/** Number of words in the dataframe*/ int no);
+
+
+/** Clears the IO-Buffer by reading all available bytes.
+*
+*	\return
+*	- 0: no more bytes available
+*	- -1: unspecified error 
+*/
+int clear_iobuffer(/** File descriptor*/ int fd);
 

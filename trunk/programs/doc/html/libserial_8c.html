@@ -38,8 +38,6 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8c.html#c117caf8b5f5927ca3826c9e886cb524">serial2epos</a> (int can_id, char *data_send, char *data_recv)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8c.html#ad09433439a45a06f9244c02ab369ed0">handle_serial_errorcode</a> (char *data_recv)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8c.html#8a7fe2e394f427a30595d5ddba44b93c">epos2serial</a> (int id, char *msg, char *data)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8c.html#df927a3fc908e85030371138390586f2">receive_dataframe</a> (int <a class="el" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, char *data)</td></tr>
@@ -70,7 +68,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8c.html#9c945ee99ffee863d6d4dd4c3cf185b1">prtmsg</a> (char *desc, char *msg, int no)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8c.html#af7e2245eea03c215f16e89c8d234f68">ClearIOBuffer</a> (int <a class="el" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8c.html#8c7335ca2e0c24ad6ca9f8ed6ec9f658">clear_iobuffer</a> (int <a class="el" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>)</td></tr>
 
 <tr><td colspan="2"><br><h2>Variables</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a> = 0</td></tr>
@@ -120,7 +118,18 @@ message[10] high-byte CRC message[11] low-byte CRC <hr><h2>Function Documentatio
 <div class="memdoc">
 
 <p>
-
+Converts an array of char to an array of word by taking two char as a word.<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of words in the array </dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>data</em>&nbsp;</td><td>
+Array of char to convert </td></tr>
+<tr><td valign="top"><em>buffer</em>&nbsp;</td><td>
+Array of word to store converted values </td></tr>
+<tr><td valign="top"><em>no_chars</em>&nbsp;</td><td>
+Number of chars to convert </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="b16a3f3ef787fbc0232637959dd2cb9b"></a><!-- doxytag: member="libserial.c::calc_crc" ref="b16a3f3ef787fbc0232637959dd2cb9b" args="(char *data, char *crc_value, int no_char)" -->
@@ -155,7 +164,19 @@ message[10] high-byte CRC message[11] low-byte CRC <hr><h2>Function Documentatio
 <div class="memdoc">
 
 <p>
-
+Calculate 16-bit CRC checksum using CRC-CCITT algorithm.<p>
+<dl class="note" compact><dt><b>Note:</b></dt><dd>Calculation has to include all bytes in the dataframe. Internally the array of char is transformed to an array of words to calculate the CRC. The CRC value as a word is then tranformed back to an array of char.</dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of words build from the array. </dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>data</em>&nbsp;</td><td>
+Array of bytes representing the dataframe </td></tr>
+<tr><td valign="top"><em>crc_value</em>&nbsp;</td><td>
+Array of two bytes to store the CRC-word </td></tr>
+<tr><td valign="top"><em>no_char</em>&nbsp;</td><td>
+Number of bytes in the dataframe </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="36de7779c0e014e707a0865b7195ee8b"></a><!-- doxytag: member="libserial.c::canHWEnd" ref="36de7779c0e014e707a0865b7195ee8b" args="()" -->
@@ -224,8 +245,9 @@ Initialize the serial port<p>
 <div class="memdoc">
 
 <p>
-Change order of databytes in the dataframe.<p>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of changed bytes within the dataframe. </dd></dl>
+Change order of databytes in the dataframe. The first two char will be ignored, the following chars will be changed by each other.<p>
+<dl class="note" compact><dt><b>Note:</b></dt><dd>Necessary according EPOS Communication guide. </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of changed bytes within the dataframe </dd></dl>
 <dl compact><dt><b>Parameters: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
 <tr><td valign="top"><em>data</em>&nbsp;</td><td>
@@ -262,24 +284,25 @@ Number of bytes in the array (length) </td></tr>
 <div class="memdoc">
 
 <p>
-Change order of datawords in the dataframe.<p>
+Change order of datawords (two char) in the dataframe. The first two char will be ignored, the following chars will be grouped by two and these groups changed by each other.<p>
+<dl class="note" compact><dt><b>Note:</b></dt><dd>Necessary according EPOS Communication guide. </dd></dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of changed bytes within the dataframe. </dd></dl>
 <dl compact><dt><b>Parameters: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
 <tr><td valign="top"><em>data</em>&nbsp;</td><td>
-Array of words for which change order </td></tr>
+Array of char for which change order </td></tr>
 <tr><td valign="top"><em>no_chars</em>&nbsp;</td><td>
 Number of bytes! in the array (length) </td></tr>
 </table>
 </dl>
 </div>
 </div><p>
-<a class="anchor" name="af7e2245eea03c215f16e89c8d234f68"></a><!-- doxytag: member="libserial.c::ClearIOBuffer" ref="af7e2245eea03c215f16e89c8d234f68" args="(int fd)" -->
+<a class="anchor" name="8c7335ca2e0c24ad6ca9f8ed6ec9f658"></a><!-- doxytag: member="libserial.c::clear_iobuffer" ref="8c7335ca2e0c24ad6ca9f8ed6ec9f658" args="(int fd)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int ClearIOBuffer           </td>
+          <td class="memname">int clear_iobuffer           </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
           <td class="paramname"> <em>fd</em>          </td>
@@ -291,7 +314,16 @@ Number of bytes! in the array (length) </td></tr>
 <div class="memdoc">
 
 <p>
-
+Clears the IO-Buffer by reading all available bytes.<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><ul>
+<li>0: no more bytes available</li><li>-1: unspecified error </li></ul>
+</dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>fd</em>&nbsp;</td><td>
+File descriptor </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="c937b2dcb6184b696417205b0b9d6e2d"></a><!-- doxytag: member="libserial.c::close_device" ref="c937b2dcb6184b696417205b0b9d6e2d" args="(int fd)" -->
@@ -340,7 +372,16 @@ Number of bytes! in the array (length) </td></tr>
 <div class="memdoc">
 
 <p>
-
+Implementation of the CRC-CCITT algorithm.<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Calculated CRC-value. </dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>buffer</em>&nbsp;</td><td>
+Array of words containing the dataframe </td></tr>
+<tr><td valign="top"><em>no</em>&nbsp;</td><td>
+Number of words in the dataframe </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="8a7fe2e394f427a30595d5ddba44b93c"></a><!-- doxytag: member="libserial.c::epos2serial" ref="8a7fe2e394f427a30595d5ddba44b93c" args="(int id, char *msg, char *data)" -->
@@ -369,26 +410,6 @@ Number of bytes! in the array (length) </td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td><td width="100%"></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-
-</div>
-</div><p>
-<a class="anchor" name="ad09433439a45a06f9244c02ab369ed0"></a><!-- doxytag: member="libserial.c::handle_serial_errorcode" ref="ad09433439a45a06f9244c02ab369ed0" args="(char *data_recv)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int handle_serial_errorcode           </td>
-          <td>(</td>
-          <td class="paramtype">char *&nbsp;</td>
-          <td class="paramname"> <em>data_recv</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td width="100%"></td>
         </tr>
       </table>
 </div>
@@ -509,15 +530,15 @@ Number of bytes! in the array (length) </td></tr>
 <p>
 Read bytes from device.<p>
 <dl class="note" compact><dt><b>Note:</b></dt><dd>Uses select() for non-infinit blocking (see TIMEOUTSEC).</dd></dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd></dd></dl>
-<ul>
-<li>0 : timeout reading a byte</li><li>0 : number of read bytes</li><li>-1 : unspecified error in read() </li></ul>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><ul>
+<li>0: Timeout reading a byte</li><li>&gt;0: Number of bytes read</li><li>-1: Unspecified error in read() </li></ul>
+</dd></dl>
 <dl compact><dt><b>Parameters: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
 <tr><td valign="top"><em>fd</em>&nbsp;</td><td>
 File descriptor </td></tr>
 <tr><td valign="top"><em>buffer</em>&nbsp;</td><td>
-Array containing read bytes </td></tr>
+Array of char containing read bytes </td></tr>
 </table>
 </dl>
 </div>
@@ -673,7 +694,18 @@ Array containing read bytes </td></tr>
 <div class="memdoc">
 
 <p>
-
+Converts an array of word to an array of char by dividing a word into two char.<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of chars in the array </dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>buffer</em>&nbsp;</td><td>
+Array of word to convert </td></tr>
+<tr><td valign="top"><em>data</em>&nbsp;</td><td>
+Array of char to store converted values </td></tr>
+<tr><td valign="top"><em>no_words</em>&nbsp;</td><td>
+Number of words to convert </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="e7e57f53a58caeb4c04b9154cf49bc68"></a><!-- doxytag: member="libserial.c::write_byte" ref="e7e57f53a58caeb4c04b9154cf49bc68" args="(int fd, char data)" -->
@@ -702,7 +734,18 @@ Array containing read bytes </td></tr>
 <div class="memdoc">
 
 <p>
-
+Write one byte to a device.<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><ul>
+<li>1: Byte successfully written</li><li>0: Error at writing </li></ul>
+</dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>fd</em>&nbsp;</td><td>
+File descriptor </td></tr>
+<tr><td valign="top"><em>data</em>&nbsp;</td><td>
+Byte to send </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="5ed7e2725094cef2ec0b0fee8790de0f"></a><!-- doxytag: member="libserial.c::write_string" ref="5ed7e2725094cef2ec0b0fee8790de0f" args="(int fd, char *data, int len)" -->
@@ -737,7 +780,20 @@ Array containing read bytes </td></tr>
 <div class="memdoc">
 
 <p>
-
+Write a string represented by an array of char to a device.<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><ul>
+<li>&gt;0: Number of bytes successfully written</li><li>0: Error at writing </li></ul>
+</dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>fd</em>&nbsp;</td><td>
+File descriptor </td></tr>
+<tr><td valign="top"><em>data</em>&nbsp;</td><td>
+Array of char to send </td></tr>
+<tr><td valign="top"><em>len</em>&nbsp;</td><td>
+Number of chars to send </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <hr><h2>Variable Documentation</h2>
@@ -786,7 +842,7 @@ Array containing read bytes </td></tr>
 
 </div>
 </div><p>
-<hr size="1"><address style="align: right;"><small>Generated on Wed May 30 15:34:14 2007 for ERAEmbeddedRobotArmProject by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Thu May 31 15:24:18 2007 for ERAEmbeddedRobotArmProject by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.1 </small></address>
 </body>

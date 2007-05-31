@@ -102,6 +102,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libepos_8c.html#7021929a43edd48e2c70cb3c9d8fe28f">set_homing_current_threshold</a> (int id, int i)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libepos_8c.html#22ebe69b3dee01d9349f974ad3571e4e">set_RS232_baudrate</a> (int id, int val)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libepos_8c.html#4645a9cab2c972dfb1ece09342a094d0">get_mode_of_operation</a> (int id)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libepos_8c.html#98ef4d22a09aa5f9ea4fcc2e45633d82">get_velocity_control_parameter_set</a> (int id)</td></tr>
@@ -165,6 +167,8 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libepos_8c.html#f28b39c73f60e994fb2b5f5bceb90b38">get_continous_current_limit</a> (int id)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libepos_8c.html#0ba1eeb2076ecfd5df48bf6729d0ab0d">get_output_current_limit</a> (int id)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libepos_8c.html#2aa9999a3889e19aa0e7457fe14c109b">get_RS232_baudrate</a> (int id)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libepos_8c.html#e127bfe18e2360c8e5addf2a926ce55e">read_SDO_msg_handler</a> (int <a class="el" href="libcan_8c.html#3127ebf018e9da62fa464d348352037d">handle</a>, const <a class="el" href="structCPC__MSG.html">CPC_MSG_T</a> *<a class="el" href="libserial_8c.html#f41524ffd812fad35d5ed54e336455d5">cpcmsg</a>)</td></tr>
 
@@ -828,6 +832,26 @@
       <table class="memname">
         <tr>
           <td class="memname">void get_profile_deceleration           </td>
+          <td>(</td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>id</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="2aa9999a3889e19aa0e7457fe14c109b"></a><!-- doxytag: member="libepos.c::get_RS232_baudrate" ref="2aa9999a3889e19aa0e7457fe14c109b" args="(int id)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void get_RS232_baudrate           </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
           <td class="paramname"> <em>id</em>          </td>
@@ -1673,6 +1697,35 @@
 
 </div>
 </div><p>
+<a class="anchor" name="22ebe69b3dee01d9349f974ad3571e4e"></a><!-- doxytag: member="libepos.c::set_RS232_baudrate" ref="22ebe69b3dee01d9349f974ad3571e4e" args="(int id, int val)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void set_RS232_baudrate           </td>
+          <td>(</td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>val</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="5b7f73927fabd13db9761968fdfd413f"></a><!-- doxytag: member="libepos.c::set_software_maximal_position_limit" ref="5b7f73927fabd13db9761968fdfd413f" args="(int id, long int x)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1929,7 +1982,7 @@
 
 </div>
 </div><p>
-<hr size="1"><address style="align: right;"><small>Generated on Wed May 30 15:34:14 2007 for ERAEmbeddedRobotArmProject by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Thu May 31 15:24:18 2007 for ERAEmbeddedRobotArmProject by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.1 </small></address>
 </body>

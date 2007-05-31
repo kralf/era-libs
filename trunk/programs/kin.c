@@ -12,8 +12,8 @@
 
 
 
-const float theta_min[]     = {    -M_PI/6,        0,   -M_PI/9,         0, -M_PI*8/9}; //[rad]
-const float theta_max[]     = {     M_PI/2,   M_PI/2,    M_PI/2,  M_PI*2/3,  M_PI*8/9}; //[rad]
+const float theta_min[]     = {    -M_PI/2,        0,   -M_PI/9,         0, -M_PI*8/9}; //[rad]
+const float theta_max[]     = {     M_PI/6,   M_PI/2,    M_PI/2,  M_PI*2/3,  M_PI*8/9}; //[rad]
 //const float theta_vel_max[] = { M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,      M_PI}; //[rad/s]
 
 const float arm_lenght[]    = { 23.05, 22.4, 18.8 };
@@ -85,7 +85,19 @@ int theta_workspacecheck(float theta[])
 int inverse_kinematics(float tool[], 
 			float theta[])  
 {
-  tool[3] = tool[3]/180*M_PI;
+  int auto_beta1 = 0;
+  if ( tool[3] == 999 )
+    {
+      auto_beta1 = 1;
+      tool[3] = -tan(tool[0] /tool[1]);
+      printf("auto: beta1: %f", tool[3]);
+    }
+  else
+    {
+      tool[3] = tool[3]/180*M_PI;
+      printf("non auto: beta1: %f", tool[3]);
+    }
+
   tool[4] = tool[4]/180*M_PI;
 
   /* Arm parameters */
@@ -144,6 +156,11 @@ int inverse_kinematics(float tool[],
   theta[4] = theta[1] + tool[4];          
   /* this is the gripper status: */
   theta[5] = tool[5];
+
+  if (auto_beta1 == 1)
+    {
+      theta[1] = 0.001;
+    }
 
   return theta_workspacecheck( theta) ;
      
