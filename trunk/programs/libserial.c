@@ -89,7 +89,7 @@ EPOS_ERROR_SERIAL error_serial[MAXERRORSERIAL] = {
 /* funktions: **************************************************************/
 void canHWInit()
 {
-	fd = open_device();
+	fd = open_device(MODEMDEVICE);
 	clear_iobuffer(fd);
 	bzero(&cpcmsg, sizeof(cpcmsg));		/* for security reasons set all in struct to 0 */
 }
@@ -111,7 +111,7 @@ void my_send_can_message(int can_id, char *msg)
 	
 		len = receive_dataframe(fd, data_recv);
 		
-	serial2epos(can_id, data_send, data_recv);
+	serial2epos(data_send, data_recv);
 
 }
 /*-----------------------------------*/
@@ -120,7 +120,7 @@ void read_can_message()
 	// Empty!!!
 }
 /*-----------------------------------*/
-void serial2epos(int can_id, char *data_send, char *data_recv)
+void serial2epos(char *data_send, char *data_recv)
 {
 	long int error_no = 0;
 	int i;
@@ -162,7 +162,7 @@ void serial2epos(int can_id, char *data_send, char *data_recv)
 	read_SDO_msg_handler(0, &cpcmsg);
 }
 /*-----------------------------------*/
-int epos2serial(int id, char *msg, char *data)
+int epos2serial(int can_id, char *msg, char *data)
 {
 	int no_bytes_send=0;
 	
@@ -172,7 +172,7 @@ int epos2serial(int id, char *msg, char *data)
 							data[1]=0x02;	/* len-1 = 2 -> 3 data-words */	
 							data[2]=msg[2];	/* high-byte index */
 							data[3]=msg[1]; /* low-byte index */
-							data[4]=(id & 0x000000FF);	/* node-id */
+							data[4]=(can_id & 0x000000FF);	/* node-id */
 							data[5]=msg[3];	/* subindex */							
 							data[6]=msg[5];	/* high-byte of low-word data */
 							data[7]=msg[4];	/* low-byte of low-word data */
@@ -185,7 +185,7 @@ int epos2serial(int id, char *msg, char *data)
 							data[1]=0x02;	/* len-1 = 2 -> 3 data-words */	
 							data[2]=msg[2];	/* high-byte index */
 							data[3]=msg[1]; /* low-byte index */
-							data[4]=(id & 0x000000FF);	/* node-id */
+							data[4]=(can_id & 0x000000FF);	/* node-id */
 							data[5]=msg[3];	/* subindex */							
 							data[6]=msg[5];	/* high-byte of low-word data */
 							data[7]=msg[4];	/* low-byte of low-word data */
@@ -198,7 +198,7 @@ int epos2serial(int id, char *msg, char *data)
 							data[1]=0x03;		/* len-1 = 3 -> 4 data-words */	
 							data[2]=msg[2];		/* high-byte index */
 							data[3]=msg[1]; 	/* low-byte index */
-							data[4]=(id & 0x000000FF);	/* node-id */
+							data[4]=(can_id & 0x000000FF);	/* node-id */
 							data[5]=msg[3];		/* subindex */	
 							
 							/* Change of order of data-words necessary */						
@@ -216,7 +216,7 @@ int epos2serial(int id, char *msg, char *data)
 							data[1]=0x01;		/* len-1 = 1 -> 2 data-words */	
 							data[2]=msg[2];		/* high-byte index */
 							data[3]=msg[1]; 	/* low-byte index */
-							data[4]=(id & 0x000000FF);	/* node-id */
+							data[4]=(can_id & 0x000000FF);	/* node-id */
 							data[5]=msg[3];		/* subindex */							
 							data[6]=0x00;		/* reserved for adding CRC later */
 							data[7]=0x00;		/* reserved for adding CRC later */
@@ -509,11 +509,11 @@ int send_dataframe(int fd, char *data, int no_bytes_send)
 	return no_bytes_send;
 }
 /*-----------------------------------*/
-int open_device()
+int open_device(char *name)
 {
 	struct termios oldtio, newtio;
 
-	fd=open(MODEMDEVICE, O_RDWR | O_NOCTTY);//Serial Programming HOWTO
+	fd=open(name, O_RDWR | O_NOCTTY);//Serial Programming HOWTO
 	if(fd == -1)
 	{
 		perror("Error: Can't open device");

@@ -51,51 +51,78 @@
 <a name="l00056"></a>00056 
 <a name="l00057"></a>00057 <span class="comment">/* function-prototypes: */</span>
 <a name="l00058"></a>00058 
-<a name="l00067"></a>00067 <span class="keywordtype">void</span> <a class="code" href="libcan_8c.html#194bba74a22fbb720251b9228fb35ee5">canHWInit</a>();
-<a name="l00068"></a>00068 <span class="keywordtype">void</span> <a class="code" href="libserial_8c.html#36de7779c0e014e707a0865b7195ee8b">canHWEnd</a>();
-<a name="l00069"></a>00069 
-<a name="l00070"></a>00070 <span class="keywordtype">void</span> <a class="code" href="libcan_8c.html#cff9492130263abceff023e50e139d3e">my_send_can_message</a>(<span class="keywordtype">int</span> can_id, <span class="keywordtype">char</span> *msg);
-<a name="l00071"></a>00071 <span class="keywordtype">void</span> <a class="code" href="libcan_8c.html#ecf92da51b16707d386f41c13e46d920">read_can_message</a>();
-<a name="l00072"></a>00072 
-<a name="l00073"></a>00073 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#8a7fe2e394f427a30595d5ddba44b93c">epos2serial</a>(<span class="keywordtype">int</span>, <span class="keywordtype">char</span> *, <span class="keywordtype">char</span> *);
-<a name="l00074"></a>00074 <span class="keywordtype">void</span> <a class="code" href="libserial_8c.html#c117caf8b5f5927ca3826c9e886cb524">serial2epos</a>(<span class="keywordtype">int</span> can_id, <span class="keywordtype">char</span> *data_send, <span class="keywordtype">char</span> *data_recv);
-<a name="l00075"></a>00075 
-<a name="l00076"></a>00076 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#a4cbfb6dcebfe97b9923cbc44394cc1f">open_device</a>();
-<a name="l00077"></a>00077 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#c937b2dcb6184b696417205b0b9d6e2d">close_device</a>(<span class="keywordtype">int</span>);
-<a name="l00078"></a>00078 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#df927a3fc908e85030371138390586f2">receive_dataframe</a>(<span class="keywordtype">int</span>, <span class="keywordtype">char</span> *);
-<a name="l00079"></a>00079 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#f7eb6eb28825a220b69ccccfb897574a">send_dataframe</a>(<span class="keywordtype">int</span>, <span class="keywordtype">char</span> *, <span class="keywordtype">int</span>);
-<a name="l00080"></a>00080 
-<a name="l00091"></a>00091 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#dcb6593a9808b7174045a39a7e37edcc">read_byte</a>( <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, <span class="keywordtype">char</span> *buffer);
-<a name="l00093"></a>00093 
-<a name="l00094"></a>00094 
-<a name="l00101"></a>00101 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#e7e57f53a58caeb4c04b9154cf49bc68">write_byte</a>( <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, <span class="keywordtype">char</span> data);
-<a name="l00103"></a>00103 
+<a name="l00064"></a>00064 <span class="keywordtype">void</span> <a class="code" href="libcan_8c.html#194bba74a22fbb720251b9228fb35ee5">canHWInit</a>();
+<a name="l00065"></a>00065 
+<a name="l00066"></a>00066 
+<a name="l00072"></a>00072 <span class="keywordtype">void</span> <a class="code" href="libserial_8c.html#36de7779c0e014e707a0865b7195ee8b">canHWEnd</a>();
+<a name="l00073"></a>00073 
+<a name="l00080"></a>00080 <span class="keywordtype">void</span> <a class="code" href="libcan_8c.html#cff9492130263abceff023e50e139d3e">my_send_can_message</a>( <span class="keywordtype">int</span> can_id, <span class="keywordtype">char</span> *msg);
+<a name="l00082"></a>00082 
+<a name="l00083"></a>00083 
+<a name="l00090"></a>00090 <span class="keywordtype">void</span> <a class="code" href="libcan_8c.html#ecf92da51b16707d386f41c13e46d920">read_can_message</a>();
+<a name="l00091"></a>00091 
+<a name="l00092"></a>00092 
+<a name="l00101"></a>00101 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#1dd32d2d4b8d7741ad83f5c6416afb5f">epos2serial</a>( <span class="keywordtype">int</span> can_id,  <span class="keywordtype">char</span> *msg, <span class="keywordtype">char</span> *data);
 <a name="l00104"></a>00104 
-<a name="l00111"></a>00111 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#5ed7e2725094cef2ec0b0fee8790de0f">write_string</a>( <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> len);
+<a name="l00105"></a>00105 
+<a name="l00112"></a>00112 <span class="keywordtype">void</span> <a class="code" href="libserial_8c.html#72010937bbb6c98487230d9ea8441bfc">serial2epos</a>( <span class="keywordtype">char</span> *data_send,  <span class="keywordtype">char</span> *data_recv);
 <a name="l00114"></a>00114 
 <a name="l00115"></a>00115 
-<a name="l00121"></a>00121 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#141d766865f933022186e50952ab74f6">c2w</a>( <span class="keywordtype">char</span> *data, <a class="code" href="libserial_8h.html#285e72252c100e2508e4e933a0738f2b">word</a> *buffer, <span class="keywordtype">int</span> no_chars);
-<a name="l00124"></a>00124 
+<a name="l00124"></a>00124 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#ca0d986b0584d0115ef5d4034e221c72">open_device</a>( <span class="keywordtype">char</span> *name);
 <a name="l00125"></a>00125 
-<a name="l00131"></a>00131 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#a194ecb617a84a5b437cd1297bcbe2fc">w2c</a>( <a class="code" href="libserial_8h.html#285e72252c100e2508e4e933a0738f2b">word</a> *buffer, <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> no_words);
+<a name="l00126"></a>00126 
+<a name="l00133"></a>00133 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#c937b2dcb6184b696417205b0b9d6e2d">close_device</a>( <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>);
 <a name="l00134"></a>00134 
 <a name="l00135"></a>00135 
-<a name="l00144"></a>00144 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#63612e304f3b1077475fa6d5c137a4d9">chg_byte_order</a>( <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> no_chars);
+<a name="l00136"></a>00136 
+<a name="l00137"></a>00137 
+<a name="l00138"></a>00138 
+<a name="l00139"></a>00139 
+<a name="l00140"></a>00140 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#f7eb6eb28825a220b69ccccfb897574a">send_dataframe</a>(<span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> no_bytes_send);
+<a name="l00141"></a>00141 
+<a name="l00142"></a>00142 
+<a name="l00143"></a>00143 
+<a name="l00144"></a>00144 
+<a name="l00145"></a>00145 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#df927a3fc908e85030371138390586f2">receive_dataframe</a>(<span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, <span class="keywordtype">char</span> *data);
 <a name="l00146"></a>00146 
 <a name="l00147"></a>00147 
 <a name="l00148"></a>00148 
-<a name="l00157"></a>00157 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#ff3821b5df23320df3ed609af13ce8ee">chg_word_order</a>( <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> no_chars);
-<a name="l00159"></a>00159 
-<a name="l00160"></a>00160 
-<a name="l00171"></a>00171 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#b16a3f3ef787fbc0232637959dd2cb9b">calc_crc</a>( <span class="keywordtype">char</span> *data, <span class="keywordtype">char</span> *crc_value, <span class="keywordtype">int</span> no_char); 
-<a name="l00174"></a>00174 
-<a name="l00175"></a>00175 
-<a name="l00181"></a>00181 <a class="code" href="libserial_8h.html#285e72252c100e2508e4e933a0738f2b">word</a> <a class="code" href="libserial_8c.html#ec95f9f7f3f7f8c204fc27ed74a58c13">crc_alg</a>( <a class="code" href="libserial_8h.html#285e72252c100e2508e4e933a0738f2b">word</a> *buffer,  <span class="keywordtype">int</span> no);
-<a name="l00183"></a>00183 
-<a name="l00184"></a>00184 
-<a name="l00191"></a>00191 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#8c7335ca2e0c24ad6ca9f8ed6ec9f658">clear_iobuffer</a>( <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>);
-<a name="l00192"></a>00192 
-</pre></div><hr size="1"><address style="align: right;"><small>Generated on Thu May 31 15:24:18 2007 for ERAEmbeddedRobotArmProject by&nbsp;
+<a name="l00149"></a>00149 
+<a name="l00150"></a>00150 
+<a name="l00151"></a>00151 
+<a name="l00152"></a>00152 
+<a name="l00153"></a>00153 
+<a name="l00164"></a>00164 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#dcb6593a9808b7174045a39a7e37edcc">read_byte</a>( <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, <span class="keywordtype">char</span> *buffer);
+<a name="l00166"></a>00166 
+<a name="l00167"></a>00167 
+<a name="l00174"></a>00174 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#e7e57f53a58caeb4c04b9154cf49bc68">write_byte</a>( <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, <span class="keywordtype">char</span> data);
+<a name="l00176"></a>00176 
+<a name="l00177"></a>00177 
+<a name="l00184"></a>00184 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#5ed7e2725094cef2ec0b0fee8790de0f">write_string</a>( <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> len);
+<a name="l00187"></a>00187 
+<a name="l00188"></a>00188 
+<a name="l00194"></a>00194 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#141d766865f933022186e50952ab74f6">c2w</a>( <span class="keywordtype">char</span> *data, <a class="code" href="libserial_8h.html#285e72252c100e2508e4e933a0738f2b">word</a> *buffer, <span class="keywordtype">int</span> no_chars);
+<a name="l00197"></a>00197 
+<a name="l00198"></a>00198 
+<a name="l00204"></a>00204 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#a194ecb617a84a5b437cd1297bcbe2fc">w2c</a>( <a class="code" href="libserial_8h.html#285e72252c100e2508e4e933a0738f2b">word</a> *buffer, <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> no_words);
+<a name="l00207"></a>00207 
+<a name="l00208"></a>00208 
+<a name="l00217"></a>00217 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#63612e304f3b1077475fa6d5c137a4d9">chg_byte_order</a>( <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> no_chars);
+<a name="l00219"></a>00219 
+<a name="l00220"></a>00220 
+<a name="l00221"></a>00221 
+<a name="l00230"></a>00230 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#ff3821b5df23320df3ed609af13ce8ee">chg_word_order</a>( <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> no_chars);
+<a name="l00232"></a>00232 
+<a name="l00233"></a>00233 
+<a name="l00244"></a>00244 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#b16a3f3ef787fbc0232637959dd2cb9b">calc_crc</a>( <span class="keywordtype">char</span> *data, <span class="keywordtype">char</span> *crc_value, <span class="keywordtype">int</span> no_char); 
+<a name="l00247"></a>00247 
+<a name="l00248"></a>00248 
+<a name="l00254"></a>00254 <a class="code" href="libserial_8h.html#285e72252c100e2508e4e933a0738f2b">word</a> <a class="code" href="libserial_8c.html#ec95f9f7f3f7f8c204fc27ed74a58c13">crc_alg</a>( <a class="code" href="libserial_8h.html#285e72252c100e2508e4e933a0738f2b">word</a> *buffer,  <span class="keywordtype">int</span> no);
+<a name="l00256"></a>00256 
+<a name="l00257"></a>00257 
+<a name="l00264"></a>00264 <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#8c7335ca2e0c24ad6ca9f8ed6ec9f658">clear_iobuffer</a>( <span class="keywordtype">int</span> <a class="code" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>);
+<a name="l00265"></a>00265 
+</pre></div><hr size="1"><address style="align: right;"><small>Generated on Thu May 31 20:35:32 2007 for ERAEmbeddedRobotArmProject by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.1 </small></address>
 </body>

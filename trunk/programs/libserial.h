@@ -64,25 +64,92 @@ typedef unsigned short word;
 void canHWInit();
 
 
-/** Stops the serial connection by opening the device and clearing the IO-buffer.
+/** Stop the serial connection by closing the device.
 *
 *	\note
 *	Same function name in libserial.c than in libcan.c to easy switch from CAN to RS232 using libepos.c
 */
-
-
 void canHWEnd();
 
-void my_send_can_message(int can_id, char *msg);
+/** Send a message to the EPOS controller. This function will be called by libepos.c and calls the functions
+*	which do the conversion of the msg-array from libepos.c to libserial.c and backwards.
+*
+*	\note
+*	Same function name in libserial.c than in libcan.c to easy switch from CAN to RS232 using libepos.c
+*/
+void my_send_can_message(/** Native CAN-ID */ int can_id,
+						/** Array of char representing msg in libepos.c */ char *msg);
+
+
+/** Read a message to the EPOS controller. This function will be called by libepos.c, but is empty in libserial.c
+*	because there are no unexpected incoming messages in serial communication.
+*
+*	\note
+*	Same function name in libserial.c than in libcan.c to easy switch from CAN to RS232 using libepos.c
+*/
 void read_can_message();
 
-int epos2serial(int, char *, char *);
-void serial2epos(int can_id, char *data_send, char *data_recv);
 
-int open_device();
-int close_device(int);
-int receive_dataframe(int, char *);
-int send_dataframe(int, char *, int);
+/** Convert the msg-array defined in libepos.c to the data-array defined in libserial.c.
+* 
+*	\note
+*	This conversion is necessary, because msg-array in libepos.c relies strongly on CAN protocol.
+*
+*	\return
+*	Number of bytes in the dataframe to send
+*/
+int epos2serial(/** Node-ID */ int can_id, 
+				/** Array of char containig the msg-array */ char *msg,
+				/** Array of char to store converted data-array*/ char *data);
+
+
+/** Convert the data-array defined in libserial.c to the cpcmsg-structure defined in libepos.c. This function 
+*	also calls read_SDO_msg_handler() in libepos.c, which handles the incoming messages.
+* 
+*	\note
+*	This conversion is necessary, because cpcmsg-structure in libepos.c assumes that the message was received by CAN protocol.
+*/
+void serial2epos(/** Array of char representing the dataframe sent to EPOS */ char *data_send, 
+				/** Array of char representing the dataframe received from EPOS */ char *data_recv);
+
+
+/** Open a device using termios for configuration.
+*
+*	\warning
+*	Function exits program, if there is no/wrong device!
+*
+* 	\return
+*	File descriptor
+*/
+int open_device(/** Name of the device (/dev/ttyS0 for first serial port) */ char *name);
+
+
+/** Close an open device.
+**
+* 	\return
+*	- 0: Device successfully closed
+*	- -1: Error closing device
+*/
+int close_device(/** File descriptor */ int fd);
+
+
+
+
+
+
+int send_dataframe(int fd, char *data, int no_bytes_send);
+
+
+
+
+int receive_dataframe(int fd, char *data);
+
+
+
+
+
+
+
 
 /** Read bytes from device.
 *

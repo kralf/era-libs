@@ -55,17 +55,17 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#ecf92da51b16707d386f41c13e46d920">read_can_message</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#5e39603b96f0217dd4e1430371f598c0">epos2serial</a> (int, char *, char *)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#1dd32d2d4b8d7741ad83f5c6416afb5f">epos2serial</a> (int can_id, char *msg, char *data)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#c117caf8b5f5927ca3826c9e886cb524">serial2epos</a> (int can_id, char *data_send, char *data_recv)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#72010937bbb6c98487230d9ea8441bfc">serial2epos</a> (char *data_send, char *data_recv)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#a4cbfb6dcebfe97b9923cbc44394cc1f">open_device</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#ca0d986b0584d0115ef5d4034e221c72">open_device</a> (char *name)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#6ce461217aa174d8fe33bcc921b208c9">close_device</a> (int)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#c937b2dcb6184b696417205b0b9d6e2d">close_device</a> (int <a class="el" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#f4b8523c070b0917a106bd71e45076a5">receive_dataframe</a> (int, char *)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#f7eb6eb28825a220b69ccccfb897574a">send_dataframe</a> (int <a class="el" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, char *data, int no_bytes_send)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#f8e85774496ca47467d934af62b15d5a">send_dataframe</a> (int, char *, int)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#df927a3fc908e85030371138390586f2">receive_dataframe</a> (int <a class="el" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, char *data)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="libserial_8h.html#dcb6593a9808b7174045a39a7e37edcc">read_byte</a> (int <a class="el" href="libserial_8c.html#6f8059414f0228f0256115e024eeed4b">fd</a>, char *buffer)</td></tr>
 
@@ -355,6 +355,8 @@ Number of bytes in the dataframe </td></tr>
 <div class="memdoc">
 
 <p>
+Stop the serial connection by closing the device.<p>
+<dl class="note" compact><dt><b>Note:</b></dt><dd>Same function name in <a class="el" href="libserial_8c.html">libserial.c</a> than in <a class="el" href="libcan_8c.html">libcan.c</a> to easy switch from CAN to RS232 using <a class="el" href="libepos_8c.html">libepos.c</a> </dd></dl>
 
 </div>
 </div><p>
@@ -374,7 +376,7 @@ Number of bytes in the dataframe </td></tr>
 <div class="memdoc">
 
 <p>
-Initialize the serial port<p>
+Initialize the serial connection by opening the device and clearing the IO-buffer.<p>
 <dl class="note" compact><dt><b>Note:</b></dt><dd>Same function name in <a class="el" href="libserial_8c.html">libserial.c</a> than in <a class="el" href="libcan_8c.html">libcan.c</a> to easy switch from CAN to RS232 using <a class="el" href="libepos_8c.html">libepos.c</a> </dd></dl>
 
 </div>
@@ -486,7 +488,7 @@ File descriptor </td></tr>
 </dl>
 </div>
 </div><p>
-<a class="anchor" name="6ce461217aa174d8fe33bcc921b208c9"></a><!-- doxytag: member="libserial.h::close_device" ref="6ce461217aa174d8fe33bcc921b208c9" args="(int)" -->
+<a class="anchor" name="c937b2dcb6184b696417205b0b9d6e2d"></a><!-- doxytag: member="libserial.h::close_device" ref="c937b2dcb6184b696417205b0b9d6e2d" args="(int fd)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -494,7 +496,7 @@ File descriptor </td></tr>
           <td class="memname">int close_device           </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
-          <td class="paramname">          </td>
+          <td class="paramname"> <em>fd</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td width="100%"></td>
         </tr>
@@ -503,7 +505,16 @@ File descriptor </td></tr>
 <div class="memdoc">
 
 <p>
-
+Close an open device.<p>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><ul>
+<li>0: Device successfully closed</li><li>-1: Error closing device </li></ul>
+</dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>fd</em>&nbsp;</td><td>
+File descriptor </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="ec95f9f7f3f7f8c204fc27ed74a58c13"></a><!-- doxytag: member="libserial.h::crc_alg" ref="ec95f9f7f3f7f8c204fc27ed74a58c13" args="(word *buffer, int no)" -->
@@ -544,7 +555,7 @@ Number of words in the dataframe </td></tr>
 </dl>
 </div>
 </div><p>
-<a class="anchor" name="5e39603b96f0217dd4e1430371f598c0"></a><!-- doxytag: member="libserial.h::epos2serial" ref="5e39603b96f0217dd4e1430371f598c0" args="(int, char *, char *)" -->
+<a class="anchor" name="1dd32d2d4b8d7741ad83f5c6416afb5f"></a><!-- doxytag: member="libserial.h::epos2serial" ref="1dd32d2d4b8d7741ad83f5c6416afb5f" args="(int can_id, char *msg, char *data)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -552,19 +563,19 @@ Number of words in the dataframe </td></tr>
           <td class="memname">int epos2serial           </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"> <em>can_id</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">char *&nbsp;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"> <em>msg</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">char *&nbsp;</td>
-          <td class="paramname"></td><td>&nbsp;</td>
+          <td class="paramname"> <em>data</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -576,7 +587,19 @@ Number of words in the dataframe </td></tr>
 <div class="memdoc">
 
 <p>
-
+Convert the msg-array defined in <a class="el" href="libepos_8c.html">libepos.c</a> to the data-array defined in <a class="el" href="libserial_8c.html">libserial.c</a>.<p>
+<dl class="note" compact><dt><b>Note:</b></dt><dd>This conversion is necessary, because msg-array in <a class="el" href="libepos_8c.html">libepos.c</a> relies strongly on CAN protocol.</dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of bytes in the dataframe to send </dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>can_id</em>&nbsp;</td><td>
+Node-ID </td></tr>
+<tr><td valign="top"><em>msg</em>&nbsp;</td><td>
+Array of char containig the msg-array </td></tr>
+<tr><td valign="top"><em>data</em>&nbsp;</td><td>
+Array of char to store converted data-array </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="cff9492130263abceff023e50e139d3e"></a><!-- doxytag: member="libserial.h::my_send_can_message" ref="cff9492130263abceff023e50e139d3e" args="(int can_id, char *msg)" -->
@@ -605,17 +628,27 @@ Number of words in the dataframe </td></tr>
 <div class="memdoc">
 
 <p>
-
+Send a message to the EPOS controller. This function will be called by <a class="el" href="libepos_8c.html">libepos.c</a> and calls the functions which do the conversion of the msg-array from <a class="el" href="libepos_8c.html">libepos.c</a> to <a class="el" href="libserial_8c.html">libserial.c</a> and backwards.<p>
+<dl class="note" compact><dt><b>Note:</b></dt><dd>Same function name in <a class="el" href="libserial_8c.html">libserial.c</a> than in <a class="el" href="libcan_8c.html">libcan.c</a> to easy switch from CAN to RS232 using <a class="el" href="libepos_8c.html">libepos.c</a> </dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>can_id</em>&nbsp;</td><td>
+Native CAN-ID </td></tr>
+<tr><td valign="top"><em>msg</em>&nbsp;</td><td>
+Array of char representing msg in <a class="el" href="libepos_8c.html">libepos.c</a> </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
-<a class="anchor" name="a4cbfb6dcebfe97b9923cbc44394cc1f"></a><!-- doxytag: member="libserial.h::open_device" ref="a4cbfb6dcebfe97b9923cbc44394cc1f" args="()" -->
+<a class="anchor" name="ca0d986b0584d0115ef5d4034e221c72"></a><!-- doxytag: member="libserial.h::open_device" ref="ca0d986b0584d0115ef5d4034e221c72" args="(char *name)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">int open_device           </td>
           <td>(</td>
-          <td class="paramname">          </td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>name</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td width="100%"></td>
         </tr>
@@ -624,7 +657,15 @@ Number of words in the dataframe </td></tr>
 <div class="memdoc">
 
 <p>
-
+Open a device using termios for configuration.<p>
+<dl class="warning" compact><dt><b>Warning:</b></dt><dd>Function exits program, if there is no/wrong device!</dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>File descriptor </dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>name</em>&nbsp;</td><td>
+Name of the device (/dev/ttyS0 for first serial port) </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="dcb6593a9808b7174045a39a7e37edcc"></a><!-- doxytag: member="libserial.h::read_byte" ref="dcb6593a9808b7174045a39a7e37edcc" args="(int fd, char *buffer)" -->
@@ -684,10 +725,12 @@ Array of char containing read bytes </td></tr>
 <div class="memdoc">
 
 <p>
+Read a message to the EPOS controller. This function will be called by <a class="el" href="libepos_8c.html">libepos.c</a>, but is empty in <a class="el" href="libserial_8c.html">libserial.c</a> because there are no unexpected incoming messages in serial communication.<p>
+<dl class="note" compact><dt><b>Note:</b></dt><dd>Same function name in <a class="el" href="libserial_8c.html">libserial.c</a> than in <a class="el" href="libcan_8c.html">libcan.c</a> to easy switch from CAN to RS232 using <a class="el" href="libepos_8c.html">libepos.c</a> </dd></dl>
 
 </div>
 </div><p>
-<a class="anchor" name="f4b8523c070b0917a106bd71e45076a5"></a><!-- doxytag: member="libserial.h::receive_dataframe" ref="f4b8523c070b0917a106bd71e45076a5" args="(int, char *)" -->
+<a class="anchor" name="df927a3fc908e85030371138390586f2"></a><!-- doxytag: member="libserial.h::receive_dataframe" ref="df927a3fc908e85030371138390586f2" args="(int fd, char *data)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -695,13 +738,13 @@ Array of char containing read bytes </td></tr>
           <td class="memname">int receive_dataframe           </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"> <em>fd</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">char *&nbsp;</td>
-          <td class="paramname"></td><td>&nbsp;</td>
+          <td class="paramname"> <em>data</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -716,7 +759,7 @@ Array of char containing read bytes </td></tr>
 
 </div>
 </div><p>
-<a class="anchor" name="f8e85774496ca47467d934af62b15d5a"></a><!-- doxytag: member="libserial.h::send_dataframe" ref="f8e85774496ca47467d934af62b15d5a" args="(int, char *, int)" -->
+<a class="anchor" name="f7eb6eb28825a220b69ccccfb897574a"></a><!-- doxytag: member="libserial.h::send_dataframe" ref="f7eb6eb28825a220b69ccccfb897574a" args="(int fd, char *data, int no_bytes_send)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -724,19 +767,19 @@ Array of char containing read bytes </td></tr>
           <td class="memname">int send_dataframe           </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"> <em>fd</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">char *&nbsp;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"> <em>data</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&nbsp;</td>
-          <td class="paramname"></td><td>&nbsp;</td>
+          <td class="paramname"> <em>no_bytes_send</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -751,19 +794,13 @@ Array of char containing read bytes </td></tr>
 
 </div>
 </div><p>
-<a class="anchor" name="c117caf8b5f5927ca3826c9e886cb524"></a><!-- doxytag: member="libserial.h::serial2epos" ref="c117caf8b5f5927ca3826c9e886cb524" args="(int can_id, char *data_send, char *data_recv)" -->
+<a class="anchor" name="72010937bbb6c98487230d9ea8441bfc"></a><!-- doxytag: member="libserial.h::serial2epos" ref="72010937bbb6c98487230d9ea8441bfc" args="(char *data_send, char *data_recv)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void serial2epos           </td>
           <td>(</td>
-          <td class="paramtype">int&nbsp;</td>
-          <td class="paramname"> <em>can_id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">char *&nbsp;</td>
           <td class="paramname"> <em>data_send</em>, </td>
         </tr>
@@ -783,7 +820,16 @@ Array of char containing read bytes </td></tr>
 <div class="memdoc">
 
 <p>
-
+Convert the data-array defined in <a class="el" href="libserial_8c.html">libserial.c</a> to the cpcmsg-structure defined in <a class="el" href="libepos_8c.html">libepos.c</a>. This function also calls <a class="el" href="libcan_8h.html#e127bfe18e2360c8e5addf2a926ce55e">read_SDO_msg_handler()</a> in <a class="el" href="libepos_8c.html">libepos.c</a>, which handles the incoming messages.<p>
+<dl class="note" compact><dt><b>Note:</b></dt><dd>This conversion is necessary, because cpcmsg-structure in <a class="el" href="libepos_8c.html">libepos.c</a> assumes that the message was received by CAN protocol. </dd></dl>
+<dl compact><dt><b>Parameters: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>data_send</em>&nbsp;</td><td>
+Array of char representing the dataframe sent to EPOS </td></tr>
+<tr><td valign="top"><em>data_recv</em>&nbsp;</td><td>
+Array of char representing the dataframe received from EPOS </td></tr>
+</table>
+</dl>
 </div>
 </div><p>
 <a class="anchor" name="a194ecb617a84a5b437cd1297bcbe2fc"></a><!-- doxytag: member="libserial.h::w2c" ref="a194ecb617a84a5b437cd1297bcbe2fc" args="(word *buffer, char *data, int no_words)" -->
@@ -920,7 +966,7 @@ Number of chars to send </td></tr>
 </dl>
 </div>
 </div><p>
-<hr size="1"><address style="align: right;"><small>Generated on Thu May 31 15:24:18 2007 for ERAEmbeddedRobotArmProject by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Thu May 31 20:35:32 2007 for ERAEmbeddedRobotArmProject by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.1 </small></address>
 </body>

@@ -31,6 +31,8 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8c.html#df8949232bc58aac9e46464d6a56b478">MCI_MAX_VEL_INTERVALS</a>&nbsp;&nbsp;&nbsp;500</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8c.html#b04bb1a195724f1f15ebcfaaf8d5b2b5">trajectory_auto_angle</a> (float via_points[][6], int number_of_via_points)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8c.html#bdb203347cdf7cd3f447cf42cde73b8a">mci_slope</a> (float via_points[][6], int number_of_via_points, float m[][6])</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">float&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="trajectory_8c.html#6eb8515711848db191bbb0a115ded1af">mci_eval</a> (float p_a, float p_b, float m_a, float m_b, float t)</td></tr>
@@ -328,6 +330,35 @@ Monotone Cubic Interpolation:<br>
 </dl>
 </div>
 </div><p>
+<a class="anchor" name="b04bb1a195724f1f15ebcfaaf8d5b2b5"></a><!-- doxytag: member="trajectory.c::trajectory_auto_angle" ref="b04bb1a195724f1f15ebcfaaf8d5b2b5" args="(float via_points[][6], int number_of_via_points)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void trajectory_auto_angle           </td>
+          <td>(</td>
+          <td class="paramtype">float&nbsp;</td>
+          <td class="paramname"> <em>via_points</em>[][6], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>number_of_via_points</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
 <hr><h2>Variable Documentation</h2>
 <a class="anchor" name="12df69b43dfb50af76c37cd0896ad0a6"></a><!-- doxytag: member="trajectory.c::theta_vel_max" ref="12df69b43dfb50af76c37cd0896ad0a6" args="[]" -->
 <div class="memitem">
@@ -344,7 +375,7 @@ Monotone Cubic Interpolation:<br>
 Limits of angular velocities according to BlueBotics specification 
 </div>
 </div><p>
-<hr size="1"><address style="align: right;"><small>Generated on Thu May 31 15:24:18 2007 for ERAEmbeddedRobotArmProject by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Thu May 31 20:35:32 2007 for ERAEmbeddedRobotArmProject by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.1 </small></address>
 </body>
