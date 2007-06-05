@@ -30,6 +30,9 @@ typedef struct {
 } t_cartesian;
 
 
+void auto_beta1(float tool[]
+		);
+
 
 /** Forward kinematic calculations */
 void forward_kinematics(float tool[],   /**< (Output) array contains the end effector 

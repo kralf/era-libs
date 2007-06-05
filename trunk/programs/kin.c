@@ -1,4 +1,4 @@
-/*	Kinematic system model for BlueBotics ERA-5/1
+﻿/*	Kinematic system model for BlueBotics ERA-5/1
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
  * 	Last change:    28.5.2007
@@ -82,22 +82,25 @@ int theta_workspacecheck(float theta[])
     
 
 
+void auto_beta1(float tool[])
+{
+
+  if ( tool[3] == 999 )
+    {
+      tool[3] = -tan(tool[0] /tool[1]);
+      printf("auto: beta1: %f\n", tool[3]);
+    }
+}
+
+
+
+
+
 int inverse_kinematics(float tool[], 
 			float theta[])  
 {
-  int auto_beta1 = 0;
-  if ( tool[3] == 999 )
-    {
-      auto_beta1 = 1;
-      tool[3] = -tan(tool[0] /tool[1]);
-      printf("auto: beta1: %f", tool[3]);
-    }
-  else
-    {
-      tool[3] = tool[3]/180*M_PI;
-      printf("non auto: beta1: %f", tool[3]);
-    }
 
+  tool[3] = tool[3]/180*M_PI;
   tool[4] = tool[4]/180*M_PI;
 
   /* Arm parameters */
@@ -157,10 +160,13 @@ int inverse_kinematics(float tool[],
   /* this is the gripper status: */
   theta[5] = tool[5];
 
-  if (auto_beta1 == 1)
+  if ( theta[1]> -0.1 && theta[1]<0 )
     {
+      printf("theta2 exceeded %f\n", theta[1]);
       theta[1] = 0.001;
     }
+
+      printf("theta2 not exceeded %f\n", theta[1]);
 
   return theta_workspacecheck( theta) ;
      
