@@ -44,7 +44,7 @@
 #include <termios.h>
 #include <fcntl.h>
 
-#define ASL_DEBUG
+//#define ASL_DEBUG
 //#define DEBUG
 #include "pdebug.h"
 
@@ -444,12 +444,12 @@ int send_dataframe(int fd, char *data, int no_bytes_send)
 		if(ret == 1 && buffer == FAILED)
 		{
 			PDEBUG_SNIP("Done. Received 'FAILED'.\nEPOS seems not to be ready!!!\n");
-			continue;
+			//			continue;
 		}
 		if(ret == 0 )
 		{
 			PDEBUG_SNIP("ERROR: EPOS doesn't answer!!!\n");
-			continue;
+			//			continue;
 		}
 		PDEBUG_SNIP("ERROR: Unkown value. Will try again!!!\n");
 	}
@@ -586,7 +586,8 @@ int read_byte(int fd, char *buffer)
 	}
 	if(ret == 0)
 	{
-		PDEBUG_SNIP("ERROR: time-out at reading one Byte\n");
+		printf("ERROR: time-out at reading one Byte\n");
+
 		return 0;
 	}	
 	perror("Failure at read_byte");

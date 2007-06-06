@@ -1,4 +1,4 @@
-﻿/*	Kinematic system model for BlueBotics ERA-5/1
+/*	Kinematic system model for BlueBotics ERA-5/1
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
  * 	Last change:    28.5.2007
@@ -70,7 +70,7 @@ int theta_workspacecheck(float theta[])
   int i;
   for(i=0; i<=4; i++)
     {
-      if( !(theta[i] > theta_min[i] && theta[i] < theta_max[i]) ) 
+      if( !(theta[i] >= theta_min[i] && theta[i] <= theta_max[i]) ) 
 	{
 	  outside = 1;
 	  printf("ERROR: pose out of work space: theta%i = %f\n\n", i+1, theta[i]*180/M_PI);
@@ -87,7 +87,7 @@ void auto_beta1(float tool[])
 
   if ( tool[3] == 999 )
     {
-      tool[3] = -tan(tool[0] /tool[1]);
+      tool[3] = -tan(tool[0] /tool[1])*180/M_PI;
       printf("auto: beta1: %f\n", tool[3]);
     }
 }
@@ -162,11 +162,13 @@ int inverse_kinematics(float tool[],
 
   if ( theta[1]> -0.1 && theta[1]<0 )
     {
-      printf("theta2 exceeded %f\n", theta[1]);
+      //printf("theta2 exceeded %f\n", theta[1]);
       theta[1] = 0.001;
     }
-
-      printf("theta2 not exceeded %f\n", theta[1]);
+  else
+    {
+      //printf("theta2 not exceeded %f\n", theta[1]);
+    }
 
   return theta_workspacecheck( theta) ;
      

@@ -1,4 +1,4 @@
-﻿/*	Implementing velocity mode
+/*	Implementing velocity mode
  *
  * 	Fritz Stöckli   stfritz@ethz.ch
  * 	Last change:    28.5.2007
@@ -51,36 +51,31 @@ int main(void)
   struct timezone timez;		
 
   /* follow circle */
-  float r = 1;
+  float r = 2;
   float sp[] = {9.687978, 30.237083, 23.513540, 11.739130, 10.5, 0}; //starting point
-  int number_of_via_points = 16;
-  float tool_path[MCI_MAX_VIA_POINTS][6] = { {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] },
-					     {sp[0], sp[1], sp[2], 999.0, sp[4], sp[5] },
-					     {sp[0], sp[1], sp[2], 999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(M_PI/6)),    sp[1], sp[2]+r*sin(M_PI/6),    999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(M_PI/3)),    sp[1], sp[2]+r*sin(M_PI/3),    999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(M_PI/2)),    sp[1], sp[2]+r*sin(M_PI/2),    999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(4*M_PI/6)),  sp[1], sp[2]+r*sin(4*M_PI/6),  999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(5*M_PI/6)),  sp[1], sp[2]+r*sin(5*M_PI/6),  999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(M_PI)),      sp[1], sp[2]+r*sin(M_PI),      999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(7*M_PI/6)),  sp[1], sp[2]+r*sin(7*M_PI/6),  999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(8*M_PI/6)),  sp[1], sp[2]+r*sin(8*M_PI/6),  999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(9*M_PI/6)),  sp[1], sp[2]+r*sin(9*M_PI/6),  999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(10*M_PI/6)), sp[1], sp[2]+r*sin(10*M_PI/6), 999.0, sp[4], sp[5] },
-					     {sp[0]+r*(1-cos(11*M_PI/6)), sp[1], sp[2]+r*sin(11*M_PI/6), 999.0, sp[4], sp[5] },
-					     {sp[0], sp[1], sp[2], 999.0, sp[4], sp[5] },
-					     {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] } };		     
+  float pause;
 
+
+  int number_of_via_points = 8;
+  float tool_path[MCI_MAX_VIA_POINTS][6] = { {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] },
+					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] },
+					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] },
+					     {sp[0]-5, sp[1]+5, sp[2]+10, 0, 0, sp[5] },
+					     {sp[0]-5, sp[1]+5, sp[2]+10, 0, 0, sp[5] },
+					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] },
+					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] },
+					     {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] }};
   
+  float tool_path_time[] = {2, 4, 2, 2, 2, 2, 2 };
   //  trajectory_auto_angle( tool_path,  number_of_via_points);
 
   for(i=0; i<MCI_MAX_VIA_POINTS; i++)
     auto_beta1(tool_path[i]);
 
-  float tool_path_time[MCI_MAX_VIA_POINTS-1] = {1, 0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1 };
+
   
   float theta_vel[MCI_MAX_VEL_INTERVALS][6];
-  float dt = 0.2; //seconds
+  float dt = 0.15; //seconds
 
   int number_vel_intervals;
 
@@ -125,9 +120,20 @@ int main(void)
   for(i=0; i<number_vel_intervals; i++)
     {
       kin2s_velocity_mode_set( theta_vel[i]);
+      //kin2s_velocity_mode_set_zero();
+      //      printf("new velocity sent\n\n");
       error = gettimeofday(&time2, &timez);
-      usleep( dt*1000000 - (time2.tv_usec-time1.tv_usec) );
-      printf("sleep %f\n", ( dt*1000000 - (time2.tv_usec-time1.tv_usec) ) );
+      pause = ( dt*1000000-((1000000*time2.tv_sec+time2.tv_usec)-
+			    (1000000*time1.tv_sec + time1.tv_usec)));
+      printf("sleep %f\n", pause );
+      if( 0 < pause && pause < dt*1000000 )
+	usleep( pause );
+      else
+	{
+	  printf("\t\t\t\t\ttime2.tv_sec %i, time2.tv_usec %i, time1.tv_sec %i, time1.tv_usec %i\n\n\n\n",
+		 (int)time2.tv_sec , (int)time2.tv_usec , (int)time1.tv_sec , (int)time1.tv_usec);
+	}
+      
       error = gettimeofday(&time1, &timez);
     }
   kin2s_velocity_mode_set_zero();

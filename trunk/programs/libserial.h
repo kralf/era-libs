@@ -31,7 +31,7 @@
 
 /** Default baudrate using EPOS.
 */
-#define BAUDRATE B38400
+#define BAUDRATE B57600
 /** Current serial device for communication.
 */
 #define MODEMDEVICE "/dev/ttyS0"
@@ -40,7 +40,7 @@
 #define TIMEOUTSEC 0
 /** Default timeout [nanoseconds] during reading form serial device (used by select()).
 */
-#define TIMEOUTNSEC 500000 /* 500ms */
+#define TIMEOUTNSEC 10000 /* 500ms */
 /** Specifies maximum retries during failed read/write-operations.
 */
 #define MAXRETRY 10
