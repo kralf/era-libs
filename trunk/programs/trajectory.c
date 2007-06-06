@@ -22,10 +22,10 @@
 //#define MCI_MAX_VEL  2  // [rad/s]
 
 /** Limits of angular velocities according to BlueBotics specification */
-const float theta_vel_max[] = {M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,     M_PI}; //[rad/s]
+//const float theta_vel_max[] = {M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,     M_PI}; //[rad/s]
+const float theta_vel_max[] = {0.3, 0.3, 0.3, 0.3,     0.3}; // testing[rad/s]
 
-
-
+/*
 void trajectory_auto_angle(float via_points[][6], 
 			   int number_of_via_points)
 {
@@ -37,6 +37,7 @@ void trajectory_auto_angle(float via_points[][6],
       printf("angle auto: %f \n", via_points[i][3]);
     }
 }
+*/
 
 
 
@@ -53,7 +54,8 @@ void mci_slope(float via_points[][6],
       m[0][p] = 0;
       m[number_of_via_points-1][p] = 0;
       for(i=1; i<number_of_via_points-1; i++)
-	m[i][p] = via_points[i+1][p] - via_points[i-1][p];
+	m[i][p] = (via_points[i+1][p] - via_points[i-1][p])/2;
+        //      m[i][p] = via_points[i+1][p] - via_points[i-1][p];
       
       for(i=0; i<number_of_via_points-1; i++)
 	{
@@ -143,10 +145,10 @@ int mci_theta_vel(float via_points[][6],
 	    }
 	  if(inverse_kinematics(  tool_b, theta_b  )) 
 	    error = 1;
-	  printf("theta2 %f\n", theta_b[1]);
+	  //printf("theta2 %f\n", theta_b[1]);
 	  if(inverse_kinematics(  tool_a, theta_a  )) 
 	    error = 1;
-	  printf("theta2 %f\n", theta_a[1]);
+	  //printf("theta2 %f\n", theta_a[1]);
 	  // theta_print_rad( theta_a  );
 
 	  for(k=0; k<6; k++)

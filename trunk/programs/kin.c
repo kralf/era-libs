@@ -12,8 +12,12 @@
 
 
 
-const float theta_min[]     = {    -M_PI/2,        0,   -M_PI/9,         0, -M_PI*8/9}; //[rad]
-const float theta_max[]     = {     M_PI/6,   M_PI/2,    M_PI/2,  M_PI*2/3,  M_PI*8/9}; //[rad]
+const float theta_min[]     = {    -M_PI/2+0.1,        0.1,   -M_PI/9+0.1,         0.1, -M_PI*8/9+0.1}; //[rad]
+const float theta_max[]     = {  M_PI/6-0.1,   M_PI/2-0.1,    M_PI/2-0.1,  M_PI*2/3-0.1,  M_PI*8/9-0.1}; //[rad]
+
+//const float theta_min[]     = {    -M_PI/2,        0,   -M_PI/9,         0, -M_PI*8/9}; //[rad]
+//const float theta_max[]     = {     M_PI/6,   M_PI/2,    M_PI/2,  M_PI*2/3,  M_PI*8/9}; //[rad]
+
 //const float theta_vel_max[] = { M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,      M_PI}; //[rad/s]
 
 const float arm_lenght[]    = { 23.05, 22.4, 18.8 };
@@ -47,7 +51,7 @@ void forward_kinematics(float tool[],
 
   /* this is z: */
   tool[2] = -cos(theta[1])*cos(theta[2])*cos(theta[3])*a4+cos(theta[1])*sin(theta[2])*sin(theta[3])*a4
-             -cos(theta[1])*cos(theta[2])*a3+a3+a4+a5;
+            -cos(theta[1])*cos(theta[2])*a3+a3+a4;//+a5;
 
   /* this is beta1: */
   tool[3] = theta[0];
@@ -123,7 +127,8 @@ int inverse_kinematics(float tool[],
 
   v_sp.x = tool[0] - a5*v_beta1.x ;
   v_sp.y = tool[1] - a5*v_beta1.y ; 
-  v_sp.z = tool[2] - (a3+a4+a5) - a5*v_beta1.z;
+  //v_sp.z = tool[2] - (a3+a4+a5) - a5*v_beta1.z;
+  v_sp.z = tool[2] - (a3+a4) - a5*v_beta1.z;
 
 
   v_normal.x = ( v_sp.y * v_beta1.z  -  v_sp.z * v_beta1.y );
@@ -160,10 +165,10 @@ int inverse_kinematics(float tool[],
   /* this is the gripper status: */
   theta[5] = tool[5];
 
-  if ( theta[1]> -0.1 && theta[1]<0 )
+  if ( theta[1]> -0.1 && theta[1]<0.1 )
     {
       //printf("theta2 exceeded %f\n", theta[1]);
-      theta[1] = 0.001;
+      theta[1] = 0.1;
     }
   else
     {
