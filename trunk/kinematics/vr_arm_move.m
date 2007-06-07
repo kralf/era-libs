@@ -50,7 +50,7 @@ pause(1);
 for i=1:30
     pos=[(31-i)/30; 1.2+(31-i)/15;  3.3];
     dir=(31-i)/60;
-    theta03 = arm_inverse(pos,dir);
+    theta03 = arm_inverse(pos,dir)
     vr_arm_init(myworld,[theta03]);
     myworld.inverseball.translation = [pos(2), pos(3), pos(1)];
         myworld.inverseball.rotation    = [0, 1, 0,dir];
