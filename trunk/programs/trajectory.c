@@ -12,6 +12,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include <string.h>
 
 //#include"kin2serial.h"
 #include"trajectory.h"
@@ -22,11 +23,11 @@
 //#define MCI_MAX_VEL  2  // [rad/s]
 
 /** Limits of angular velocities according to BlueBotics specification */
-//const float theta_vel_max[] = {M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,     M_PI}; //[rad/s]
-const float theta_vel_max[] = {0.3, 0.3, 0.3, 0.3,     0.3}; // testing[rad/s]
+//const double theta_vel_max[] = {M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,     M_PI}; //[rad/s]
+const double theta_vel_max[] = {0.3, 0.3, 0.3, 0.3,     0.5}; // testing[rad/s]
 
 /*
-void trajectory_auto_angle(float via_points[][6], 
+void trajectory_auto_angle(double via_points[][6], 
 			   int number_of_via_points)
 {
   int i;
@@ -41,13 +42,55 @@ void trajectory_auto_angle(float via_points[][6],
 
 
 
-void mci_slope(float via_points[][6], 
+int read_scriptfile(char *filename, double via_points[][7], int *number_of_via_points)
+{
+	FILE *fd;
+	char buffer[255];
+	double val[7];
+	int ret=0,no_lines=0,no_commment=0;
+	int i;
+
+	fd = fopen(filename,"r");
+
+	if(fd == NULL) {
+		printf("File not found!\n");
+	return 1;
+	}
+	
+	while(fgets(buffer, 255, fd) != NULL)	 
+	{
+		if(buffer[0] == '/' && buffer[1] == '/') {
+			no_commment++;
+			continue;
+		}
+
+		ret = sscanf(buffer, "%lf %lf %lf %lf %lf %lf %lf", &val[0], &val[1], &val[2], &val[3], 
+			     &val[4], &val[5], &val[6]);
+
+		if(ret != 7) {
+			printf("Error in scriptfile maybe at line %d!\n", (no_lines+1)+no_commment);
+			return 1;
+		}
+		for(i=0; i<7; i++)
+		  {
+		    via_points[no_lines][i] = val[i];
+		  }
+
+		no_lines++;
+	}
+	*number_of_via_points = no_lines;
+	return 0;
+}
+
+
+
+void mci_slope(double via_points[][7], 
 	       int number_of_via_points, 
-	       float m[][6])
+	       double m[][6])
 {
   
   int i,p;
-  float delta, alpha, beta, tau;
+  double delta, alpha, beta, tau;
 
   for(p=0; p<6; p++)  
     {
@@ -87,13 +130,13 @@ void mci_slope(float via_points[][6],
 	
 
 
-float mci_eval(float p_a, 
-	       float p_b, 
-	       float m_a,
-	       float m_b,
-	       float t)
+double mci_eval(double p_a, 
+	       double p_b, 
+	       double m_a,
+	       double m_b,
+	       double t)
 {
-  float eval;
+  double eval;
   eval = (  (2*t*t*t - 3*t*t + 1)*p_a + (t*t*t - 2*t*t + t)*m_a +
 	    (-2*t*t*t + 3*t*t   )*p_b + (t*t*t - t*t      )*m_b  );
   return eval;
@@ -103,34 +146,35 @@ float mci_eval(float p_a,
 
 
 
-int mci_theta_vel(float via_points[][6], 
-		   float via_points_time[], 
-		   int number_of_via_points, 
-		   float m[][6],
-		   float theta_vel[][6],
-		   int* number_vel_intervals,
-		   float dt)
+int mci_theta_vel(double via_points[][7], 
+		  //double via_points_time[], 
+		  int number_of_via_points, 
+		  double m[][6],
+		  double theta_vel[][6],
+		  int* number_vel_intervals,
+		  double dt,
+		  int kin_err[][3])
 {
 
   int i,j,k;
   int error = 0;
   
-  float dj;
+  double dj;
   int number_of_steps;
   int step = 0;
 
-  float tool_a[6];
-  float tool_b[6];
-  float theta_a[6];
-  float theta_b[6];
+  double tool_a[6];
+  double tool_b[6];
+  double theta_a[6];
+  double theta_b[6];
 
 
   for(i=0; i<(number_of_via_points-1); i++)
     {
 
       //  printf("testvia_points_time[i]%f\n", via_points_time);  
-      number_of_steps = (int) (via_points_time[i] /dt);
-      dj = 1/(float)number_of_steps;
+      number_of_steps = (int) (via_points[i][6] /dt);
+      dj = 1/(double)number_of_steps;
       printf("number of steps %i\n", number_of_steps);
       for(j=0; j<number_of_steps; j++)
 	{
@@ -144,24 +188,35 @@ int mci_theta_vel(float via_points[][6],
 
 	    }
 	  if(inverse_kinematics(  tool_b, theta_b  )) 
-	    error = 1;
+	    {
+	      error = 1;
+	      kin_err[step][1] = 1;
+	    }
+	  else
+	    kin_err[step][1] = 0;
+
 	  //printf("theta2 %f\n", theta_b[1]);
 	  if(inverse_kinematics(  tool_a, theta_a  )) 
 	    error = 1;
 	  //printf("theta2 %f\n", theta_a[1]);
 	  // theta_print_rad( theta_a  );
 
+	  kin_err[step][2] = 0; 
 	  for(k=0; k<6; k++)
 	    {
 	      //printf("theta_b_k %f\n", theta_b[k]);
 	      theta_vel[step][k] = (  theta_b[k] - theta_a[k]  ) /dt;
 	      if( !( theta_vel[step][k] < theta_vel_max[k] && theta_vel[step][k] > -theta_vel_max[k] )   )
 		{
-		  printf("ERROR mci: Maximumm velocity exceeded: vel[%i]=%f\n\n", i+1, theta_vel[step][k]);
+		  printf("ERROR mci: Maximumm velocity exceeded: vel[%i]=%f\n\n", k+1, theta_vel[step][k]);
+		  kin_err[step][2] = 1; 
 		  error = 1;
 		}
+	      
 	    }
+	  kin_err[step][0] = i+1; 
 	  step++;
+
 	}
     }
   *number_vel_intervals = step;
@@ -169,12 +224,13 @@ int mci_theta_vel(float via_points[][6],
 }
 
 
-int mci(float via_points[][6],
-	float via_points_time[],
+int mci(double via_points[][7],
+	//double via_points_time[],
 	int number_of_via_points,
-	float theta_vel[][6],
+	double theta_vel[][6],
 	int* number_vel_intervals,
-	float dt)
+	double dt,
+	int kin_err[][3])
 {
 
   if(number_of_via_points > MCI_MAX_VIA_POINTS)
@@ -183,20 +239,20 @@ int mci(float via_points[][6],
       return 1;
     }
   
-  float m[MCI_MAX_VIA_POINTS][6];
-  int i;
+  double m[MCI_MAX_VIA_POINTS][6];
+  //  int i;
   
 
   mci_slope(via_points, number_of_via_points, m);
-
+  /*
   for(i=0; i<6; i++)
   printf("m: %f, %f, %f, %f, %f, %f, %f, %f, %f, %f,  %f, %f, %f, %f, %f, %f\n", 
      m[0][i], m[1][i], m[2][i], m[3][i], m[4][i], m[5][i], m[6][i], m[7][i], m[8][i], m[9][i], 
      m[10][i], m[11][i], m[12][i], m[13][i], m[14][i], m[15][i]);
-  
+  */
 
-  if( mci_theta_vel( via_points,  via_points_time,  number_of_via_points, 
-		     m, theta_vel, number_vel_intervals, dt)  )
+  if( mci_theta_vel( via_points,  number_of_via_points, 
+		     m, theta_vel, number_vel_intervals, dt, kin_err)  )
     return 1;
 
   
@@ -210,13 +266,13 @@ int mci(float via_points[][6],
     
   
 /*
-float time_between_via_points( float via_points[][], 
+double time_between_via_points( double via_points[][], 
 			       int number_of_via_points,
-			       float via_points_time[], 
-			       float vel)
+			       double via_points_time[], 
+			       double vel)
 {
   int i;
-  float dist;
+  double dist;
   for(i=0; i<number_of_via_points-1; i++)
     {
       dist = sqrt( sqr(via_points[i][0] - via_points[i+1][0]) +

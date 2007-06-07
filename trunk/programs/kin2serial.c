@@ -20,18 +20,18 @@
 #include<math.h>
 
 
-const  float enc_rev[]        = {500,500,500,500,500,500};
-const  float i_gear[]         = {0.02,0.02,0.02,0.02,0.005,0.01};
-const  float i_arm[]          = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
+
+
+const  double enc_rev[]        = {500,500,500,500,500,500};
+const  double i_gear[]         = {0.02,0.02,0.02,0.02,0.005,0.01};
+const  double i_arm[]          = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
 //const  long int zero_offset[] = {80000, 1000,50000,    0,215000,30000};      // down zero position
 const  long int zero_offset[] = {80000,99000,50000,    0,145000,30000};      // down zero position
 const  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
 const  int sign_switch[]      = {   -1,   -1,    1,    1,     1,    1}; 
 
 
-
-
-float max(float m1, float m2)
+double max(double m1, double m2)
 {
   if(m1>m2)
     return m1;
@@ -40,25 +40,25 @@ float max(float m1, float m2)
 }
 
 
-float kin2s_position_error(float pos_err[])
+double kin2s_position_error(double pos_err[])
 {
  return  sqrt( pos_err[0]*pos_err[0] + pos_err[1]*pos_err[1] + pos_err[2]*pos_err[2] + pos_err[3]*pos_err[3] );
 }
 
-void kin2s_position_mode_calc_vel(float pos[], float pos_old[], float vel[], float vel_max)
+void kin2s_position_mode_calc_vel(double pos[], double pos_old[], double vel[], double vel_max)
 {
 
-  float dpos[4];
+  double dpos[4];
   int i=0;
   for(i=0;i<=3;i++)
     dpos[i] = abs( (pos[i] - pos_old[i]) );
 
   // maximum position difference:
-  float max_dpos = max(max(dpos[0], dpos[1]),
+  double max_dpos = max(max(dpos[0], dpos[1]),
                        max(dpos[2], dpos[3]));
   /*
-    float i_gear[] = { 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
-      float i_arm[]  = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
+    double i_gear[] = { 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
+      double i_arm[]  = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
   */
 
   for(i=0;i<=3;i++)
@@ -69,7 +69,7 @@ void kin2s_position_mode_calc_vel(float pos[], float pos_old[], float vel[], flo
 
 }
 
-void kin2s_position_mode_set(float pos[], float vel[])
+void kin2s_position_mode_set(double pos[], double vel[])
 {
  
   int id=0;
@@ -82,7 +82,7 @@ void kin2s_position_mode_set(float pos[], float vel[])
       activate_position(    id);  
 }
 
-void kin2s_velocity_mode_set(float vel[])
+void kin2s_velocity_mode_set(double vel[])
 {
   int id=0;
   for(id=1;id<=6;id++)
@@ -131,7 +131,7 @@ void kin2s_velocity_mode_init()
 
 
 
-void theta_init_start_tiks(float theta[])
+void theta_init_start_tiks(double theta[])
 {
   theta[0] = 0; //-30000;
   theta[1] = 0; // 49000;
@@ -145,7 +145,7 @@ void theta_init_start_tiks(float theta[])
 
 /*
 
-void tool_init_starting_values(float tool[])
+void tool_init_starting_values(double tool[])
 {
   tool[0]     =  20.932410; //20.931822;
   tool[1]     =  23.874095; //23.874062;
@@ -156,7 +156,7 @@ void tool_init_starting_values(float tool[])
 
 
 
-void theta_print_rad(float theta[])
+void theta_print_rad(double theta[])
 {
 
   printf("Joint Angles\n");
@@ -170,7 +170,7 @@ void theta_print_rad(float theta[])
   
 }
 
-void theta_print_tiks(float theta[])
+void theta_print_tiks(double theta[])
 {
 
   printf("Joint Angles\n");
@@ -184,7 +184,7 @@ void theta_print_tiks(float theta[])
 }
 
 
-void tool_print(float tool[])
+void tool_print(double tool[])
 {
   printf("End Effector state\n");
   printf("  x:     %f\n", tool[0]);
@@ -196,7 +196,7 @@ void tool_print(float tool[])
 }
 
 
-void theta_rad_to_tiks(float theta[])
+void theta_rad_to_tiks(double theta[])
 {
   int i=0;
   for(i=0; i<=5; i++)
@@ -207,7 +207,7 @@ void theta_rad_to_tiks(float theta[])
 }
 
 
-void theta_tiks_to_rad(float theta[])
+void theta_tiks_to_rad(double theta[])
 {
   int i=0;
   for(i=0; i<=5; i++)

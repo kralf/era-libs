@@ -12,28 +12,28 @@
 
 
 
-const float theta_min[]     = {    -M_PI/2+0.1,        0.1,   -M_PI/9+0.1,         0.1, -M_PI*8/9+0.1}; //[rad]
-const float theta_max[]     = {  M_PI/6-0.1,   M_PI/2-0.1,    M_PI/2-0.1,  M_PI*2/3-0.1,  M_PI*8/9-0.1}; //[rad]
+const double theta_min[]     = {    -M_PI/2+0.1,        0.1,   -M_PI/9+0.1,         0.1, -M_PI*8/9+0.1}; //[rad]
+const double theta_max[]     = {  M_PI/6-0.1,   M_PI/2-0.1,    M_PI/2-0.1,  M_PI*2/3-0.1,  M_PI*8/9-0.1}; //[rad]
 
-//const float theta_min[]     = {    -M_PI/2,        0,   -M_PI/9,         0, -M_PI*8/9}; //[rad]
-//const float theta_max[]     = {     M_PI/6,   M_PI/2,    M_PI/2,  M_PI*2/3,  M_PI*8/9}; //[rad]
+//const double theta_min[]     = {    -M_PI/2,        0,   -M_PI/9,         0, -M_PI*8/9}; //[rad]
+//const double theta_max[]     = {     M_PI/6,   M_PI/2,    M_PI/2,  M_PI*2/3,  M_PI*8/9}; //[rad]
 
-//const float theta_vel_max[] = { M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,      M_PI}; //[rad/s]
+//const double theta_vel_max[] = { M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,      M_PI}; //[rad/s]
 
-const float arm_lenght[]    = { 23.05, 22.4, 18.8 };
+const double arm_lenght[]    = { 23.05, 22.4, 18.8 };
 
 
 double sqr(double x) 
 {return x*x;}
 
 
-void forward_kinematics(float tool[], 
-			float theta[])
+void forward_kinematics(double tool[], 
+			double theta[])
 {
 
-  float a3 = arm_lenght[0];
-  float a4 = arm_lenght[1];
-  float a5 = arm_lenght[2];
+  double a3 = arm_lenght[0];
+  double a4 = arm_lenght[1];
+  double a5 = arm_lenght[2];
 
   /* this is x: */
   tool[0] = -a4*cos(theta[3])*sin(theta[0])*sin(theta[2])-a4*sin(theta[3])*sin(theta[0])*cos(theta[2])
@@ -68,7 +68,7 @@ void forward_kinematics(float tool[],
 
 }
 
-int theta_workspacecheck(float theta[])
+int theta_workspacecheck(double theta[])
 {
   int outside = 0;
   int i;
@@ -86,7 +86,7 @@ int theta_workspacecheck(float theta[])
     
 
 
-void auto_beta1(float tool[])
+void auto_beta1(double tool[])
 {
 
   if ( tool[3] == 999 )
@@ -100,21 +100,21 @@ void auto_beta1(float tool[])
 
 
 
-int inverse_kinematics(float tool[], 
-			float theta[])  
+int inverse_kinematics(double tool[], 
+			double theta[])  
 {
 
   tool[3] = tool[3]/180*M_PI;
   tool[4] = tool[4]/180*M_PI;
 
   /* Arm parameters */
-  float a3 = arm_lenght[0];
-  float a4 = arm_lenght[1];
-  float a5 = arm_lenght[2];
+  double a3 = arm_lenght[0];
+  double a4 = arm_lenght[1];
+  double a5 = arm_lenght[2];
 
-  float x;
-  float y;
-  float c4;
+  double x;
+  double y;
+  double c4;
 
   t_cartesian v_sp;
   t_cartesian v_beta1;

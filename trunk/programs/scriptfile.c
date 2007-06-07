@@ -14,12 +14,13 @@
 
 
 
-int read_scriptfile(char *filename, t_target *coord, double *vel)
+int read_scriptfile(char *filename, double via_points[][7])
 {
 	FILE *fd;
 	char buffer[255];
-	double val[6];
+	double val[7];
 	int ret=0,no_lines=0,no_commment=0;
+	int i;
 
 	fd = fopen(filename,"r");
 
@@ -35,19 +36,17 @@ int read_scriptfile(char *filename, t_target *coord, double *vel)
 			continue;
 		}
 
-		ret = sscanf(buffer, "%lf %lf %lf %lf %lf %lf", &val[0], &val[1], &val[2], &val[3], &val[4], &val[5]);
+		ret = sscanf(buffer, "%lf %lf %lf %lf %lf %lf %lf", &val[0], &val[1], &val[2], &val[3], 
+			     &val[4], &val[5], &val[6]);
 
-		if(ret != 6) {
+		if(ret != 7) {
 			printf("Error in scriptfile maybe at line %d!\n", (no_lines+1)+no_commment);
 			return 0;
 		}
-
-		coord[no_lines].x = val[0];
-		coord[no_lines].y = val[1];
-		coord[no_lines].z = val[2];
-		coord[no_lines].beta1 = val[3];
-		coord[no_lines].beta2 = val[4];
-		vel[no_lines] = val[5];
+		for(i=0; i<7; i++)
+		  {
+		    via_points[no_lines][i] = val[i];
+		  }
 
 		no_lines++;
 	}
@@ -57,10 +56,11 @@ int read_scriptfile(char *filename, t_target *coord, double *vel)
 
 int main(int argc, char **argv)
 {
-	t_target coord[10];
-	double vel[10];
-	int no_points;	
-	int n=0;
+  double path[100][7];
+
+  int no_points;	
+  int n=0;
+  int i;
 
 	system("clear");
 
@@ -71,17 +71,13 @@ int main(int argc, char **argv)
 	printf("scriptfile: %s \n", argv[1]);
 
 
-	no_points = read_scriptfile(argv[1], coord, vel);
+	no_points = read_scriptfile(argv[1], path);
 
 
 	for(n=0;n<no_points;n++) {
-
-		printf("\tcoord[%d].x=[%f]\n",n , coord[n].x);
-		printf("\tcoord[%d].y=[%f]\n",n , coord[n].y);
-		printf("\tcoord[%d].z=[%f]\n",n , coord[n].z);
-		printf("\tcoord[%d].beta1=[%f]\n",n , coord[n].beta1);
-		printf("\tcoord[%d].beta2=[%f]\n",n , coord[n].beta2);
-		printf("\tvel[%d]=[%f]\n\n",n , vel[n]);	
+	  for(i=0; i<7; i++)
+	    printf(" %lf\t", path[n][i]);
+	  printf("\n");
 	}	
 	return 0;
 }

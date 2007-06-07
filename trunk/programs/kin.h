@@ -23,24 +23,24 @@
 
 /* define data typ for cartesian vector */
 typedef struct {
-  float x;
-  float y;
-  float z;
+  double x;
+  double y;
+  double z;
 
 } t_cartesian;
 
 
-void auto_beta1(float tool[]
+void auto_beta1(double tool[]
 		);
 
 
 /** Forward kinematic calculations */
-void forward_kinematics(float tool[],   /**< (Output) array contains the end effector 
+void forward_kinematics(double tool[],   /**< (Output) array contains the end effector 
 					 *   position and orientation coordinates <br>
 					 *   x[cm], y[cm], z[cm], gamma1[deg] and gamma2[deg] <br>
 					 *   and the gripper opening 
 					 */
-			float theta[]   /**< (Input) array contains 5 joint angles 
+			double theta[]   /**< (Input) array contains 5 joint angles 
 					 *   theta1[rad] to theta4[rad] and theta6[rad] <br>
 					 *   and the gripper opening 
 					 */
@@ -53,12 +53,12 @@ void forward_kinematics(float tool[],   /**< (Output) array contains the end eff
  * 0 if one of the thetas exceeds its maximal values<br>
  * 1 if all thetas are inside their borders
  */
-int inverse_kinematics(float tool[],   /**< (Input) array contains the end effector 
+int inverse_kinematics(double tool[],   /**< (Input) array contains the end effector 
 					 *   position and orientation coordinates <br>
 					 *   x[cm], y[cm], z[cm], gamma1[deg] and gamma2[deg] <br>
 					 *   and the gripper opening 
 					 */
-			float theta[]   /**< (Output) array contains 5 joint angles 
+			double theta[]   /**< (Output) array contains 5 joint angles 
 					 *   theta1[rad] to theta4[rad] and theta6[rad] <br>
 					 *   and the gripper opening 
 					 */
@@ -72,7 +72,7 @@ int inverse_kinematics(float tool[],   /**< (Input) array contains the end effec
  * 0 if one of the thetas exceeds its maximal values<br>
  * 1 if all thetas are inside their borders
  */
-int theta_workspacecheck(float theta[]/**< (Input) array contains 5 joint angles 
+int theta_workspacecheck(double theta[]/**< (Input) array contains 5 joint angles 
 				       *   theta1[rad] to theta4[rad] and theta6[rad]
 				       */
 			 );
