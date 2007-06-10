@@ -96,9 +96,9 @@ axis([-40,80,-60,80], 'equal');
 
 figure(2)
 %subplot(2,2,2)
-plot(Workspace(3,:),Workspace(2,:),'x')
-xlabel( 'z [cm]',  'fontsize', 30);
-ylabel( 'y [cm]',  'fontsize', 30);
+plot(Workspace(2,:),Workspace(3,:),'x')
+xlabel( 'y [cm]',  'fontsize', 30);
+ylabel( 'z [cm]',  'fontsize', 30);
 %axes( 'fontsize', 18);
 axis([-40,80,-60,80], 'equal');
 
