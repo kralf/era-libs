@@ -42,13 +42,17 @@ int main(void)
 		gettimeofday(&tp,&tzp);
 		t_usec = tp.tv_usec;
 		t_sec = tp.tv_sec;
+
+
+		for(id=1;id<7;id++)
 		{
 			set_velocity_mode_setting_value(id, 0x0A);
 			//get_actual_position(id);
 			//get_error(id);
 			//get_statusword(id);
-
 		}
+
+	
 		gettimeofday(&tp,&tzp);
 		delta_t = (tp.tv_usec - t_usec) + (tp.tv_sec - t_sec)*1e6;
 	

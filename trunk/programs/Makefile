@@ -55,6 +55,8 @@ clean:
 	rm  *.o
 	rm test
 	rm test_function_time
+	rm test_error
+	rm testmode
 	rm main 
 	rm nullposition
 	rm inverse

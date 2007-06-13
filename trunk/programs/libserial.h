@@ -31,7 +31,7 @@
 
 /** Default baudrate using EPOS.
 */
-#define BAUDRATE B115200
+#define BAUDRATE B57600
 /** Current serial device for communication.
 */
 #define MODEMDEVICE "/dev/ttyS0"
