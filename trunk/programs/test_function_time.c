@@ -20,7 +20,7 @@ int main(void)
 {
 	int id=1;
 	int i;	
-	int n=10;
+	int n=1000;
 
 	struct timeval tp;
 	struct timezone tzp;
@@ -33,7 +33,7 @@ int main(void)
 	{
 		fault_reset(i);
 		shutdown(i);
-		//enable_operation(i);	
+		enable_operation(i);	
 	}
 
 
@@ -43,9 +43,10 @@ int main(void)
 		t_usec = tp.tv_usec;
 		t_sec = tp.tv_sec;
 		{
-			//set_velocity_mode_setting_value(id, 0x0A);
-			get_actual_position(id);
+			set_velocity_mode_setting_value(id, 0x0A);
+			//get_actual_position(id);
 			//get_error(id);
+			//get_statusword(id);
 
 		}
 		gettimeofday(&tp,&tzp);

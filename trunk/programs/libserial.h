@@ -31,7 +31,7 @@
 
 /** Default baudrate using EPOS.
 */
-#define BAUDRATE B57600
+#define BAUDRATE B115200
 /** Current serial device for communication.
 */
 #define MODEMDEVICE "/dev/ttyS0"
@@ -40,7 +40,7 @@
 #define TIMEOUTSEC 0
 /** Default timeout [nanoseconds] during reading form serial device (used by select()).
 */
-#define TIMEOUTNSEC 10000 /* 500ms */
+#define TIMEOUTNSEC 50000 /* 50ms */
 /** Specifies maximum retries during failed read/write-operations.
 */
 #define MAXRETRY 10
@@ -262,4 +262,7 @@ word crc_alg(/** Array of words containing the dataframe */ word *buffer,
 *	- -1: unspecified error 
 */
 int clear_iobuffer(/** File descriptor*/ int fd);
+
+void prtmsg(char *desc, char *msg, int no);
+
 

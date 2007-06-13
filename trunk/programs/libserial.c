@@ -120,48 +120,6 @@ void read_can_message()
 	// Empty!!!
 }
 /*-----------------------------------*/
-void serial2epos(char *data_send, char *data_recv)
-{
-	long int error_no = 0;
-	int i;
-
-	cpcmsg.msg.canmsg.id = (data_send[5] & 0x000000FF) + 0x580;
-
-	if(data_recv[2] == 0x00 && data_recv[3] == 0x00 && data_recv[4] == 0x00 && data_recv[5] == 0x00)
-	{
-		cpcmsg.msg.canmsg.msg[0] = 0x00;			/* no error */
-
-		cpcmsg.msg.canmsg.msg[1] = data_send[2];	/* high-byte index */
-		cpcmsg.msg.canmsg.msg[2] = data_send[3]; 	/* low-byte index */
-
-		cpcmsg.msg.canmsg.msg[3] = data_send[4];	/* subindex */
-
-		cpcmsg.msg.canmsg.msg[7] = data_recv[6];	/* high-byte of high-word data */
-		cpcmsg.msg.canmsg.msg[6] = data_recv[7];	/* low-byte of high-word data */
-		cpcmsg.msg.canmsg.msg[5] = data_recv[8];	/* high-byte of low-word data */
-		cpcmsg.msg.canmsg.msg[4] = data_recv[9];	/* low-byte of low-word data */
-	}
-	else // Serial error occured see EPOS Communication Guide page 18
-	{
-		//cpcmsg.msg.canmsg.msg[0] = 0x80;			/* Configuration error */
-
-		error_no = (long int) ((data_recv[4]<<24)+(data_recv[5]<<16)+(data_recv[2]<<8)+data_recv[3]);
-
-		for(i=0;i<MAXERRORSERIAL;i++)
-		{
-			if(error_serial[i].code == error_no)
-			{
-				printf("Serial ErrorCode 0x%08lX: %s\n", error_serial[i].code, error_serial[i].msg);
-				myepos_read.number[(cpcmsg.msg.canmsg.id - 0x581)].error.serial.code = error_serial[i].code;
-				myepos_read.number[(cpcmsg.msg.canmsg.id - 0x581)].error.serial.msg = error_serial[i].msg;
-			}
-		}
-		return;
-	}
-
-	read_SDO_msg_handler(0, &cpcmsg);
-}
-/*-----------------------------------*/
 int epos2serial(int can_id, char *msg, char *data)
 {
 	int no_bytes_send=0;
@@ -226,9 +184,55 @@ int epos2serial(int can_id, char *msg, char *data)
 		default: 			PDEBUG_SNIP("Failure in epos2serial!!! msg[0]=0x%02X\n",msg[0]);
 							no_bytes_send = -1;
 							break;
-
 	}
 	return no_bytes_send;
+}
+/*-----------------------------------*/
+void serial2epos(char *data_send, char *data_recv)
+{
+	long int error_no = 0;
+	int i;
+
+	cpcmsg.msg.canmsg.id = (data_send[5] & 0x000000FF) + 0x580;
+
+	if(data_recv[2] == 0x00 && data_recv[3] == 0x00 && data_recv[4] == 0x00 &&
+data_recv[5] == 0x00)
+	{
+		cpcmsg.msg.canmsg.msg[0] = 0x00;			/* no error */
+
+		cpcmsg.msg.canmsg.msg[1] = data_send[2];	/* high-byte index */
+		cpcmsg.msg.canmsg.msg[2] = data_send[3]; 	/* low-byte index */
+
+		cpcmsg.msg.canmsg.msg[3] = data_send[4];	/* subindex */
+
+		cpcmsg.msg.canmsg.msg[7] = data_recv[6];	/* high-byte of high-word data */
+		cpcmsg.msg.canmsg.msg[6] = data_recv[7];	/* low-byte of high-word data */
+		cpcmsg.msg.canmsg.msg[5] = data_recv[8];	/* high-byte of low-word data */
+		cpcmsg.msg.canmsg.msg[4] = data_recv[9];	/* low-byte of low-word data */
+	}
+	else // Serial error occured see EPOS Communication Guide page 18
+	{
+		//cpcmsg.msg.canmsg.msg[0] = 0x80;			/* Configuration error */
+
+		error_no = (long int)
+((data_recv[4]<<24)+(data_recv[5]<<16)+(data_recv[2]<<8)+data_recv[3]);
+
+		for(i=0;i<MAXERRORSERIAL;i++)
+		{
+			if(error_serial[i].code == error_no)
+			{
+				printf("Serial ErrorCode 0x%08lX: %s\n", error_serial[i].code,
+error_serial[i].msg);
+				myepos_read.number[(cpcmsg.msg.canmsg.id - 0x581)].error.serial.code
+= error_serial[i].code;
+				myepos_read.number[(cpcmsg.msg.canmsg.id - 0x581)].error.serial.msg =
+error_serial[i].msg;
+			}
+		}
+		return;
+	}
+
+	read_SDO_msg_handler(0, &cpcmsg);
 }
 /*-----------------------------------*/
 int send_dataframe(int fd, char *data, int no_bytes_send)
@@ -249,6 +253,8 @@ int send_dataframe(int fd, char *data, int no_bytes_send)
 	data[no_bytes_send-2] = crc_value[0];
 	data[no_bytes_send-1] = crc_value[1];
 	PDEBUG_SNIP("Done.\n");
+	
+	//prtmsg("data to send: ", data, no_bytes_send);
 
 
 /* 2. Change order of bytes to send*/
@@ -505,7 +511,6 @@ int receive_dataframe(int fd, char *data)
 	PDEBUG_SNIP("Done.\n");
 
 /* Finished */
-
 	return no_bytes_recv;
 }
 /*-----------------------------------*/
@@ -734,7 +739,7 @@ int calc_crc(char *data, char *crc_value, int no_char)
 	#endif
 	return no_words;
 }
-
+/*-----------------------------------*/
 void prtmsg(char *desc, char *msg, int no)
 {
 	int i;
