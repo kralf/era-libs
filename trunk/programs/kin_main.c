@@ -41,16 +41,24 @@
 
 int main(int argc, char **argv)
 {
-  double theta_end[6];
-  double tool_end[6];
-
 
   double enc_rev[]        = {500,500,500,500,500,500};
   double i_gear[]         = {0.02,0.02,0.02,0.02,0.005,0.01};
   double i_arm[]          = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
       
-
   int output_current_limit[]           = {0,2500,2000,2000,2000,300,300};
+
+  double theta_end[6];
+  double tool_end[6];
+  double tool_path[MCI_MAX_VIA_POINTS][7];
+  int number_of_via_points;
+
+
+  double theta_vel[MCI_MAX_VEL_INTERVALS][6];
+  int kin_err[MCI_MAX_VEL_INTERVALS][3];
+  double dt = 0.15; //seconds
+  int number_vel_intervals;
+
 
 
   int error=0;
@@ -62,63 +70,22 @@ int main(int argc, char **argv)
   struct timezone timez;		
   double pause;                       
 
-  double tool_path[MCI_MAX_VIA_POINTS][7];
-  int number_of_via_points;
 
   system("clear");
 
+  /* Read via points from script file */
   if(argc == 1) {
     printf("No scriptfile specified!\nUse %s 'filename' .\n", argv[0]);
     return 0;
   }	
   printf("scriptfile: %s \n", argv[1]);
-
-
   if( read_scriptfile( argv[1], tool_path, &number_of_via_points) )
     exit(1);
 
-
-
-
-  /* Trajectory "Test1" *-/
-  number_of_via_points = 8;
-  double sp[] = {9.687978, 30.237083, 4.713540, 11.739130, 10.5, 0}; //starting point
-  double tool_path2[MCI_MAX_VIA_POINTS][7] = { {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] , 5},
-					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] , 4},
-					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] , 5},
-					     {sp[0]-5, sp[1]+5, sp[2]+10, 0, 0, sp[5] , 5},
-					     {sp[0]-5, sp[1]+5, sp[2]+10, 0, 0, sp[5] , 5},
-					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] , 5},
-					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] , 2},
-					     {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] , 3}};  
-
-
-  /-* */
-
-  /* Circle xz *-/
-  int number_of_via_points = 17;
-  double r=4;
-  //double cs[6] = { 5, 40, 10,   999, 0, 0 }; //circle start theta1 moving
-    double cs[6] = { 5, 40, 10,   11, 0, 0 };  //circle start theta2 moving                          
-  double tool_path[MCI_MAX_VIA_POINTS][6] = { {9.687978, 30.237083, 4.713540, 11.739130, 10.5, 0}, //starting point
-					     { cs[0], cs[1], cs[2], cs[3], cs[4], cs[5] },
-					     { cs[0], cs[1], cs[2], cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(1*M_PI/6), cs[1], cs[2]+r*(1-cos(1*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(2*M_PI/6), cs[1], cs[2]+r*(1-cos(2*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(3*M_PI/6), cs[1], cs[2]+r*(1-cos(3*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(4*M_PI/6), cs[1], cs[2]+r*(1-cos(4*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(5*M_PI/6), cs[1], cs[2]+r*(1-cos(5*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(6*M_PI/6), cs[1], cs[2]+r*(1-cos(6*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(7*M_PI/6), cs[1], cs[2]+r*(1-cos(7*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(8*M_PI/6), cs[1], cs[2]+r*(1-cos(8*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(9*M_PI/6), cs[1], cs[2]+r*(1-cos(9*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(10*M_PI/6), cs[1], cs[2]+r*(1-cos(10*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0]+r*sin(11*M_PI/6), cs[1], cs[2]+r*(1-cos(11*M_PI/6)), cs[3], cs[4], cs[5] },
-					     { cs[0], cs[1], cs[2], cs[3], cs[4], cs[5] },
-					     { cs[0], cs[1], cs[2], cs[3], cs[4], cs[5] },
-					     {9.687978, 30.237083, 4.713540, 11.739130, 10.5, 0} };
-  double tool_path_time[MCI_MAX_VIA_POINTS-1] = {6, .8, .8,.8,.8,.8,.8,.8,.8,.8,.8,.8,.8,.8, .8, 6 };
-  /-* */
+  /* adapt velocity: */
+  for(i=0; i<MCI_MAX_VIA_POINTS; i++)
+    tool_path[i][6] =  tool_path[i][6] / 2;
+  
 
   //print path: 
   for(i=0; i<number_of_via_points; i++)
@@ -126,41 +93,39 @@ int main(int argc, char **argv)
 	   , tool_path[i][5], tool_path[i][6]);
   
   
-
+  /* Set beta1 automatically */
   for(i=0; i<MCI_MAX_VIA_POINTS; i++)
     auto_beta1(tool_path[i]);
 
 
   
-  double theta_vel[MCI_MAX_VEL_INTERVALS][6];
-  int kin_err[MCI_MAX_VEL_INTERVALS][3];
-  double dt = 0.15; //seconds
-
-  int number_vel_intervals;
 
 
 
+  if( mci(tool_path,  number_of_via_points, theta_vel, &number_vel_intervals, dt, kin_err) )
+    {
 
-  error =  mci(tool_path,  number_of_via_points, theta_vel, &number_vel_intervals, dt, kin_err);
+      /* print velocities */
+      for(i=0; i<number_vel_intervals; i++)
+	printf("%f, %f, %f, %f, %f, %f   %i %i %i\n",  theta_vel[i][0], theta_vel[i][1], theta_vel[i][2],
+	       theta_vel[i][3], theta_vel[i][4], theta_vel[i][5], kin_err[i][0], kin_err[i][1], kin_err[i][2]);
 
 
+
+      exit(0);
+    }
+
+  /* print velocities */
   for(i=0; i<number_vel_intervals; i++)
     printf("%f, %f, %f, %f, %f, %f   %i %i %i\n",  theta_vel[i][0], theta_vel[i][1], theta_vel[i][2],
 	   theta_vel[i][3], theta_vel[i][4], theta_vel[i][5], kin_err[i][0], kin_err[i][1], kin_err[i][2]);
-
-
-  if (error !=0)
-    return 1;
-			    
 
 
 
 
   /* Starting Hardware Connection  */
 
-  // User check 
-  if(error!=0)
-    printf("Error occured!!\n");
+  /* User check  */
   while(1)
     {
       char c;
@@ -168,7 +133,7 @@ int main(int argc, char **argv)
       scanf("%c",&c);
       if(c=='y' ) break;
     }
-  /* */
+
 
   canHWInit();
 
@@ -179,13 +144,12 @@ int main(int argc, char **argv)
     }
 
   kin2s_velocity_mode_init();
+
   
   error = gettimeofday(&time1, &timez);
   for(i=0; i<number_vel_intervals; i++)
     {
       kin2s_velocity_mode_set( theta_vel[i]);
-      //kin2s_velocity_mode_set_zero();
-      //      printf("new velocity sent\n\n");
       error = gettimeofday(&time2, &timez);
       pause = ( dt*1000000-((1000000*time2.tv_sec+time2.tv_usec)-
 			    (1000000*time1.tv_sec + time1.tv_usec)));
@@ -200,7 +164,7 @@ int main(int argc, char **argv)
       
       error = gettimeofday(&time1, &timez);
     }
-  kin2s_velocity_mode_set_zero();
+  kin2s_velocity_mode_set_zero();    /* Set velocity to zero in the end */
 
 
   printf("velocity mode finished, starting profile position mode\n\n");
@@ -317,3 +281,43 @@ int main(int argc, char **argv)
 
 
 
+
+  /* Trajectory "Test1" *-/
+  number_of_via_points = 8;
+  double sp[] = {9.687978, 30.237083, 4.713540, 11.739130, 10.5, 0}; //starting point
+  double tool_path2[MCI_MAX_VIA_POINTS][7] = { {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] , 5},
+					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] , 4},
+					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] , 5},
+					     {sp[0]-5, sp[1]+5, sp[2]+10, 0, 0, sp[5] , 5},
+					     {sp[0]-5, sp[1]+5, sp[2]+10, 0, 0, sp[5] , 5},
+					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] , 5},
+					     {sp[0]-5, sp[1]+5, sp[2], 0, 0, sp[5] , 2},
+					     {sp[0], sp[1], sp[2], sp[3], sp[4], sp[5] , 3}};  
+
+
+  /-* */
+
+  /* Circle xz *-/
+   number_of_via_points = 17;
+  double r=4;
+  //double cs[6] = { 5, 40, 10,   999, 0, 0 }; //circle start theta1 moving
+  double cs[6] = { 5, 40, 10,   11, 0, 0 };  //circle start theta2 moving                          
+  double tool_path[MCI_MAX_VIA_POINTS][6] = { {9.687978, 30.237083, 4.713540, 11.739130, 10.5, 0}, //starting point
+					     { cs[0], cs[1], cs[2], cs[3], cs[4], cs[5] },
+					     { cs[0], cs[1], cs[2], cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(1*M_PI/6), cs[1], cs[2]+r*(1-cos(1*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(2*M_PI/6), cs[1], cs[2]+r*(1-cos(2*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(3*M_PI/6), cs[1], cs[2]+r*(1-cos(3*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(4*M_PI/6), cs[1], cs[2]+r*(1-cos(4*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(5*M_PI/6), cs[1], cs[2]+r*(1-cos(5*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(6*M_PI/6), cs[1], cs[2]+r*(1-cos(6*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(7*M_PI/6), cs[1], cs[2]+r*(1-cos(7*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(8*M_PI/6), cs[1], cs[2]+r*(1-cos(8*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(9*M_PI/6), cs[1], cs[2]+r*(1-cos(9*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(10*M_PI/6), cs[1], cs[2]+r*(1-cos(10*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0]+r*sin(11*M_PI/6), cs[1], cs[2]+r*(1-cos(11*M_PI/6)), cs[3], cs[4], cs[5] },
+					     { cs[0], cs[1], cs[2], cs[3], cs[4], cs[5] },
+					     { cs[0], cs[1], cs[2], cs[3], cs[4], cs[5] },
+					     {9.687978, 30.237083, 4.713540, 11.739130, 10.5, 0} };
+  double tool_path_time[MCI_MAX_VIA_POINTS-1] = {6, .8, .8,.8,.8,.8,.8,.8,.8,.8,.8,.8,.8,.8, .8, 6 };
+  /-* */

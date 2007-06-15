@@ -24,7 +24,8 @@
 
 /** Limits of angular velocities according to BlueBotics specification */
 //const double theta_vel_max[] = {M_PI*13/36, M_PI*2/5, M_PI*5/12, M_PI*5/12,     M_PI}; //[rad/s]
-const double theta_vel_max[] = {0.3, 0.3, 0.3, 0.3,     0.5}; // testing[rad/s]
+//const double theta_vel_max[] = {0.3, 0.3, 0.3, 0.3,     0.5}; // testing
+const double theta_vel_max[] = {0.6, 0.6, 0.6, 0.6,     0.6}; // testing
 
 /*
 void trajectory_auto_angle(double via_points[][6], 
