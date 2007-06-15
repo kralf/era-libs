@@ -25,8 +25,8 @@
 
 
 #include "libserial.h"  
-#include "kin.h"
-#include "kin2serial.h"
+#include "libkin.h"
+#include "libkin2epos.h"
 
 
 //#define path_lenght 21;

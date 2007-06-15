@@ -1,5 +1,5 @@
 
-all: main test nullposition testmode inverse inverse_vel test_error test_function_time
+all: main test nullposition testmode inverse kin_main test_error test_function_time
 
 main: main.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o main main.c libserial.o libepos.o
@@ -34,20 +34,20 @@ datafile: datafile.c
 clean_datafile:
 	rm datafile
 	
-kin.o: kin.c kin.h
-	gcc -Wall -c kin.c -o kin.o
+libkin.o: libkin.c libkin.h
+	gcc -Wall -c libkin.c -o libkin.o
 
-kin2serial.o: kin2serial.c kin2serial.h kin.c kin.h libserial.c libserial.h
-	gcc -Wall -c kin2serial.c -o kin2serial.o
+libkin2epos.o: libkin2epos.c libkin2epos.h libkin.c libkin.h libserial.c libserial.h
+	gcc -Wall -c libkin2epos.c -o libkin2epos.o
 
-trajectory.o: trajectory.c trajectory.h kin.c kin.h 
-	gcc -Wall -c trajectory.c -o trajectory.o
+libtrajectory.o: libtrajectory.c libtrajectory.h libkin.c libkin.h 
+	gcc -Wall -c libtrajectory.c -o libtrajectory.o
 
-inverse: inverse.c kin.o kin2serial.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h
-	gcc -Wall -lm -o inverse inverse.c kin.o kin2serial.o libserial.o libepos.o
+inverse: inverse.c libkin.o libkin2epos.o libkin.c libkin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h
+	gcc -Wall -lm -o inverse inverse.c libkin.o libkin2epos.o libserial.o libepos.o
 
-inverse_vel: inverse_vel.c kin.o kin2serial.o kin.c kin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h trajectory.h trajectory.c trajectory.o
-	gcc -Wall -lm -o inverse_vel inverse_vel.c kin.o kin2serial.o libserial.o libepos.o trajectory.o
+kin_main: kin_main.c libkin.o libkin2epos.o libkin.c libkin.h libserial.o libserial.h libepos.h libepos.o libepos_type.h libtrajectory.h libtrajectory.c libtrajectory.o
+	gcc -Wall -lm -o kin_main kin_main.c libkin.o libkin2epos.o libserial.o libepos.o libtrajectory.o
 
 
 
@@ -60,7 +60,7 @@ clean:
 	rm main 
 	rm nullposition
 	rm inverse
-	rm inverse_vel
+	rm kin_main
 	
 	
 	
