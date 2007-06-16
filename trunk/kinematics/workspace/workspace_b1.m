@@ -4,12 +4,12 @@
 a_3=23.05 ;
 a_4=22.4  ;
 a_5=18.8  ;
-
+resolution = 10; %degree
 %color = zeros(140,100,70);
 for i=1:5
 t1 = (i-1)*30/resolution
 
-resolution = 10; %degree
+
 Workspace = [];
 %for t1= 0 : 120/resolution
     for t2 = 0: 90/resolution
