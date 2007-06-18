@@ -82,9 +82,9 @@ int main(int argc, char **argv)
   if( read_scriptfile( argv[1], tool_path, &number_of_via_points) )
     exit(1);
 
-  /* adapt velocity: */
+  /* adjust velocity: */
   for(i=0; i<MCI_MAX_VIA_POINTS; i++)
-    tool_path[i][6] =  tool_path[i][6] / 2;
+    tool_path[i][6] =  tool_path[i][6] / 1;
   
 
   //print path: 

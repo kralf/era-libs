@@ -1,0 +1,286 @@
+//line velfactor 1.5 (faster)
+
+theta1 soll: 0  ist: 71
+theta1 soll: 0  ist: 0.027783
+theta2 soll: 0  ist: 75
+theta2 soll: 0  ist: 0.032143
+theta3 soll: 0  ist: 189
+theta3 soll: 0  ist: 0.081000
+theta4 soll: 0  ist: -403
+theta4 soll: 0  ist: -0.187200
+theta5 soll: 0  ist: 14
+theta5 soll: 0  ist: 0.012600
+End Effector state
+  x:     9.687978
+  y:     30.237085
+  z:     4.713540
+  beta1: 11.739130° 0.204886 rad
+  beta2: 10.500000° 0.183260 rad
+abs: 0.000002 [cm]
+
+
+
+theta1 soll: 0  ist: -85
+theta1 soll: 0  ist: -0.033261
+theta2 soll: 0  ist: -3
+theta2 soll: 0  ist: -0.001286
+theta3 soll: 0  ist: 384
+theta3 soll: 0  ist: 0.164571
+theta4 soll: 0  ist: -1761
+theta4 soll: 0  ist: -0.818013
+theta5 soll: 0  ist: 3
+theta5 soll: 0  ist: 0.002700
+End Effector state
+  x:     9.687979
+  y:     30.237083
+  z:     4.713539
+  beta1: 11.739131° 0.204886 rad
+  beta2: 10.500000° 0.183260 rad
+abs: 0.000001 [cm]
+
+theta1 soll: 0  ist: -520
+theta1 soll: 0  ist: -0.203478
+theta2 soll: 0  ist: -313
+theta2 soll: 0  ist: -0.134143
+theta3 soll: 0  ist: -203
+theta3 soll: 0  ist: -0.087000
+theta4 soll: 0  ist: -158
+theta4 soll: 0  ist: -0.073394
+theta5 soll: 0  ist: 335
+theta5 soll: 0  ist: 0.301500
+End Effector state
+  x:     9.687978
+  y:     30.237084
+  z:     4.713540
+  beta1: 11.739132° 0.204887 rad
+  beta2: 10.500004° 0.183260 rad
+abs: 0.000001 [cm]
+
+theta1 soll: 0  ist: -318
+theta1 soll: 0  ist: -0.124435
+theta2 soll: 0  ist: -333
+theta2 soll: 0  ist: -0.142714
+theta3 soll: 0  ist: -418
+theta3 soll: 0  ist: -0.179143
+theta4 soll: 0  ist: 136
+theta4 soll: 0  ist: 0.063174
+theta5 soll: 0  ist: 244
+theta5 soll: 0  ist: 0.219600
+End Effector state
+  x:     9.687979
+  y:     30.237084
+  z:     4.713540
+  beta1: 11.739131° 0.204886 rad
+  beta2: 10.500002° 0.183260 rad
+abs: 0.000001 [cm]
+
+theta1 soll: 0  ist: -451
+theta1 soll: 0  ist: -0.176478
+theta2 soll: 0  ist: -563
+theta2 soll: 0  ist: -0.241286
+theta3 soll: 0  ist: -247
+theta3 soll: 0  ist: -0.105857
+theta4 soll: 0  ist: -474
+theta4 soll: 0  ist: -0.220181
+theta5 soll: 0  ist: 549
+theta5 soll: 0  ist: 0.494100
+End Effector state
+  x:     9.687979
+  y:     30.237084
+  z:     4.713540
+  beta1: 11.739132° 0.204886 rad
+  beta2: 10.500006° 0.183260 rad
+abs: 0.000001 [cm]
+
+
+//line velfactor 1
+
+theta1 soll: 0  ist: -16
+theta1 soll: 0  ist: -0.006261
+theta2 soll: 0  ist: -94
+theta2 soll: 0  ist: -0.040286
+theta3 soll: 0  ist: -411
+theta3 soll: 0  ist: -0.176143
+theta4 soll: 0  ist: 859
+theta4 soll: 0  ist: 0.399019
+theta5 soll: 0  ist: -7
+theta5 soll: 0  ist: -0.006300
+End Effector state
+  x:     9.687978
+  y:     30.237085
+  z:     4.713541
+  beta1: 11.739130° 0.204886 rad
+  beta2: 10.500000° 0.183260 rad
+abs: 0.000002 [cm]
+
+theta1 soll: 0  ist: 10
+theta1 soll: 0  ist: 0.003913
+theta2 soll: 0  ist: -3
+theta2 soll: 0  ist: -0.001286
+theta3 soll: 0  ist: 340
+theta3 soll: 0  ist: 0.145714
+theta4 soll: 0  ist: -2045
+theta4 soll: 0  ist: -0.949935
+theta5 soll: 0  ist: 2
+theta5 soll: 0  ist: 0.001800
+End Effector state
+  x:     9.687979
+  y:     30.237083
+  z:     4.713539
+  beta1: 11.739130° 0.204886 rad
+  beta2: 10.500000° 0.183260 rad
+abs: 0.000001 [cm]
+
+theta1 soll: 0  ist: -25
+theta1 soll: 0  ist: -0.009783
+theta2 soll: 0  ist: -2
+theta2 soll: 0  ist: -0.000857
+theta3 soll: 0  ist: -518
+theta3 soll: 0  ist: -0.222000
+theta4 soll: 0  ist: 1266
+theta4 soll: 0  ist: 0.588077
+theta5 soll: 0  ist: -3
+theta5 soll: 0  ist: -0.002700
+End Effector state
+  x:     9.687978
+  y:     30.237085
+  z:     4.713541
+  beta1: 11.739130° 0.204886 rad
+  beta2: 10.500000° 0.183260 rad
+abs: 0.000002 [cm]
+
+theta1 soll: 0  ist: 548
+theta1 soll: 0  ist: 0.214435
+theta2 soll: 0  ist: 522
+theta2 soll: 0  ist: 0.223714
+theta3 soll: 0  ist: -237
+theta3 soll: 0  ist: -0.101571
+theta4 soll: 0  ist: 1698
+theta4 soll: 0  ist: 0.788748
+theta5 soll: 0  ist: -402
+theta5 soll: 0  ist: -0.361800
+End Effector state
+  x:     9.687977
+  y:     30.237086
+  z:     4.713541
+  beta1: 11.739129° 0.204886 rad
+  beta2: 10.499996° 0.183260 rad
+abs: 0.000003 [cm]
+
+theta1 soll: 0  ist: -706
+theta1 soll: 0  ist: -0.276261
+theta2 soll: 0  ist: -766
+theta2 soll: 0  ist: -0.328286
+theta3 soll: 0  ist: 83
+theta3 soll: 0  ist: 0.035571
+theta4 soll: 0  ist: -2067
+theta4 soll: 0  ist: -0.960155
+theta5 soll: 0  ist: 825
+theta5 soll: 0  ist: 0.742500
+End Effector state
+  x:     9.687980
+  y:     30.237083
+  z:     4.713540
+  beta1: 11.739132° 0.204887 rad
+  beta2: 10.500009° 0.183260 rad
+abs: 0.000002 [cm]
+
+
+
+
+//line velfactor 0.5 (slower)
+
+theta1 soll: 0  ist: -6
+theta1 soll: 0  ist: -0.002348
+theta2 soll: 0  ist: -33
+theta2 soll: 0  ist: -0.014143
+theta3 soll: 0  ist: -824
+theta3 soll: 0  ist: -0.353143
+theta4 soll: 0  ist: 2119
+theta4 soll: 0  ist: 0.984310
+theta5 soll: 0  ist: -10
+theta5 soll: 0  ist: -0.009000
+End Effector state
+  x:     9.687978
+  y:     30.237086
+  z:     4.713541
+  beta1: 11.739130° 0.204886 rad
+  beta2: 10.500000° 0.183260 rad
+abs: 0.000003 [cm]
+
+
+
+
+theta1 soll: 0  ist: -14
+theta1 soll: 0  ist: -0.005478
+theta2 soll: 0  ist: 14
+theta2 soll: 0  ist: 0.006000
+theta3 soll: 0  ist: -1128
+theta3 soll: 0  ist: -0.483429
+theta4 soll: 0  ist: 2949
+theta4 soll: 0  ist: 1.369858
+theta5 soll: 0  ist: 1
+theta5 soll: 0  ist: 0.000900
+End Effector state
+  x:     9.687977
+  y:     30.237086
+  z:     4.713541
+  beta1: 11.739130° 0.204886 rad
+  beta2: 10.500000° 0.183260 rad
+abs: 0.000003 [cm]
+
+
+theta1 soll: 0  ist: 134
+theta1 soll: 0  ist: 0.052435
+theta2 soll: 0  ist: 218
+theta2 soll: 0  ist: 0.093429
+theta3 soll: 0  ist: 346
+theta3 soll: 0  ist: 0.148286
+theta4 soll: 0  ist: -809
+theta4 soll: 0  ist: -0.375794
+theta5 soll: 0  ist: -3
+theta5 soll: 0  ist: -0.002700
+End Effector state
+  x:     9.687978
+  y:     30.237084
+  z:     4.713540
+  beta1: 11.739130° 0.204886 rad
+  beta2: 10.500001° 0.183260 rad
+abs: 0.000001 [cm]
+
+theta1 soll: 0  ist: 83
+theta1 soll: 0  ist: 0.032478
+theta2 soll: 0  ist: 194
+theta2 soll: 0  ist: 0.083143
+theta3 soll: 0  ist: 513
+theta3 soll: 0  ist: 0.219857
+theta4 soll: 0  ist: -1262
+theta4 soll: 0  ist: -0.586219
+theta5 soll: 0  ist: -54
+theta5 soll: 0  ist: -0.048600
+End Effector state
+  x:     9.687978
+  y:     30.237084
+  z:     4.713540
+  beta1: 11.739130° 0.204886 rad
+  beta2: 10.500000° 0.183260 rad
+abs: 0.000001 [cm]
+
+
+theta1 soll: 0  ist: -652
+theta1 soll: 0  ist: -0.255130
+theta2 soll: 0  ist: -807
+theta2 soll: 0  ist: -0.345857
+theta3 soll: 0  ist: -709
+theta3 soll: 0  ist: -0.303857
+theta4 soll: 0  ist: 476
+theta4 soll: 0  ist: 0.221110
+theta5 soll: 0  ist: 675
+theta5 soll: 0  ist: 0.607500
+End Effector state
+  x:     9.687979
+  y:     30.237084
+  z:     4.713541
+  beta1: 11.739132° 0.204887 rad
+  beta2: 10.500007° 0.183260 rad
+abs: 0.000002 [cm]
