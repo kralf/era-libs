@@ -1,11 +1,14 @@
 
-all: main test nullposition testmode inverse kin_main test_error test_function_time
+all: main test nullposition_strom nullposition_sensor testmode inverse kin_main test_error test_function_time
 
 main: main.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o main main.c libserial.o libepos.o
 
-nullposition: nullposition.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
-	gcc -Wall -o nullposition nullposition.c libserial.o libepos.o
+nullposition_strom: nullposition_strom.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
+	gcc -Wall -o nullposition_strom nullposition_strom.c libserial.o libepos.o
+
+nullposition_sensor: nullposition_sensor.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
+	gcc -Wall -o nullposition_sensor nullposition_sensor.c libserial.o libepos.o
 
 testmode: testmode.c libserial.o libserial.h libepos.h libepos.o libepos_type.h
 	gcc -Wall -o testmode testmode.c libserial.o libepos.o
@@ -52,15 +55,16 @@ kin_main: kin_main.c libkin.o libkin2epos.o libkin.c libkin.h libserial.o libser
 
 
 clean:
-	rm  *.o
-	rm test
-	rm test_function_time
-	rm test_error
-	rm testmode
-	rm main 
-	rm nullposition
-	rm inverse
-	rm kin_main
+	rm -f *.o
+	rm -f test
+	rm -f test_function_time
+	rm -f test_error
+	rm -f testmode
+	rm -f main 
+	rm -f nullposition_strom
+	rm -f nullposition_sensor
+	rm -f inverse
+	rm -f kin_main
 	
 	
 	
