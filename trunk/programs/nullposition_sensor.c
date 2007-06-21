@@ -20,7 +20,7 @@ int main(void)
 	int id=0;
 
 	int home_method[] = {0,17,18,17,17,18,-3};  //versch homing methodes
-	long int home_offset[] = {0,45592,42443,42722,35608,176184,36300};
+	long int home_offset[] = {0,45592,42443,42722,35608,182580,36300};
 	long int homing_speed_switch_search[] = {0,200,200,200,200,500,200};
 	long int homing_speed_zero_search[]   = {0,800,700,700,700,4000,200};
 
