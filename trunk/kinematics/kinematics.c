@@ -1,181 +1,158 @@
 /*	Kinematic system model for BlueBotics ERA-5/1
  *
  * 	Fritz Stoeckli   stfritz@ethz.ch
- * 	Last change:    28.5.2007
+ * 	Last change:     6.5.2008
  */
 
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 
 #include "kinematics.h"
 
-const double theta_min[] = {
-                             -M_PI/2+0.1,
-                             0.1,
-                             -M_PI/9+0.1,
-                             0.1,
-                             -M_PI*8/9+0.1
-                           }; //[rad]
+#define sqr(x) x*x
 
-const double theta_max[] = {
-                             M_PI/6-0.1,
-                             M_PI/2-0.1,
-                             M_PI/2-0.1,
-                             M_PI*2/3-0.1,
-                             M_PI*8/9-0.1
-                           }; //[rad]
+static era_arm_geometry_t era_arm_geometry = {
+  .upper = 0.2305,
+  .lower = 0.224,
+  .tool = 0.188,
+};
 
-const double theta_vel_max[] = {
-                                 M_PI*13/36,
-                                 M_PI*2/5,
-                                 M_PI*5/12,
-                                 M_PI*5/12,
-                                 M_PI
-                               }; //[rad/s]
+static era_arm_configuration_t era_arm_configuration_min = {
+  .shoulder_yaw = -M_PI/2+0.1,
+  .shoulder_roll = 0.1,
+  .shoulder_pitch = -M_PI/9+0.1,
+  .ellbow_pitch = 0.1,
+  .tool_roll = -M_PI*8/9+0.1,
+  .tool_opening = 0,
+};
 
-const double arm_lenght[] = {
-                              23.05,
-                              22.4,
-                              18.8
-                            };
+static era_arm_configuration_t era_arm_configuration_max = {
+  .shoulder_yaw = M_PI/6-0.1,
+  .shoulder_roll = M_PI/2-0.1,
+  .shoulder_pitch = M_PI/2-0.1,
+  .ellbow_pitch = M_PI*2/3-0.1,
+  .tool_roll = M_PI*8/9-0.1,
+  .tool_opening = M_PI/2,
+};
 
-inline double sqr(double x)
-{
-  return x*x;
+void era_get_geometry(
+  era_arm_geometry_t* arm_geometry) {
+  memcpy(arm_geometry, &era_arm_geometry, sizeof(era_arm_geometry_t));
+};
+
+void era_get_configuration_limits(
+  era_arm_configuration_t*  arm_configuration_min,
+  era_arm_configuration_t* arm_configuration_max) {
+  memcpy(arm_configuration_min, &era_arm_configuration_min,
+    sizeof(era_arm_configuration_t));
+  memcpy(arm_configuration_max, &era_arm_configuration_max,
+    sizeof(era_arm_configuration_t));
 }
 
-void era_forward_kinematics(double tool[], double theta[])
-{
-
-  double a3 = arm_lenght[0];
-  double a4 = arm_lenght[1];
-  double a5 = arm_lenght[2];
-
-  /* this is x: */
-  tool[0] = -a4*cos(theta[3])*sin(theta[0])*sin(theta[2])-a4*sin(theta[3])*sin(theta[0])*cos(theta[2])
-              +a3*cos(theta[0])*sin(theta[1])*cos(theta[2])
-              +a4*cos(theta[3])*cos(theta[0])*sin(theta[1])*cos(theta[2])
-              -a3*sin(theta[0])*sin(theta[2])-a4*sin(theta[3])*cos(theta[0])*sin(theta[1])*sin(theta[2])
-              -sin(theta[0])*a5;
-
-  /* this is y: */
-  tool[1] = cos(theta[0])*a5+a3*sin(theta[0])*sin(theta[1])*cos(theta[2])
-             +a4*sin(theta[3])*cos(theta[0])*cos(theta[2])
-             +a4*cos(theta[3])*cos(theta[0])*sin(theta[2])+a3*cos(theta[0])*sin(theta[2])
-             +a4*cos(theta[3])*sin(theta[0])*sin(theta[1])*cos(theta[2])
-             -a4*sin(theta[3])*sin(theta[0])*sin(theta[1])*sin(theta[2]);
-
-  /* this is z: */
-  tool[2] = -cos(theta[1])*cos(theta[2])*cos(theta[3])*a4+cos(theta[1])*sin(theta[2])*sin(theta[3])*a4
-            -cos(theta[1])*cos(theta[2])*a3+a3+a4;//+a5;
-
-  /* this is beta1: */
-  tool[3] = theta[0];
-
-  /* this is beta2: */
-  tool[4] = theta[4]-theta[1];
-
-  tool[3] = tool[3]*180/M_PI;
-  tool[4] = tool[4]*180/M_PI;
-
-  /* this is the gripper status: */
-  tool[5] = theta[5];
-}
-
-int era_theta_workspacecheck(double theta[])
-{
-  int outside = 0;
+int era_test_configuration_limits(
+  era_arm_configuration_t* arm_configuration) {
   int i;
-  for (i = 0; i <= 4; i++)
-  {
-    if (!(theta[i] >= theta_min[i] && theta[i] <= theta_max[i]))
-    {
-      outside = 1;
-      printf("ERROR: pose out of work space: theta%i = %f\n\n", i+1,
-        theta[i]*180/M_PI);
-    }
-  }
+  double* theta = (double*)arm_configuration;
+  double* theta_min = (double*)&era_arm_configuration_min;
+  double* theta_max = (double*)&era_arm_configuration_max;
 
-  return outside;
+  for (i = 0; i <= sizeof(era_arm_configuration_t)/sizeof(double); i++)
+    if (theta[i] < theta_min[i] || theta[i] > theta_max[i])
+    return 1;
+
+  return 0;
 }
 
-void era_auto_beta1(double tool[])
-{
-  if (tool[3] == 999)
-  {
-    tool[3] = -tan(tool[0]/tool[1])*180/M_PI;
-    printf("auto: beta1: %f\n", tool[3]);
-  }
+void era_forward_kinematics(
+  era_arm_configuration_t* arm_configuration,
+  era_tool_configuration_t* tool_configuration) {
+  double a3 = era_arm_geometry.upper;
+  double a4 = era_arm_geometry.lower;
+  double a5 = era_arm_geometry.tool;
+  double* theta = (double*)arm_configuration;
+
+  tool_configuration->x =
+    -a4*cos(theta[3])*sin(theta[0])*sin(theta[2])
+    -a4*sin(theta[3])*sin(theta[0])*cos(theta[2])
+    +a3*cos(theta[0])*sin(theta[1])*cos(theta[2])
+    +a4*cos(theta[3])*cos(theta[0])*sin(theta[1])*cos(theta[2])
+    -a3*sin(theta[0])*sin(theta[2])
+    -a4*sin(theta[3])*cos(theta[0])*sin(theta[1])*sin(theta[2])
+    -sin(theta[0])*a5;
+
+  tool_configuration->y =
+    cos(theta[0])*a5+a3*sin(theta[0])*sin(theta[1])*cos(theta[2])
+    +a4*sin(theta[3])*cos(theta[0])*cos(theta[2])
+    +a4*cos(theta[3])*cos(theta[0])*sin(theta[2])+a3*cos(theta[0])*sin(theta[2])
+    +a4*cos(theta[3])*sin(theta[0])*sin(theta[1])*cos(theta[2])
+    -a4*sin(theta[3])*sin(theta[0])*sin(theta[1])*sin(theta[2]);
+
+  tool_configuration->z =
+    -cos(theta[1])*cos(theta[2])*cos(theta[3])*a4
+    +cos(theta[1])*sin(theta[2])*sin(theta[3])*a4
+    -cos(theta[1])*cos(theta[2])*a3+a3+a4;
+
+  tool_configuration->yaw = theta[0];
+
+  tool_configuration->roll = theta[4]-theta[1];
+
+  tool_configuration->opening = theta[5];
 }
 
-int era_inverse_kinematics(double tool[], double theta[])
-{
-  tool[3] = tool[3]/180*M_PI;
-  tool[4] = tool[4]/180*M_PI;
+int era_inverse_kinematics(
+  era_tool_configuration_t* tool_configuration,
+  era_arm_configuration_t* arm_configuration) {
+  double x, y, c4;
+  double a3 = era_arm_geometry.upper;
+  double a4 = era_arm_geometry.lower;
+  double a5 = era_arm_geometry.tool;
+  double* theta = (double*)arm_configuration;
 
-  /* Arm parameters */
-  double a3 = arm_lenght[0];
-  double a4 = arm_lenght[1];
-  double a5 = arm_lenght[2];
+  era_cartesian_t v_sp;
+  era_cartesian_t v_beta1;
+  era_cartesian_t v_normal;
 
-  double x;
-  double y;
-  double c4;
-
-  t_cartesian v_sp;
-  t_cartesian v_beta1;
-  t_cartesian v_normal;
-
-  v_beta1.x = -sin(tool[3]);
-  v_beta1.y = cos(tool[3]);
+  v_beta1.x = -sin(tool_configuration->yaw);
+  v_beta1.y = cos(tool_configuration->yaw);
   v_beta1.z = 0;
 
-
-  v_sp.x = tool[0]-a5*v_beta1.x ;
-  v_sp.y = tool[1]-a5*v_beta1.y ;
-  //v_sp.z = tool[2]-(a3+a4+a5)-a5*v_beta1.z;
-  v_sp.z = tool[2]-(a3+a4)-a5*v_beta1.z;
+  v_sp.x = tool_configuration->x-a5*v_beta1.x ;
+  v_sp.y = tool_configuration->y-a5*v_beta1.y ;
+  v_sp.z = tool_configuration->z-(a3+a4)-a5*v_beta1.z;
 
   v_normal.x = (v_sp.y*v_beta1.z-v_sp.z*v_beta1.y);
   v_normal.y = (v_sp.z*v_beta1.x-v_sp.x*v_beta1.z);
   v_normal.z = (v_sp.x*v_beta1.y-v_sp.y*v_beta1.x);
 
-  /* this is theta1: */
-  theta[0] = tool[3];
+  arm_configuration->shoulder_yaw = tool_configuration->yaw;
 
-  /* this is theta2: */
-  theta[1] = atan2((v_normal.z), sqrt(sqr(v_normal.x)+sqr(v_normal.y)));
+  arm_configuration->shoulder_roll =
+    atan2(fabs(v_normal.z), sqrt(sqr(v_normal.x)+sqr(v_normal.y)));
 
-  x =  v_sp.x*sin(theta[1])*cos(theta[0])
+  x = v_sp.x*sin(theta[1])*cos(theta[0])
       +v_sp.y*sin(theta[1])*sin(theta[0])
       -v_sp.z*cos(theta[1]);
   y = -v_sp.x*sin(theta[0])+v_sp.y*cos(theta[0]);
-
   c4 = (sqr(x)+sqr(y)-sqr(a3)-sqr(a4))/(2*a4*a3);
 
-  /* this is theta4: */
-  theta[3] = atan2(sqrt(1-sqr(c4)),c4);
+  arm_configuration->shoulder_pitch =
+    atan2(y, x)-atan2((a4*sqrt(1-sqr(c4))), (a3+a4*c4));
 
-  /* this is theta3: */
-  theta[2] = atan2(y,x)-atan2((a4*sqrt(1-sqr(c4))), (a3+a4*c4));
+  arm_configuration->ellbow_pitch = atan2(sqrt(1-sqr(c4)), c4);
 
-  /* this is theta5(which can not be controlled): */
-  /* theta 5 = pi/2 - theta[2] - theta[3];  */
+  arm_configuration->tool_roll = theta[1]+tool_configuration->roll;
 
-  /* this is theta6: */
-  theta[4] = theta[1] + tool[4];
-  /* this is the gripper status: */
-  theta[5] = tool[5];
+  arm_configuration->tool_opening = tool_configuration->opening;
 
-  if (theta[1] > -0.1 && theta[1] < 0.1)
-  {
-    //printf("theta2 exceeded %f\n", theta[1]);
-    theta[1] = 0.1;
-  }
-  else
-  {
-    //printf("theta2 not exceeded %f\n", theta[1]);
-  }
+  if (arm_configuration->shoulder_roll > -0.1 &&
+    arm_configuration->shoulder_roll < 0.1)
+    arm_configuration->shoulder_roll = 0.1;
 
-  return theta_workspacecheck(theta) ;
+  return era_test_configuration_limits(arm_configuration) ;
+}
+
+void era_set_tool_yaw(
+  era_tool_configuration_t* tool_configuration) {
+  tool_configuration->yaw = -tan(tool_configuration->x/tool_configuration->y);
 }
