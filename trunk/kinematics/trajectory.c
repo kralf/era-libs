@@ -11,7 +11,7 @@
 
 #include"trajectory.h"
 
-static era_arm_velocity_t era_arm_velocity_max = {
+const era_arm_velocity_t era_arm_velocity_max = {
   .shoulder_yaw = M_PI*13/36,
   .shoulder_roll = M_PI*2/5,
   .shoulder_pitch = M_PI*5/12,
@@ -19,11 +19,6 @@ static era_arm_velocity_t era_arm_velocity_max = {
   .tool_roll = M_PI,
   .tool_opening = 0,
 };
-
-void era_get_velocity_limits(
-  era_arm_velocity_t* arm_velocity_max) {
-  memcpy(arm_velocity_max, &era_arm_velocity_max, sizeof(era_arm_velocity_t));
-}
 
 int era_test_velocity_limits(
   era_arm_velocity_t* arm_velocity) {

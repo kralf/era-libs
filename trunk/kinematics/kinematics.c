@@ -6,19 +6,18 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <string.h>
 
 #include "kinematics.h"
 
 #define sqr(x) x*x
 
-static era_arm_geometry_t era_arm_geometry = {
+const era_arm_geometry_t era_arm_geometry = {
   .upper = 0.2305,
   .lower = 0.224,
   .tool = 0.188,
 };
 
-static era_arm_configuration_t era_arm_configuration_min = {
+const era_arm_configuration_t era_arm_configuration_min = {
   .shoulder_yaw = -M_PI/2+0.1,
   .shoulder_roll = 0.1,
   .shoulder_pitch = -M_PI/9+0.1,
@@ -27,7 +26,7 @@ static era_arm_configuration_t era_arm_configuration_min = {
   .tool_opening = 0,
 };
 
-static era_arm_configuration_t era_arm_configuration_max = {
+const era_arm_configuration_t era_arm_configuration_max = {
   .shoulder_yaw = M_PI/6-0.1,
   .shoulder_roll = M_PI/2-0.1,
   .shoulder_pitch = M_PI/2-0.1,
@@ -36,21 +35,43 @@ static era_arm_configuration_t era_arm_configuration_max = {
   .tool_opening = M_PI/2,
 };
 
-void era_get_geometry(
-  era_arm_geometry_t* arm_geometry) {
-  memcpy(arm_geometry, &era_arm_geometry, sizeof(era_arm_geometry_t));
-};
-
-void era_get_configuration_limits(
-  era_arm_configuration_t*  arm_configuration_min,
-  era_arm_configuration_t* arm_configuration_max) {
-  memcpy(arm_configuration_min, &era_arm_configuration_min,
-    sizeof(era_arm_configuration_t));
-  memcpy(arm_configuration_max, &era_arm_configuration_max,
-    sizeof(era_arm_configuration_t));
+void era_print_tool_configuration(
+  FILE* stream,
+  era_tool_configuration_t* tool_configuration) {
+  fprintf(stream, "Tool configuration\n");
+  fprintf(stream, "  x:       %fm\n",
+    tool_configuration->x);
+  fprintf(stream, "  y:       %fm\n",
+    tool_configuration->y);
+  fprintf(stream, "  z:       %fm\n",
+    tool_configuration->z);
+  fprintf(stream, "  yaw:     %f°\n",
+    tool_configuration->yaw*180/M_PI);
+  fprintf(stream, "  roll:    %f°\n",
+    tool_configuration->roll*180/M_PI);
+  fprintf(stream, "  opening: %f°\n",
+    tool_configuration->opening*180/M_PI);
 }
 
-int era_test_configuration_limits(
+void era_print_arm_configuration(
+  FILE* stream,
+  era_arm_configuration_t* arm_configuration) {
+  fprintf(stream, "Arm configuration\n");
+  fprintf(stream, "  shoulder_yaw:   %f°\n",
+    arm_configuration->shoulder_yaw*180/M_PI);
+  fprintf(stream, "  shoulder_roll:  %f°\n",
+    arm_configuration->shoulder_roll*180/M_PI);
+  fprintf(stream, "  shoulder_pitch: %f°\n",
+    arm_configuration->shoulder_pitch*180/M_PI);
+  fprintf(stream, "  ellbow_pitch:   %f°\n",
+    arm_configuration->ellbow_pitch*180/M_PI);
+  fprintf(stream, "  tool_roll:      %f°\n",
+    arm_configuration->tool_roll*180/M_PI);
+  fprintf(stream, "  tool_opening:   %f°\n",
+    arm_configuration->tool_opening*180/M_PI);
+}
+
+int era_test_arm_configuration_limits(
   era_arm_configuration_t* arm_configuration) {
   int i;
   double* theta = (double*)arm_configuration;

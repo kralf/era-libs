@@ -21,22 +21,15 @@
   */
 typedef era_arm_configuration_t era_arm_velocity_t;
 
-/** \brief Structure defining trajectory error states
-  */
+/** \brief Structure defining trajectory error states */
 typedef struct {
   int point;              //!< The point index.
   int limits_exceeded;    //!< Indicates configuration space limits exceeded.
   int velocity_exceeded;  //!< Indicates maximum velocity exceeded.
 } era_trajectory_error_t;
 
-/** \brief Return the arm velocity limits
-  * \param[out] arm_configuration_min The lower limit of the arm
-  *   configuration space.
-  * \param[out] arm_configuration_max The upper limit of the arm
-  *   configuration space.
-  */
-void era_get_velocity_limits(
-  era_arm_velocity_t* arm_velocity_max);
+/** \brief Constant defining the upper arm velocity limit */
+const era_arm_velocity_t era_arm_velocity_max;
 
 /** \brief Test an arm velocity against velocity limits
   * \param[in] arm_velocity The arm velocity that will be tested

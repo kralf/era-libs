@@ -13,24 +13,21 @@
   * Inverse and forward calculations for BlueBotics ERA-5/1 robot arm.
   */
 
-/** \brief Structure defining a cartesian vector
-  */
+/** \brief Structure defining a cartesian vector */
 typedef struct {
   double x;  //!< The cartesian X-coordinate [m].
   double y;  //!< The cartesian Y-coordinate [m].
   double z;  //!< The cartesian Z-coordinate [m].
 } era_cartesian_t;
 
-/** \brief Structure defining the arm geometry
-  */
+/** \brief Structure defining the arm geometry */
 typedef struct {
   double upper;  //!< The upper arm's length [m].
   double lower;  //!< The forearm's length [m].
   double tool;   //!< The tool's length [m].
 } era_arm_geometry_t;
 
-/** \brief Structure defining the tool configuration
-  */
+/** \brief Structure defining the tool configuration */
 typedef struct {
   double x;        //!< The tool's X-coordinate [m].
   double y;        //!< The tool's Y-coordinate [m].
@@ -40,32 +37,40 @@ typedef struct {
   double opening;  //!< The tool's opening angle [rad].
 } era_tool_configuration_t;
 
-/** \brief Structure defining the arm configuration
-  */
+/** \brief Structure defining the arm configuration */
 typedef struct {
   double shoulder_yaw;    //!< The shoulder's yaw angle [rad], denoted theta1.
   double shoulder_roll;   //!< The shoulder's roll angle [rad], denoted theta2.
   double shoulder_pitch;  //!< The shoulder's pitch angle [rad], denoted theta3.
   double ellbow_pitch;    //!< The ellbow's pitch angle [rad], denoted theta4.
-  double tool_roll;       //!< The tool's roll angle [rad], denoted theta5.
-  double tool_opening;    //!< The tool's opening angle [rad], denoted theta6.
+  double tool_roll;       //!< The tool's roll angle [rad], denoted theta6.
+  double tool_opening;    //!< The tool's opening angle [rad].
 } era_arm_configuration_t;
 
-/** \brief Return the arm geometry
-  * \param[out] arm_geometry The arm's geometry.
-  */
-void era_get_geometry(
-  era_arm_geometry_t* arm_geometry);
+/** \brief Constant defining the arm's geometry */
+const era_arm_geometry_t era_arm_geometry;
+/** \brief Constant defining the lower limit of the arm configuration space */
+const era_arm_configuration_t era_arm_configuration_min;
+/** \brief Constant defining the upper limit of the arm configuration space */
+const era_arm_configuration_t era_arm_configuration_max;
 
-/** \brief Return the arm configuration space limits
-  * \param[out] arm_configuration_min The lower limit of the arm
-  *   configuration space.
-  * \param[out] arm_configuration_max The upper limit of the arm
-  *   configuration space.
+/** \brief Print a tool configuration
+  * \param[in] stream The output stream that will be used for printing the
+  *   tool configuration.
+  * \param[in] tool_configuration The tool configuration that will be printed.
   */
-void era_get_configuration_limits(
-  era_arm_configuration_t* arm_configuration_min,
-  era_arm_configuration_t* arm_configuration_max);
+void era_print_tool_configuration(
+  FILE* stream,
+  era_tool_configuration_t* tool_configuration);
+
+/** \brief Print an arm configuration
+  * \param[in] stream The output stream that will be used for printing the
+  *   arm configuration.
+  * \param[in] arm_configuration The arm configuration that will be printed.
+  */
+void era_print_arm_configuration(
+  FILE* stream,
+  era_arm_configuration_t* arm_configuration);
 
 /** \brief Test an arm configuration against configuration space limits
   * \param[in] arm_configuration The arm configuration that will be tested
@@ -73,7 +78,7 @@ void era_get_configuration_limits(
   * \return 1 if the provided arm configuration exceeds configuration
   *   space limits, 0 otherwise.
   */
-int era_test_configuration_limits(
+int era_test_arm_configuration_limits(
   era_arm_configuration_t* arm_configuration);
 
 /** \brief Forward kinematic calculations
