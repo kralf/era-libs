@@ -8,6 +8,8 @@
 #ifndef _KINEMATICS_H
 #define _KINEMATICS_H
 
+#include <stdio.h>
+
 /** \file
   * \brief Kinematic system model
   * Inverse and forward calculations for BlueBotics ERA-5/1 robot arm.

@@ -4,7 +4,6 @@
  * 	Last change:     6.5.2008
  */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
@@ -17,7 +16,7 @@ const era_arm_velocity_t era_arm_velocity_max = {
   .shoulder_pitch = M_PI*5/12,
   .ellbow_pitch = M_PI*5/12,
   .tool_roll = M_PI,
-  .tool_opening = 0,
+  .tool_opening = M_PI,
 };
 
 int era_test_velocity_limits(
@@ -44,6 +43,9 @@ int era_read_trajectory(
   int result = 0, points = 0, comments = 0;
   int i;
 
+  *tool_configurations = 0;
+  *timestamps = 0;
+
   fd = fopen(filename,"r");
 
   if (fd == NULL) {
@@ -61,17 +63,17 @@ int era_read_trajectory(
       &point.x, &point.y, &point.z, &point.yaw, &point.roll, &point.opening,
       &timestamp);
 
-    if (result != 6) {
+    if (result != 7) {
       printf("Error in trajectory file at line %d!\n", (points+1)+comments);
-      return 1;
+      return points;
     }
 
     *tool_configurations = realloc(*tool_configurations,
       (points+1)*sizeof(era_tool_configuration_t));
-    memcpy(tool_configurations[points], &point,
+    memcpy(&(*tool_configurations)[points], &point,
       sizeof(era_tool_configuration_t));
     *timestamps = realloc(*timestamps, (points+1)*sizeof(double));
-    *timestamps[points] = timestamp;
+    (*timestamps)[points] = timestamp;
 
     points++;
   }

@@ -5,7 +5,6 @@
  *      Last change:     7.5.2008
  */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -13,199 +12,375 @@
 
 #include "motors.h"
 
-const  double enc_rev[]        = {500,500,500,500,500,500};
-const  double i_gear[]         = {0.02,0.02,0.02,0.02,0.005,0.01};
-const  double i_arm[]          = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1, 1};
-const  long int zero_offset[] = {80000,99000,50000,    0,145000,30000}; // down zero position
-const  long int home_offset[] = {50000,50000,50000,50000,180000,30000}; // starting position
-const  int sign_switch[]      = {   -1,   -1,    1,    1,     1,    1};
+#define ERA_MOTORS_POLL_INTERVAL 100
 
+#define sqr(x) x*x
+#define max(x, y) x>=y?x:y
 
-double max(double m1, double m2)
-{
-  if(m1>m2)
-    return m1;
-  else
-    return m2;
+const era_motor_configuration_t era_motor_tiks_per_revolution = {
+  .shoulder_yaw = 2000,
+  .shoulder_roll = 2000,
+  .shoulder_pitch = 2000,
+  .ellbow_pitch = 2000,
+  .tool_roll = 2000,
+  .tool_opening = 2000,
+};
+
+const era_motor_configuration_t era_motor_current_limit = {
+  .shoulder_yaw = 2500,
+  .shoulder_roll = 2000,
+  .shoulder_pitch = 2000,
+  .ellbow_pitch = 2000,
+  .tool_roll = 300,
+  .tool_opening = 300,
+};
+
+const era_motor_configuration_t era_motor_zero = {
+  .shoulder_yaw = 80000,
+  .shoulder_roll = 99000,
+  .shoulder_pitch = 50000,
+  .ellbow_pitch = 0,
+  .tool_roll = 145000,
+  .tool_opening = 30000,
+};
+
+const era_motor_configuration_t era_motor_home_sensors = {
+  .shoulder_yaw = 45592,
+  .shoulder_roll = 42443,
+  .shoulder_pitch = 42722,
+  .ellbow_pitch = 35608,
+  .tool_roll = 182580,
+  .tool_opening = 36300,
+};
+
+const era_motor_configuration_t era_motor_home_current = {
+  .shoulder_yaw = 50000,
+  .shoulder_roll = 50000,
+  .shoulder_pitch = 50000,
+  .ellbow_pitch = 50000,
+  .tool_roll = 180000,
+  .tool_opening = 30000,
+};
+
+const era_motor_configuration_t era_motor_homing_method_sensors = {
+  .shoulder_yaw = EPOS_HOMING_METHOD_NEGATIVE_LIMIT_SWITCH,
+  .shoulder_roll = EPOS_HOMING_METHOD_POSITIVE_LIMIT_SWITCH,
+  .shoulder_pitch = EPOS_HOMING_METHOD_NEGATIVE_LIMIT_SWITCH,
+  .ellbow_pitch = EPOS_HOMING_METHOD_NEGATIVE_LIMIT_SWITCH,
+  .tool_roll = EPOS_HOMING_METHOD_POSITIVE_LIMIT_SWITCH,
+  .tool_opening = EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD,
+};
+
+const era_motor_configuration_t era_motor_homing_method_current = {
+  .shoulder_yaw = EPOS_HOMING_METHOD_NEGATIVE_CURRENT_THRESHOLD,
+  .shoulder_roll = EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD,
+  .shoulder_pitch = EPOS_HOMING_METHOD_NEGATIVE_CURRENT_THRESHOLD,
+  .ellbow_pitch = EPOS_HOMING_METHOD_NEGATIVE_CURRENT_THRESHOLD,
+  .tool_roll = EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD,
+  .tool_opening = EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD,
+};
+
+const era_motor_configuration_t era_motor_home_current_threshold = {
+  .shoulder_yaw = 1700,
+  .shoulder_roll = 1200,
+  .shoulder_pitch = 1400,
+  .ellbow_pitch = 1400,
+  .tool_roll = 150,
+  .tool_opening = 150,
+};
+
+const era_motor_velocity_t era_motor_homing_velocity = {
+  .shoulder_yaw = 200,
+  .shoulder_roll = 200,
+  .shoulder_pitch = 200,
+  .ellbow_pitch = 200,
+  .tool_roll = 500,
+  .tool_opening = 200,
+};
+
+const era_motor_configuration_t era_motor_signum = {
+  .shoulder_yaw = -1,
+  .shoulder_roll = -1,
+  .shoulder_pitch = 1,
+  .ellbow_pitch = 1,
+  .tool_roll = 1,
+  .tool_opening = 1,
+};
+
+const era_arm_configuration_t era_motor_gear_transmission = {
+  .shoulder_yaw = 0.02*0.108695652,
+  .shoulder_roll = 0.02*0.119047619,
+  .shoulder_pitch = 0.02*0.119047619,
+  .ellbow_pitch = 0.02*0.129032258,
+  .tool_roll = 0.005*1.0,
+  .tool_opening = 0.01*1.0,
+};
+
+static era_motor_configuration_t era_motor_home = {
+  .shoulder_yaw = 0,
+  .shoulder_roll = 0,
+  .shoulder_pitch = 0,
+  .ellbow_pitch = 0,
+  .tool_roll = 0,
+  .tool_opening = 0,
+};
+
+void era_print_motor_configuration(
+  FILE* stream,
+  era_motor_configuration_t* motor_configuration) {
+  fprintf(stream, "shoulder_yaw:   %d tiks\n",
+    motor_configuration->shoulder_yaw);
+  fprintf(stream, "shoulder_roll:  %d tiks\n",
+    motor_configuration->shoulder_roll);
+  fprintf(stream, "shoulder_pitch: %d tiks\n",
+    motor_configuration->shoulder_pitch);
+  fprintf(stream, "ellbow_pitch:   %d tiks\n",
+    motor_configuration->ellbow_pitch);
+  fprintf(stream, "tool_roll:      %d tiks\n",
+    motor_configuration->tool_roll);
+  fprintf(stream, "tool_opening:   %d tiks\n",
+    motor_configuration->tool_opening);
 }
 
-
-double kin2s_position_error(double pos_err[])
-{
- return  sqrt( pos_err[0]*pos_err[0] + pos_err[1]*pos_err[1] + pos_err[2]*pos_err[2] + pos_err[3]*pos_err[3] );
+void era_motor_configuration_init(
+  era_motor_configuration_t* motor_configuration) {
+  motor_configuration->shoulder_yaw = 0;
+  motor_configuration->shoulder_roll = 0;
+  motor_configuration->shoulder_pitch = 0;
+  motor_configuration->ellbow_pitch = 0;
+  motor_configuration->tool_roll = 0;
+  motor_configuration->tool_opening = 0;
 }
 
-void kin2s_position_mode_calc_vel(double pos[], double pos_old[], double vel[], double vel_max)
-{
+void era_arm_to_motor(
+  const era_arm_configuration_t* arm_configuration,
+  const era_arm_velocity_t* arm_velocity,
+  era_motor_configuration_t* motor_configuration,
+  era_motor_velocity_t* motor_velocity) {
+  int i;
 
-  double dpos[4];
-  int i=0;
-  for(i=0;i<=3;i++)
-    dpos[i] = abs( (pos[i] - pos_old[i]) );
+  double* arm_conf = (double*)arm_configuration;
+  int* motor_conf = (int*)motor_configuration;
+  double* arm_vel = (double*)arm_velocity;
+  int* motor_vel = (int*)motor_velocity;
 
-  // maximum position difference:
-  double max_dpos = max(max(dpos[0], dpos[1]),
-                       max(dpos[2], dpos[3]));
-  /*
-    double i_gear[] = { 0.02,        0.02,        0.02,        0.02,        0.005, 0.01};
-      double i_arm[]  = { 0.108695652, 0.119047619, 0.119047619, 0.129032258, 1,     1};
-  */
+  int* zero = (int*)&era_motor_zero;
+  int* home = (int*)&era_motor_home;
+  int* tiks_per_revolution = (int*)&era_motor_tiks_per_revolution;
+  int* signum = (int*)&era_motor_signum;
+  double* gear = (double*)&era_motor_gear_transmission;
 
-  for(i=0;i<=3;i++)
-    vel[i] = vel_max * (dpos[i]/max_dpos) / (i_gear[i]*i_arm[i]);
+  for (i = 0; i < 6; i++) {
+    if (arm_conf && motor_conf)
+      motor_conf[i] = signum[i]*arm_conf[i]/(2*M_PI*gear[i])*
+      tiks_per_revolution[i]+zero[i]-home[i];
 
-  vel[4] = vel_max / (i_gear[4]*i_arm[4]);
-  vel[5] = vel_max / (i_gear[5]*i_arm[5]);
-
+    if (arm_vel && motor_vel)
+      motor_vel[i] = signum[i]*arm_vel[i]/(2*M_PI*gear[i])*
+      tiks_per_revolution[i]*1000;
+  }
 }
 
-void kin2s_position_mode_set(double pos[], double vel[])
-{
+void era_motor_to_arm(
+  const era_motor_configuration_t* motor_configuration,
+  const era_motor_velocity_t* motor_velocity,
+  era_arm_configuration_t* arm_configuration,
+  era_arm_velocity_t* arm_velocity) {
+  int i;
 
-  int id=0;
-  for(id=1;id<=6;id++)
-    {
-      set_profile_velocity( id, vel[id-1]);
-      set_target_position(  id, pos[id-1]);
+  int* motor_conf = (int*)motor_configuration;
+  double* arm_conf = (double*)arm_configuration;
+  int* motor_vel = (int*)motor_velocity;
+  double* arm_vel = (double*)arm_velocity;
+
+  int* zero = (int*)&era_motor_zero;
+  int* home = (int*)&era_motor_home;
+  int* tiks_per_revolution = (int*)&era_motor_tiks_per_revolution;
+  int* signum = (int*)&era_motor_signum;
+  double* gear = (double*)&era_motor_gear_transmission;
+
+  for (i = 0; i < 6; i++) {
+    if (motor_conf && arm_conf)
+      arm_conf[i] = (double)(signum[i]*(motor_conf[i]-zero[i]+home[i]))*
+      2*M_PI*gear[i]/tiks_per_revolution[i];
+
+    if (arm_vel && motor_vel)
+      arm_vel[i] = (double)(signum[i]*motor_vel[i])*
+      2*M_PI*gear[i]/tiks_per_revolution[i]/1000;
+  }
+}
+
+void era_motors_init(
+  const char* dev) {
+  int id;
+
+  int* current_limit = (int*)&era_motor_current_limit;
+
+  can_init(dev);
+
+  for (id = 1; id < 7; id++) {
+    epos_fault_reset(id);
+    epos_set_output_current_limit(id, current_limit[id-1]);
+  }
+}
+
+void era_motors_close(void) {
+  can_close();
+}
+
+void era_motors_wait(
+  int condition) {
+  int id, status = 0;
+
+  while (!status) {
+    status = 0xFFFFFFFF;
+
+    for (id = 1; id < 7; id++) {
+      epos_get_statusword(id);
+      status &= condition & epos_read.node[id-1].status;
     }
-  for(id=1;id<=6;id++)
-      activate_position(    id);
+
+    if (!status) usleep(ERA_MOTORS_POLL_INTERVAL);
+  }
 }
 
-void kin2s_velocity_mode_set(double vel[])
-{
-  int id=0;
-  for(id=1;id<=6;id++)
-    {
-      set_velocity_mode_setting_value(id, (vel[id-1]*30/M_PI / (i_gear[id-1]*i_arm[id-1])*sign_switch[id-1]) );
+int era_motors_set_mode(
+  int operation_mode) {
+  int id;
+
+  if ((operation_mode != ERA_OPERATION_MODE_POSITION) &&
+    (operation_mode != ERA_OPERATION_MODE_VELOCITY))
+    return 0;
+
+  for (id = 1; id < 7; id++) {
+    epos_shutdown(id);
+    epos_enable_operation(id);
+
+    if (operation_mode == ERA_OPERATION_MODE_POSITION) {
+      epos_set_mode_of_operation(id, EPOS_OPERATION_MODE_PROFILE_POSITION);
     }
-}
-
-void kin2s_velocity_mode_set_zero()
-{
-  int id=0;
-  for(id=1;id<=6;id++)
-    {
-      set_velocity_mode_setting_value(id, 0);
+    else if (operation_mode == ERA_OPERATION_MODE_VELOCITY) {
+      epos_set_velocity_mode_setting_value(id, 0);
+      epos_set_mode_of_operation(id, EPOS_OPERATION_MODE_VELOCITY);
     }
+
+    epos_shutdown(id);
+    epos_enable_operation(id);
+  }
+
+  return 1;
 }
 
-void kin2s_position_mode_init()
-{
-  int id=0;
-  for(id=1;id<=6;id++)
-    {
-      fault_reset(id);
-      shutdown(id);
-      enable_operation(id);
-      set_mode_of_operation(id,1);
-      shutdown(id);
-      enable_operation(id);
-    }
+void era_motors_home(
+  int homing_mode) {
+  int id;
+
+  if ((homing_mode != ERA_HOMING_MODE_SENSORS) &&
+    (homing_mode != ERA_HOMING_MODE_CURRENT))
+    return;
+
+  int* motor_home = (int*)&era_motor_home;
+  int* home;
+  int* homing_method;
+  int* current_threshold = (int*)&era_motor_home_current_threshold;
+  int* velocity = (int*)&era_motor_homing_velocity;
+
+  if (homing_mode == ERA_HOMING_MODE_SENSORS) {
+    home = (int*)&era_motor_home_sensors;
+    homing_method = (int*)&era_motor_homing_method_sensors;
+  }
+  else if (homing_mode == ERA_HOMING_MODE_CURRENT) {
+    home = (int*)&era_motor_home_current;
+    homing_method = (int*)&era_motor_homing_method_current;
+  }
+
+  for (id = 1; id < 7; id++) {
+    epos_shutdown(id);
+    epos_enable_operation(id);
+    epos_set_mode_of_operation(id, EPOS_OPERATION_MODE_HOMING);
+    epos_shutdown(id);
+    epos_enable_operation(id);
+
+    epos_set_homing_method(id, homing_method[id-1]);
+    motor_home[id-1] = home[id-1];
+
+    epos_set_home_offset(id, motor_home[id-1]);
+    epos_set_homing_current_threshold(id, current_threshold[id-1]);
+    epos_set_homing_speed_switch_search(id, velocity[id-1]);
+    epos_set_homing_speed_zero_search(id, velocity[id-1]);
+
+    epos_start_homing_operation(id);
+  }
 }
 
-void kin2s_velocity_mode_init()
-{
-  int id=0;
-  for(id=1;id<=6;id++)
-    {
-      fault_reset(id);
-      shutdown(id);
-      enable_operation(id);
-      set_velocity_mode_setting_value(id, 0);
-      set_mode_of_operation(id,-2);
-      shutdown(id);
-      enable_operation(id);
-    }
+void era_position_mode_get(
+  era_arm_configuration_t* arm_configuration) {
+  int id;
+
+  era_motor_configuration_t motor_configuration;
+  int* motor = (int*)&motor_configuration;
+
+  for (id = 1; id < 7; ++id) {
+    epos_get_actual_position(id);
+    motor[id-1] = epos_read.node[id-1].actual_position;
+  }
+
+  era_motor_to_arm(&motor_configuration, 0, arm_configuration, 0);
 }
 
+void era_position_mode_set(
+  era_arm_configuration_t* arm_configuration,
+  era_arm_velocity_t* arm_velocity) {
+  int id;
 
+  era_motor_configuration_t motor_configuration;
+  era_motor_velocity_t motor_velocity;
+  int* motor_conf = (int*)&motor_configuration;
+  int* motor_vel = (int*)&motor_velocity;
 
-void theta_init_start_tiks(double theta[])
-{
-  theta[0] = 0; //-30000;
-  theta[1] = 0; // 49000;
-  theta[2] = 0; //0;
-  theta[3] = 0; // 50000;
-  theta[4] = 0; //-35000;
-  theta[5] = 0; //-35000;
+  era_arm_to_motor(arm_configuration, arm_velocity, &motor_configuration,
+    &motor_velocity);
 
+  for (id = 1; id < 7; ++id) {
+    epos_set_profile_velocity(id, motor_vel[id-1]);
+    epos_set_target_position(id, motor_conf[id-1]);
+  }
+
+  for (id = 1; id < 7; ++id) epos_activate_position(id);
 }
 
+void era_velocity_mode_zero(void) {
+  int id;
 
-/*
-
-void tool_init_starting_values(double tool[])
-{
-  tool[0]     =  20.932410; //20.931822;
-  tool[1]     =  23.874095; //23.874062;
-  tool[2]     =  23.513540; //23.513273;
-  tool[3]     =  -0.204886; //-0.204880;
-  tool[4]     =  -1.466077; //-0.366508;
-}*/
-
-
-
-void theta_print_rad(double theta[])
-{
-
-  printf("Joint Angles\n");
-  printf("  theta1: %f°\n", theta[0]*180/M_PI);
-  printf("  theta2: %f°\n", theta[1]*180/M_PI);
-  printf("  theta3: %f°\n", theta[2]*180/M_PI);
-  printf("  theta4: %f°\n", theta[3]*180/M_PI);
-  printf("  theta6: %f°\n", theta[4]*180/M_PI);
-  printf("  Gripper: %f\n", theta[5]);
-
-
+  for (id = 1; id < 7; id++) epos_set_velocity_mode_setting_value(id, 0);
 }
 
-void theta_print_tiks(double theta[])
-{
+void era_velocity_mode_set(
+  era_arm_velocity_t* arm_velocity) {
+  int id;
 
-  printf("Joint Angles\n");
-  printf("  theta1: %f tiks\n", theta[0]);
-  printf("  theta2: %f tiks\n", theta[1]);
-  printf("  theta3: %f tiks\n", theta[2]);
-  printf("  theta4: %f tiks\n", theta[3]);
-  printf("  theta6: %f tiks\n", theta[4]);
-  printf("  Gripper: %f tiks\n", theta[5]);
+  era_motor_velocity_t motor_velocity;
+  int* motor_vel = (int*)&motor_velocity;
 
+  era_arm_to_motor(0, arm_velocity, 0, &motor_velocity);
+
+  for (id = 1; id < 7; id++)
+    epos_set_velocity_mode_setting_value(id, motor_vel[id-1]);
 }
 
+double era_position_error(
+  era_arm_configuration_t* arm_configuration) {
+  int i;
+  double squared_error = 0.0;
 
-void tool_print(double tool[])
-{
-  printf("End Effector state\n");
-  printf("  x:     %f\n", tool[0]);
-  printf("  y:     %f\n", tool[1]);
-  printf("  z:     %f\n", tool[2]);
-  printf("  beta1: %f° %f rad \n", tool[3], tool[3]/180*M_PI);
-  printf("  beta2: %f° %f rad \n", tool[4], tool[4]/180*M_PI);
+  double* arm_conf = (double*)arm_configuration;
 
+  era_arm_configuration_t arm_current_configuration;
+  double* current = (double*)&arm_current_configuration;
+
+  era_position_mode_get(&arm_current_configuration);
+
+  for (i = 0; i < 6; ++i) squared_error += sqr(arm_conf[i]-current[i]);
+
+  return sqrt(squared_error);
 }
-
-
-void theta_rad_to_tiks(double theta[])
-{
-  int i=0;
-  for(i=0; i<=5; i++)
-    theta[i] = sign_switch[i]* ( theta[i]/(2*M_PI)/(i_gear[i]*i_arm[i])*(enc_rev[i]*4))
-               + zero_offset[i] - home_offset[i] ;
-
-
-}
-
-
-void theta_tiks_to_rad(double theta[])
-{
-  int i=0;
-  for(i=0; i<=5; i++)
-    theta[i] = sign_switch[i]*(theta[i] - zero_offset[i] +  home_offset[i] )
-               *(2*M_PI)*(i_gear[i]*i_arm[i])/(enc_rev[i]*4);
-
-}
-
-
-
-#endif

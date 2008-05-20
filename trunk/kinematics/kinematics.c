@@ -4,7 +4,6 @@
  * 	Last change:     6.5.2008
  */
 
-#include <stdio.h>
 #include <math.h>
 
 #include "kinematics.h"
@@ -38,36 +37,34 @@ const era_arm_configuration_t era_arm_configuration_max = {
 void era_print_tool_configuration(
   FILE* stream,
   era_tool_configuration_t* tool_configuration) {
-  fprintf(stream, "Tool configuration\n");
-  fprintf(stream, "  x:       %fm\n",
+  fprintf(stream, "x:       %f m\n",
     tool_configuration->x);
-  fprintf(stream, "  y:       %fm\n",
+  fprintf(stream, "y:       %f m\n",
     tool_configuration->y);
-  fprintf(stream, "  z:       %fm\n",
+  fprintf(stream, "z:       %f m\n",
     tool_configuration->z);
-  fprintf(stream, "  yaw:     %f°\n",
+  fprintf(stream, "yaw:     %f°\n",
     tool_configuration->yaw*180/M_PI);
-  fprintf(stream, "  roll:    %f°\n",
+  fprintf(stream, "roll:    %f°\n",
     tool_configuration->roll*180/M_PI);
-  fprintf(stream, "  opening: %f°\n",
+  fprintf(stream, "opening: %f°\n",
     tool_configuration->opening*180/M_PI);
 }
 
 void era_print_arm_configuration(
   FILE* stream,
   era_arm_configuration_t* arm_configuration) {
-  fprintf(stream, "Arm configuration\n");
-  fprintf(stream, "  shoulder_yaw:   %f°\n",
+  fprintf(stream, "shoulder_yaw:   %f°\n",
     arm_configuration->shoulder_yaw*180/M_PI);
-  fprintf(stream, "  shoulder_roll:  %f°\n",
+  fprintf(stream, "shoulder_roll:  %f°\n",
     arm_configuration->shoulder_roll*180/M_PI);
-  fprintf(stream, "  shoulder_pitch: %f°\n",
+  fprintf(stream, "shoulder_pitch: %f°\n",
     arm_configuration->shoulder_pitch*180/M_PI);
-  fprintf(stream, "  ellbow_pitch:   %f°\n",
+  fprintf(stream, "ellbow_pitch:   %f°\n",
     arm_configuration->ellbow_pitch*180/M_PI);
-  fprintf(stream, "  tool_roll:      %f°\n",
+  fprintf(stream, "tool_roll:      %f°\n",
     arm_configuration->tool_roll*180/M_PI);
-  fprintf(stream, "  tool_opening:   %f°\n",
+  fprintf(stream, "tool_opening:   %f°\n",
     arm_configuration->tool_opening*180/M_PI);
 }
 
@@ -170,7 +167,7 @@ int era_inverse_kinematics(
     arm_configuration->shoulder_roll < 0.1)
     arm_configuration->shoulder_roll = 0.1;
 
-  return era_test_configuration_limits(arm_configuration) ;
+  return era_test_arm_configuration_limits(arm_configuration) ;
 }
 
 void era_set_tool_yaw(
