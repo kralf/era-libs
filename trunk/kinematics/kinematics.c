@@ -75,7 +75,7 @@ int era_test_arm_configuration_limits(
   double* theta_min = (double*)&era_arm_configuration_min;
   double* theta_max = (double*)&era_arm_configuration_max;
 
-  for (i = 0; i <= sizeof(era_arm_configuration_t)/sizeof(double); i++)
+  for (i = 0; i < sizeof(era_arm_configuration_t)/sizeof(double); i++)
     if (theta[i] < theta_min[i] || theta[i] > theta_max[i])
     return 1;
 

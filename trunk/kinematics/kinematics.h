@@ -50,11 +50,11 @@ typedef struct {
 } era_arm_configuration_t;
 
 /** \brief Constant defining the arm's geometry */
-const era_arm_geometry_t era_arm_geometry;
+extern const era_arm_geometry_t era_arm_geometry;
 /** \brief Constant defining the lower limit of the arm configuration space */
-const era_arm_configuration_t era_arm_configuration_min;
+extern const era_arm_configuration_t era_arm_configuration_min;
 /** \brief Constant defining the upper limit of the arm configuration space */
-const era_arm_configuration_t era_arm_configuration_max;
+extern const era_arm_configuration_t era_arm_configuration_max;
 
 /** \brief Print a tool configuration
   * \param[in] stream The output stream that will be used for printing the

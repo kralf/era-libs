@@ -42,9 +42,11 @@ void era_move(
   const era_arm_configuration_t* target,
   double velocity,
   int wait) {
+  era_arm_configuration_t current;
   era_arm_velocity_t arm_velocity;
 
-  era_motor_to_arm(0, &era_motor_homing_velocity, 0, &arm_velocity);
+  era_position_mode_get(&current);
+  era_sync_velocity(&current, target, velocity, &arm_velocity);
 
   era_motors_set_mode(ERA_OPERATION_MODE_POSITION);
   era_position_mode_set(target, &arm_velocity);

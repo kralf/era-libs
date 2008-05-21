@@ -21,7 +21,7 @@
 typedef era_arm_configuration_t era_arm_velocity_t;
 
 /** \brief Constant defining the upper arm velocity limit */
-const era_arm_velocity_t era_arm_velocity_max;
+extern const era_arm_velocity_t era_arm_velocity_max;
 
 /** \brief Print an arm velocity
   * \param[in] stream The output stream that will be used for printing the
@@ -40,5 +40,23 @@ void era_print_velocity(
   */
 int era_test_velocity_limits(
   const era_arm_velocity_t* arm_velocity);
+
+/** \brief Synchronize the joint velocities of the arm
+  * Calculates the joint angle velocities such that all joints finish their
+  * movements simultaneously. The fastest joint angle velocity will be chosen
+  * to be the product of the joint's maximum velocity and the specified
+  * velocity.
+  * \param[in] arm_start_configuration The arm start configuration.
+  * \param[in] arm_target_configuration The arm target configuration.
+  * \param[in] velocity The velocity of the arm in the range of 0 to 1.
+  * \param[out] arm_velocity The resulting velocity for each component of
+  *   the arm configuration space.
+  * \return The execution time of the movement [s].
+  */
+double era_sync_velocity(
+  const era_arm_configuration_t* arm_start_configuration,
+  const era_arm_configuration_t* arm_target_configuration,
+  double velocity,
+  era_arm_velocity_t* arm_velocity);
 
 #endif

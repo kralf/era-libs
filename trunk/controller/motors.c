@@ -98,18 +98,9 @@ const era_motor_velocity_t era_motor_homing_velocity = {
   .tool_opening = 200,
 };
 
-const era_motor_configuration_t era_motor_signum = {
-  .shoulder_yaw = -1,
-  .shoulder_roll = -1,
-  .shoulder_pitch = 1,
-  .ellbow_pitch = 1,
-  .tool_roll = 1,
-  .tool_opening = 1,
-};
-
 const era_arm_configuration_t era_motor_gear_transmission = {
-  .shoulder_yaw = 0.02*0.108695652,
-  .shoulder_roll = 0.02*0.119047619,
+  .shoulder_yaw = -0.02*0.108695652,
+  .shoulder_roll = -0.02*0.119047619,
   .shoulder_pitch = 0.02*0.119047619,
   .ellbow_pitch = 0.02*0.129032258,
   .tool_roll = 0.005*1.0,
@@ -142,6 +133,23 @@ void era_print_motor_configuration(
     motor_configuration->tool_opening);
 }
 
+void era_print_motor_velocity(
+  FILE* stream,
+  const era_motor_velocity_t* motor_velocity) {
+  fprintf(stream, "shoulder_yaw:   %d rpm\n",
+    motor_velocity->shoulder_yaw);
+  fprintf(stream, "shoulder_roll:  %d rpm\n",
+    motor_velocity->shoulder_roll);
+  fprintf(stream, "shoulder_pitch: %d rpm\n",
+    motor_velocity->shoulder_pitch);
+  fprintf(stream, "ellbow_pitch:   %d rpm\n",
+    motor_velocity->ellbow_pitch);
+  fprintf(stream, "tool_roll:      %d rpm\n",
+    motor_velocity->tool_roll);
+  fprintf(stream, "tool_opening:   %d rpm\n",
+    motor_velocity->tool_opening);
+}
+
 void era_motor_configuration_init(
   era_motor_configuration_t* motor_configuration) {
   motor_configuration->shoulder_yaw = 0;
@@ -167,17 +175,15 @@ void era_arm_to_motor(
   int* zero = (int*)&era_motor_zero;
   int* home = (int*)&era_motor_home;
   int* tiks_per_revolution = (int*)&era_motor_tiks_per_revolution;
-  int* signum = (int*)&era_motor_signum;
   double* gear = (double*)&era_motor_gear_transmission;
 
   for (i = 0; i < 6; i++) {
     if (arm_conf && motor_conf)
-      motor_conf[i] = signum[i]*arm_conf[i]/(2*M_PI*gear[i])*
-      tiks_per_revolution[i]+zero[i]-home[i];
+      motor_conf[i] = arm_conf[i]/gear[i]*tiks_per_revolution[i]/(2*M_PI)+
+      zero[i]-home[i];
 
     if (arm_vel && motor_vel)
-      motor_vel[i] = signum[i]*arm_vel[i]/(2*M_PI*gear[i])*
-      tiks_per_revolution[i]*1000;
+      motor_vel[i] = arm_vel[i]/gear[i]*60/(2*M_PI);
   }
 }
 
@@ -196,17 +202,15 @@ void era_motor_to_arm(
   int* zero = (int*)&era_motor_zero;
   int* home = (int*)&era_motor_home;
   int* tiks_per_revolution = (int*)&era_motor_tiks_per_revolution;
-  int* signum = (int*)&era_motor_signum;
   double* gear = (double*)&era_motor_gear_transmission;
 
   for (i = 0; i < 6; i++) {
     if (motor_conf && arm_conf)
-      arm_conf[i] = (double)(signum[i]*(motor_conf[i]-zero[i]+home[i]))*
-      2*M_PI*gear[i]/tiks_per_revolution[i];
+      arm_conf[i] = (double)(motor_conf[i]-zero[i]+home[i])*gear[i]*
+      2*M_PI/tiks_per_revolution[i];
 
     if (arm_vel && motor_vel)
-      arm_vel[i] = (double)(signum[i]*motor_vel[i])*
-      2*M_PI*gear[i]/tiks_per_revolution[i]/1000;
+      arm_vel[i] = motor_vel[i]*gear[i]*2*M_PI/60;
   }
 }
 
@@ -225,6 +229,10 @@ void era_motors_init(
 }
 
 void era_motors_close(void) {
+  int id;
+
+  for (id = 1; id < 7; id++) epos_shutdown(id);
+
   can_close();
 }
 
@@ -342,7 +350,7 @@ void era_position_mode_set(
     &motor_velocity);
 
   for (id = 1; id < 7; ++id) {
-    epos_set_profile_velocity(id, motor_vel[id-1]);
+    epos_set_profile_velocity(id, abs(motor_vel[id-1]));
     epos_set_target_position(id, motor_conf[id-1]);
   }
 

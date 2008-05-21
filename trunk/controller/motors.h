@@ -36,44 +36,42 @@
 
 /** \brief Structure defining the motor configuration */
 typedef struct {
-  int shoulder_yaw;    //!< The shoulder's yaw increments [tik].
-  int shoulder_roll;   //!< The shoulder's roll increments [tik].
-  int shoulder_pitch;  //!< The shoulder's pitch increments [tik].
-  int ellbow_pitch;    //!< The ellbow's pitch increments [tik].
-  int tool_roll;       //!< The tool's roll increments [tik].
-  int tool_opening;    //!< The tool's opening increments [tik].
+  int shoulder_yaw;    //!< The shoulder's yaw increments [tiks].
+  int shoulder_roll;   //!< The shoulder's roll increments [tiks].
+  int shoulder_pitch;  //!< The shoulder's pitch increments [tiks].
+  int ellbow_pitch;    //!< The ellbow's pitch increments [tiks].
+  int tool_roll;       //!< The tool's roll increments [tiks].
+  int tool_opening;    //!< The tool's opening increments [tiks].
 } era_motor_configuration_t;
 
 /** \brief Structure defining the motor velocity
-  * All components are given in [tik/ms].
+  * All components are given in [rpm].
   */
 typedef era_motor_configuration_t era_motor_velocity_t;
 
 /** \brief Constant defining the number of motor tiks per revolution */
-const era_motor_configuration_t era_motor_tiks_per_revolution;
+extern const era_motor_configuration_t era_motor_tiks_per_revolution;
 /** \brief Constant defining the motor current limit */
-const era_motor_configuration_t era_motor_current_limit;
+extern const era_motor_configuration_t era_motor_current_limit;
 
 /** \brief Constant defining the motor zero configuration */
-const era_motor_configuration_t era_motor_zero;
+extern const era_motor_configuration_t era_motor_zero;
 
 /** \brief Constant defining the motor home configuration for sensor homing*/
-const era_motor_configuration_t era_motor_home_sensors;
+extern const era_motor_configuration_t era_motor_home_sensors;
 /** \brief Constant defining the motor home configuration for current homing*/
-const era_motor_configuration_t era_motor_home_current;
+extern const era_motor_configuration_t era_motor_home_current;
 /** \brief Constant defining the motor homing method for sensor homing*/
-const era_motor_configuration_t era_motor_homing_method_sensors;
+extern const era_motor_configuration_t era_motor_homing_method_sensors;
 /** \brief Constant defining the motor homing method for current homing*/
-const era_motor_configuration_t era_motor_homing_method_current;
+extern const era_motor_configuration_t era_motor_homing_method_current;
 /** \brief Constant defining the motor home current threshold */
-const era_motor_configuration_t era_motor_home_current_threshold;
+extern const era_motor_configuration_t era_motor_home_current_threshold;
 /** \brief Constant defining the motor homing velocity */
-const era_motor_velocity_t era_motor_homing_velocity;
+extern const era_motor_velocity_t era_motor_homing_velocity;
 
-/** \brief Constant defining the signum of the motor configuration */
-const era_motor_configuration_t era_motor_signum;
 /** \brief Constant defining the motor gear transmission */
-const era_arm_configuration_t era_motor_gear_transmission;
+extern const era_arm_configuration_t era_motor_gear_transmission;
 
 /** \brief Static structure holding the motor home configuration */
 static era_motor_configuration_t era_motor_home;
@@ -86,6 +84,15 @@ static era_motor_configuration_t era_motor_home;
 void era_print_motor_configuration(
   FILE* stream,
   const era_motor_configuration_t* motor_configuration);
+
+/** \brief Print a motor velocity
+  * \param[in] stream The output stream that will be used for printing the
+  *   motor velocity.
+  * \param[in] motor_velocity The motor velocity that will be printed.
+  */
+void era_print_motor_velocity(
+  FILE* stream,
+  const era_motor_velocity_t* motor_velocity);
 
 /** \brief Set initial configuration in motor space
   * All motor configuration components will be set to their initial values,
