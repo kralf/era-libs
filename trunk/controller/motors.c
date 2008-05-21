@@ -127,7 +127,7 @@ static era_motor_configuration_t era_motor_home = {
 
 void era_print_motor_configuration(
   FILE* stream,
-  era_motor_configuration_t* motor_configuration) {
+  const era_motor_configuration_t* motor_configuration) {
   fprintf(stream, "shoulder_yaw:   %d tiks\n",
     motor_configuration->shoulder_yaw);
   fprintf(stream, "shoulder_roll:  %d tiks\n",
@@ -329,8 +329,8 @@ void era_position_mode_get(
 }
 
 void era_position_mode_set(
-  era_arm_configuration_t* arm_configuration,
-  era_arm_velocity_t* arm_velocity) {
+  const era_arm_configuration_t* arm_configuration,
+  const era_arm_velocity_t* arm_velocity) {
   int id;
 
   era_motor_configuration_t motor_configuration;
@@ -356,7 +356,7 @@ void era_velocity_mode_zero(void) {
 }
 
 void era_velocity_mode_set(
-  era_arm_velocity_t* arm_velocity) {
+  const era_arm_velocity_t* arm_velocity) {
   int id;
 
   era_motor_velocity_t motor_velocity;
@@ -369,7 +369,7 @@ void era_velocity_mode_set(
 }
 
 double era_position_error(
-  era_arm_configuration_t* arm_configuration) {
+  const era_arm_configuration_t* arm_configuration) {
   int i;
   double squared_error = 0.0;
 

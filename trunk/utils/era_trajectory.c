@@ -17,7 +17,15 @@ int main(int argc, char **argv) {
   era_tool_configuration_t* tool_configurations;
   double* timestamps;
 
-  if (era_read_trajectory(argv[2], &tool_configurations, &timestamps)) {
+  int num_tool_configurations = era_read_trajectory(argv[2],
+    &tool_configurations, &timestamps);
+
+  if (num_tool_configurations) {
+    //era_trajectory_velocities(tool_configurations, timestamps,
+      //num_tool_configurations);
+
+    //era_move_trajectory(tool_configurations, timestamps, 1);
+
     free(tool_configurations);
     free(timestamps);
   }

@@ -63,7 +63,7 @@ const era_arm_configuration_t era_arm_configuration_max;
   */
 void era_print_tool_configuration(
   FILE* stream,
-  era_tool_configuration_t* tool_configuration);
+  const era_tool_configuration_t* tool_configuration);
 
 /** \brief Print an arm configuration
   * \param[in] stream The output stream that will be used for printing the
@@ -72,7 +72,7 @@ void era_print_tool_configuration(
   */
 void era_print_arm_configuration(
   FILE* stream,
-  era_arm_configuration_t* arm_configuration);
+  const era_arm_configuration_t* arm_configuration);
 
 /** \brief Test an arm configuration against configuration space limits
   * \param[in] arm_configuration The arm configuration that will be tested
@@ -81,7 +81,7 @@ void era_print_arm_configuration(
   *   space limits, 0 otherwise.
   */
 int era_test_arm_configuration_limits(
-  era_arm_configuration_t* arm_configuration);
+  const era_arm_configuration_t* arm_configuration);
 
 /** \brief Forward kinematic calculations
   * \param[in] arm_configuration The arm configuration for which the tool
@@ -90,7 +90,7 @@ int era_test_arm_configuration_limits(
   *   the forward kinematic calculations.
   */
 void era_forward_kinematics(
-  era_arm_configuration_t* arm_configuration,
+  const era_arm_configuration_t* arm_configuration,
   era_tool_configuration_t* tool_configuration);
 
 /** \brief Inverse kinematic calculations
@@ -102,7 +102,7 @@ void era_forward_kinematics(
   *   space limits, 0 otherwise.
   */
 int era_inverse_kinematics(
-  era_tool_configuration_t* tool_configuration,
+  const era_tool_configuration_t* tool_configuration,
   era_arm_configuration_t* arm_configuration);
 
 /** \brief Calculate and set the tool's yaw angle

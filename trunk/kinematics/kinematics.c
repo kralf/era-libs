@@ -36,40 +36,40 @@ const era_arm_configuration_t era_arm_configuration_max = {
 
 void era_print_tool_configuration(
   FILE* stream,
-  era_tool_configuration_t* tool_configuration) {
+  const era_tool_configuration_t* tool_configuration) {
   fprintf(stream, "x:       %f m\n",
     tool_configuration->x);
   fprintf(stream, "y:       %f m\n",
     tool_configuration->y);
   fprintf(stream, "z:       %f m\n",
     tool_configuration->z);
-  fprintf(stream, "yaw:     %f°\n",
+  fprintf(stream, "yaw:     %f °\n",
     tool_configuration->yaw*180/M_PI);
-  fprintf(stream, "roll:    %f°\n",
+  fprintf(stream, "roll:    %f °\n",
     tool_configuration->roll*180/M_PI);
-  fprintf(stream, "opening: %f°\n",
+  fprintf(stream, "opening: %f °\n",
     tool_configuration->opening*180/M_PI);
 }
 
 void era_print_arm_configuration(
   FILE* stream,
-  era_arm_configuration_t* arm_configuration) {
-  fprintf(stream, "shoulder_yaw:   %f°\n",
+  const era_arm_configuration_t* arm_configuration) {
+  fprintf(stream, "shoulder_yaw:   %f °\n",
     arm_configuration->shoulder_yaw*180/M_PI);
-  fprintf(stream, "shoulder_roll:  %f°\n",
+  fprintf(stream, "shoulder_roll:  %f °\n",
     arm_configuration->shoulder_roll*180/M_PI);
-  fprintf(stream, "shoulder_pitch: %f°\n",
+  fprintf(stream, "shoulder_pitch: %f °\n",
     arm_configuration->shoulder_pitch*180/M_PI);
-  fprintf(stream, "ellbow_pitch:   %f°\n",
+  fprintf(stream, "ellbow_pitch:   %f °\n",
     arm_configuration->ellbow_pitch*180/M_PI);
-  fprintf(stream, "tool_roll:      %f°\n",
+  fprintf(stream, "tool_roll:      %f °\n",
     arm_configuration->tool_roll*180/M_PI);
-  fprintf(stream, "tool_opening:   %f°\n",
+  fprintf(stream, "tool_opening:   %f °\n",
     arm_configuration->tool_opening*180/M_PI);
 }
 
 int era_test_arm_configuration_limits(
-  era_arm_configuration_t* arm_configuration) {
+  const era_arm_configuration_t* arm_configuration) {
   int i;
   double* theta = (double*)arm_configuration;
   double* theta_min = (double*)&era_arm_configuration_min;
@@ -83,7 +83,7 @@ int era_test_arm_configuration_limits(
 }
 
 void era_forward_kinematics(
-  era_arm_configuration_t* arm_configuration,
+  const era_arm_configuration_t* arm_configuration,
   era_tool_configuration_t* tool_configuration) {
   double a3 = era_arm_geometry.upper;
   double a4 = era_arm_geometry.lower;
@@ -119,7 +119,7 @@ void era_forward_kinematics(
 }
 
 int era_inverse_kinematics(
-  era_tool_configuration_t* tool_configuration,
+  const era_tool_configuration_t* tool_configuration,
   era_arm_configuration_t* arm_configuration) {
   double x, y, c4;
   double a3 = era_arm_geometry.upper;

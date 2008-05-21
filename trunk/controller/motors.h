@@ -85,7 +85,7 @@ static era_motor_configuration_t era_motor_home;
   */
 void era_print_motor_configuration(
   FILE* stream,
-  era_motor_configuration_t* motor_configuration);
+  const era_motor_configuration_t* motor_configuration);
 
 /** \brief Set initial configuration in motor space
   * All motor configuration components will be set to their initial values,
@@ -174,8 +174,8 @@ void era_position_mode_get(
   * \param[in] arm_velocity The arm profile velocity to be set.
   */
 void era_position_mode_set(
-  era_arm_configuration_t* arm_configuration,
-  era_arm_velocity_t* arm_velocity);
+  const era_arm_configuration_t* arm_configuration,
+  const era_arm_velocity_t* arm_velocity);
 
 /** \brief Set motor velocities to 0
   */
@@ -185,7 +185,7 @@ void era_velocity_mode_zero(void);
   * \param[in] arm_velocity The arm profile velocity to be set.
   */
 void era_velocity_mode_set(
-  era_arm_velocity_t* arm_velocity);
+  const era_arm_velocity_t* arm_velocity);
 
 /** \brief Evaluate the error for a target arm configuration
   * \param[in] arm_configuration The target arm configuration for which
@@ -193,6 +193,6 @@ void era_velocity_mode_set(
   * \return The square root of the squared elements of the configuration error.
   */
 double era_position_error(
-  era_arm_configuration_t* arm_configuration);
+  const era_arm_configuration_t* arm_configuration);
 
 #endif

@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 
   era_init(argv[1], ERA_HOMING_MODE_NONE);
 
-  era_move_home();
+  era_move_home(0.5, 1);
 
   era_close();
   return 0;

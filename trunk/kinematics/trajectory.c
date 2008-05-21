@@ -1,4 +1,4 @@
-/*	Trayectory Generation for BlueBotics ERA-5/1
+/*	Trayectory generation for BlueBotics ERA-5/1
  *
  * 	Fritz Stoeckli   stfritz@ethz.ch
  * 	Last change:     6.5.2008
@@ -8,29 +8,7 @@
 #include <math.h>
 #include <string.h>
 
-#include"trajectory.h"
-
-const era_arm_velocity_t era_arm_velocity_max = {
-  .shoulder_yaw = M_PI*13/36,
-  .shoulder_roll = M_PI*2/5,
-  .shoulder_pitch = M_PI*5/12,
-  .ellbow_pitch = M_PI*5/12,
-  .tool_roll = M_PI,
-  .tool_opening = M_PI,
-};
-
-int era_test_velocity_limits(
-  era_arm_velocity_t* arm_velocity) {
-  int i;
-  double* vel = (double*)arm_velocity;
-  double* vel_max = (double*)&era_arm_velocity_max;
-
-  for (i = 0; i <= sizeof(era_arm_velocity_t)/sizeof(double); i++)
-    if (vel[i] > vel_max[i] || vel[i] < -vel_max[i])
-    return 1;
-
-  return 0;
-}
+#include "trajectory.h"
 
 int era_read_trajectory(
   const char *filename,
@@ -82,8 +60,8 @@ int era_read_trajectory(
 }
 
 int era_trajectory_velocities(
-  era_tool_configuration_t* tool_configurations,
-  double* timestamps,
+  const era_tool_configuration_t* tool_configurations,
+  const double* timestamps,
   int num_tool_configurations,
   double dt,
   era_arm_velocity_t** arm_velocities,
@@ -97,7 +75,7 @@ int era_trajectory_velocities(
 }
 
 void era_trajectory_mci_gradients(
-  era_tool_configuration_t* tool_configurations,
+  const era_tool_configuration_t* tool_configurations,
   int num_tool_configurations,
   era_tool_configuration_t* tool_configuration_gradients) {
   int i, j;
@@ -138,9 +116,9 @@ void era_trajectory_mci_gradients(
 }
 
 int era_trajectory_mci(
-  era_tool_configuration_t* tool_configurations,
-  double* timestamps,
-  era_tool_configuration_t* tool_configuration_gradients,
+  const era_tool_configuration_t* tool_configurations,
+  const double* timestamps,
+  const era_tool_configuration_t* tool_configuration_gradients,
   int num_tool_configurations,
   double dt,
   era_arm_velocity_t** arm_velocities,

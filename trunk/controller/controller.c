@@ -28,19 +28,47 @@ void era_close() {
   era_motors_close();
 }
 
-void era_move_home() {
-  era_arm_configuration_t home;
-  era_arm_velocity_t vel;
+void era_move_home(
+  double velocity,
+  int wait) {
+  era_arm_configuration_t arm_configuration;
 
-  era_motor_to_arm(&era_motor_home, &era_motor_homing_velocity, &home, &vel);
+  era_motor_to_arm(&era_motor_home, 0, &arm_configuration, 0);
+
+  era_move(&arm_configuration, velocity, wait);
+}
+
+void era_move(
+  const era_arm_configuration_t* target,
+  double velocity,
+  int wait) {
+  era_arm_velocity_t arm_velocity;
+
+  era_motor_to_arm(0, &era_motor_homing_velocity, 0, &arm_velocity);
 
   era_motors_set_mode(ERA_OPERATION_MODE_POSITION);
-  era_position_mode_set(&home, &vel);
+  era_position_mode_set(target, &arm_velocity);
 
-  era_motors_wait(ERA_TARGET_REACHED);
+  if (wait) era_motors_wait(ERA_TARGET_REACHED);
+}
+
+void era_move_tool(
+  const era_tool_configuration_t* target,
+  double velocity,
+  int wait) {
+  era_arm_configuration_t arm_configuration;
+
+  era_inverse_kinematics(target, &arm_configuration);
+
+  era_move(&arm_configuration, velocity, wait);
 }
 
 void era_move_trajectory(
-  era_tool_configuration_t* tool_configurations,
-  double* timestamps) {
+  const era_arm_configuration_t* targets,
+  const double* timestamps) {
+}
+
+void era_move_tool_trajectory(
+  const era_tool_configuration_t* targets,
+  const double* timestamps) {
 }
