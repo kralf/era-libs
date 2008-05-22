@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  era_init(argv[1], ERA_HOMING_MODE_SENSORS);
+  era_init(argv[1]);
 
   era_close();
   return 0;

@@ -5,43 +5,58 @@
  */
 
 #include "controller.h"
+#include "errors.h"
 
 void era_print_configuration(
   FILE* stream) {
   era_arm_configuration_t arm;
+  era_tool_configuration_t tool;
 
   era_position_mode_get(&arm);
+  era_forward_kinematics(&arm, &tool);
+
   era_print_arm_configuration(stream, &arm);
+  era_print_tool_configuration(stream, &tool);
 }
 
 void era_init(
-  const char* dev,
-  int homing_mode) {
+  const char* dev) {
   era_motors_init(dev);
-  era_motors_home(homing_mode);
 
-  if (homing_mode != ERA_HOMING_MODE_NONE)
-    era_motors_wait(ERA_HOME_ATTAINED);
+  era_home();
+
+  era_arm_configuration_t arm_min, arm_max;
+
+  era_motor_to_arm(&era_motor_homing_limit, 0, &arm_min, 0);
+  era_kinematics_init(&arm_min, &arm_max);
 }
 
 void era_close() {
   era_motors_close();
 }
 
-void era_move_home(
+void era_home() {
+  era_motors_home();
+
+  era_motors_wait(ERA_HOME_ATTAINED);
+}
+
+int era_move_home(
   double velocity,
   int wait) {
   era_arm_configuration_t arm_configuration;
 
   era_motor_to_arm(&era_motor_home, 0, &arm_configuration, 0);
 
-  era_move(&arm_configuration, velocity, wait);
+  return era_move(&arm_configuration, velocity, wait);
 }
 
-void era_move(
+int era_move(
   const era_arm_configuration_t* target,
   double velocity,
   int wait) {
+  int result;
+
   era_arm_configuration_t current;
   era_arm_velocity_t arm_velocity;
 
@@ -49,12 +64,14 @@ void era_move(
   era_sync_velocity(&current, target, velocity, &arm_velocity);
 
   era_motors_set_mode(ERA_OPERATION_MODE_POSITION);
-  era_position_mode_set(target, &arm_velocity);
+  result = era_position_mode_set(target, &arm_velocity);
 
-  if (wait) era_motors_wait(ERA_TARGET_REACHED);
+  if (!result && wait) era_motors_wait(ERA_TARGET_REACHED);
+
+  return result;
 }
 
-void era_move_tool(
+int era_move_tool(
   const era_tool_configuration_t* target,
   double velocity,
   int wait) {
@@ -62,15 +79,17 @@ void era_move_tool(
 
   era_inverse_kinematics(target, &arm_configuration);
 
-  era_move(&arm_configuration, velocity, wait);
+  return era_move(&arm_configuration, velocity, wait);
 }
 
-void era_move_trajectory(
+int era_move_trajectory(
   const era_arm_configuration_t* targets,
   const double* timestamps) {
+  return 0;
 }
 
-void era_move_tool_trajectory(
+int era_move_tool_trajectory(
   const era_tool_configuration_t* targets,
   const double* timestamps) {
+  return 0;
 }

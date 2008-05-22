@@ -7,12 +7,12 @@
 #include <controller.h>
 
 int main(int argc, char **argv) {
-  if (argc < 3) {
+  if (argc != 3) {
     fprintf(stderr, "Usage: %s DEV PATH_FILE\n", argv[0]);
     return -1;
   }
 
-  era_init(argv[1], ERA_HOMING_MODE_NONE);
+  era_motors_init(argv[1]);
 
   era_tool_configuration_t* tool_configurations;
   double* timestamps;
@@ -30,6 +30,6 @@ int main(int argc, char **argv) {
     free(timestamps);
   }
 
-  era_close();
+  era_motors_close();
   return 0;
 }

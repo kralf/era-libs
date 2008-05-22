@@ -7,15 +7,15 @@
 #include <controller.h>
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
+  if (argc != 2) {
     fprintf(stderr, "Usage: %s DEV\n", argv[0]);
     return -1;
   }
 
-  era_init(argv[1], ERA_HOMING_MODE_NONE);
+  can_init(argv[1]);
 
   era_print_configuration(stdout);
 
-  era_close();
+  can_close();
   return 0;
 }

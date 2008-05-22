@@ -51,10 +51,13 @@ typedef struct {
 
 /** \brief Constant defining the arm's geometry */
 extern const era_arm_geometry_t era_arm_geometry;
-/** \brief Constant defining the lower limit of the arm configuration space */
-extern const era_arm_configuration_t era_arm_configuration_min;
-/** \brief Constant defining the upper limit of the arm configuration space */
-extern const era_arm_configuration_t era_arm_configuration_max;
+
+/** \brief Structure holding the lower limit of the arm configuration space */
+extern era_arm_configuration_t era_arm_configuration_min;
+/** \brief Structure holding the upper limit of the arm configuration space */
+extern era_arm_configuration_t era_arm_configuration_max;
+/** \brief Variable holding the safety margin of the arm configuration space */
+extern double era_arm_configuration_safety_margin;
 
 /** \brief Print a tool configuration
   * \param[in] stream The output stream that will be used for printing the
@@ -73,6 +76,16 @@ void era_print_tool_configuration(
 void era_print_arm_configuration(
   FILE* stream,
   const era_arm_configuration_t* arm_configuration);
+
+/** \brief Initialize the kinematic model
+  * \param[in] arm_configuration_min The lower limit of the arm configuration
+  *    space.
+  * \param[in] arm_configuration_max The upper limit of the arm configuration
+  *    space.
+  */
+void era_kinematics_init(
+  const era_arm_configuration_t* arm_configuration_min,
+  const era_arm_configuration_t* arm_configuration_max);
 
 /** \brief Test an arm configuration against configuration space limits
   * \param[in] arm_configuration The arm configuration that will be tested

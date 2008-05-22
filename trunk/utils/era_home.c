@@ -7,14 +7,14 @@
 #include <controller.h>
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
+  if (argc != 2) {
     fprintf(stderr, "Usage: %s DEV\n", argv[0]);
     return -1;
   }
 
-  era_init(argv[1], ERA_HOMING_MODE_NONE);
+  era_motors_init(argv[1]);
 
-  era_move_home(0.5, 1);
+  era_move_home(0.25, 1);
 
   era_close();
   return 0;

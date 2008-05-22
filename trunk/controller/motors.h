@@ -23,14 +23,14 @@
 #define ERA_OPERATION_MODE_POSITION 0
 #define ERA_OPERATION_MODE_VELOCITY 1
 
-/** \brief Homing modes of the motor controller
+/** \brief Homing methods of the motor controller
   */
-#define ERA_HOMING_MODE_NONE 0
-#define ERA_HOMING_MODE_SENSORS 1
-#define ERA_HOMING_MODE_CURRENT 2
+#define ERA_HOMING_METHOD_SENSORS 0
+#define ERA_HOMING_METHOD_CURRENT 1
 
 /** \brief Wait conditions of the motor controller
   */
+#define ERA_FAULT 0x0008
 #define ERA_TARGET_REACHED 0x0408
 #define ERA_HOME_ATTAINED 0x1008
 
@@ -57,24 +57,20 @@ extern const era_motor_configuration_t era_motor_current_limit;
 /** \brief Constant defining the motor zero configuration */
 extern const era_motor_configuration_t era_motor_zero;
 
-/** \brief Constant defining the motor home configuration for sensor homing*/
-extern const era_motor_configuration_t era_motor_home_sensors;
-/** \brief Constant defining the motor home configuration for current homing*/
-extern const era_motor_configuration_t era_motor_home_current;
-/** \brief Constant defining the motor homing method for sensor homing*/
-extern const era_motor_configuration_t era_motor_homing_method_sensors;
-/** \brief Constant defining the motor homing method for current homing*/
-extern const era_motor_configuration_t era_motor_homing_method_current;
+/** \brief Constant defining the motor homing limit */
+extern const era_motor_configuration_t era_motor_homing_limit;
+/** \brief Constant defining the motor homing methods */
+extern const era_motor_configuration_t era_motor_homing_method;
 /** \brief Constant defining the motor home current threshold */
-extern const era_motor_configuration_t era_motor_home_current_threshold;
+extern const era_motor_configuration_t era_motor_homing_current_threshold;
 /** \brief Constant defining the motor homing velocity */
 extern const era_motor_velocity_t era_motor_homing_velocity;
 
 /** \brief Constant defining the motor gear transmission */
 extern const era_arm_configuration_t era_motor_gear_transmission;
 
-/** \brief Static structure holding the motor home configuration */
-static era_motor_configuration_t era_motor_home;
+/** \brief Structure holding the motor home configuration */
+extern era_motor_configuration_t era_motor_home;
 
 /** \brief Print a motor configuration
   * \param[in] stream The output stream that will be used for printing the
@@ -148,8 +144,8 @@ void era_motors_init(
 void era_motors_close(void);
 
 /** \brief Wait for a motor condition
-  * \param[in] condition The wait condition. Possible values are
-  *   ERA_TARGET_REACHED and ERA_HOME_ATTAINED.
+  * \param[in] condition The wait condition. Possible values are ERA_FAULT,
+  *   ERA_TARGET_REACHED, and ERA_HOME_ATTAINED.
   */
 void era_motors_wait(
   int condition);
@@ -162,13 +158,9 @@ void era_motors_wait(
 int era_motors_set_mode(
   int operation_mode);
 
-/** \brief Home the motors using the specified mode
-  * \param[in] homing_mode The motor homing mode to be used. Possible
-  *   values are ERA_HOMING_MODE_NONE, ERA_HOMING_MODE_SENSORS, and
-  *   ERA_HOMING_MODE_CURRENT.
+/** \brief Home the motors using the specified velocities
   */
-void era_motors_home(
-  int homing_mode);
+void era_motors_home(void);
 
 /** \brief Get arm configuration
   * \param[out] arm_configuration The current arm configuration.
@@ -179,8 +171,9 @@ void era_position_mode_get(
 /** \brief Set arm configuration and velocity
   * \param[in] arm_configuration The arm configuration to be set.
   * \param[in] arm_velocity The arm profile velocity to be set.
+  * \return The resulting error code.
   */
-void era_position_mode_set(
+int era_position_mode_set(
   const era_arm_configuration_t* arm_configuration,
   const era_arm_velocity_t* arm_velocity);
 

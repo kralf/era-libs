@@ -11,6 +11,7 @@
 #include <epos.h>
 
 #include "motors.h"
+#include "errors.h"
 
 #define ERA_MOTORS_POLL_INTERVAL 100
 
@@ -36,51 +37,33 @@ const era_motor_configuration_t era_motor_current_limit = {
 };
 
 const era_motor_configuration_t era_motor_zero = {
-  .shoulder_yaw = 80000,
-  .shoulder_roll = 99000,
-  .shoulder_pitch = 50000,
-  .ellbow_pitch = 0,
-  .tool_roll = 145000,
-  .tool_opening = 30000,
+  .shoulder_yaw = 30000,
+  .shoulder_roll = 49000,
+  .shoulder_pitch = 0,
+  .ellbow_pitch = -50000,
+  .tool_roll = -35000,
+  .tool_opening = 0,
 };
 
-const era_motor_configuration_t era_motor_home_sensors = {
-  .shoulder_yaw = 45592,
+const era_motor_configuration_t era_motor_homing_limit = {
+  .shoulder_yaw = -45592,
   .shoulder_roll = 42443,
-  .shoulder_pitch = 42722,
-  .ellbow_pitch = 35608,
+  .shoulder_pitch = -42722,
+  .ellbow_pitch = -35608,
   .tool_roll = 182580,
   .tool_opening = 36300,
 };
 
-const era_motor_configuration_t era_motor_home_current = {
-  .shoulder_yaw = 50000,
-  .shoulder_roll = 50000,
-  .shoulder_pitch = 50000,
-  .ellbow_pitch = 50000,
-  .tool_roll = 180000,
-  .tool_opening = 30000,
+const era_motor_configuration_t era_motor_homing_method = {
+  .shoulder_yaw = ERA_HOMING_METHOD_SENSORS,
+  .shoulder_roll = ERA_HOMING_METHOD_SENSORS,
+  .shoulder_pitch = ERA_HOMING_METHOD_SENSORS,
+  .ellbow_pitch = ERA_HOMING_METHOD_SENSORS,
+  .tool_roll = ERA_HOMING_METHOD_SENSORS,
+  .tool_opening = ERA_HOMING_METHOD_CURRENT,
 };
 
-const era_motor_configuration_t era_motor_homing_method_sensors = {
-  .shoulder_yaw = EPOS_HOMING_METHOD_NEGATIVE_LIMIT_SWITCH,
-  .shoulder_roll = EPOS_HOMING_METHOD_POSITIVE_LIMIT_SWITCH,
-  .shoulder_pitch = EPOS_HOMING_METHOD_NEGATIVE_LIMIT_SWITCH,
-  .ellbow_pitch = EPOS_HOMING_METHOD_NEGATIVE_LIMIT_SWITCH,
-  .tool_roll = EPOS_HOMING_METHOD_POSITIVE_LIMIT_SWITCH,
-  .tool_opening = EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD,
-};
-
-const era_motor_configuration_t era_motor_homing_method_current = {
-  .shoulder_yaw = EPOS_HOMING_METHOD_NEGATIVE_CURRENT_THRESHOLD,
-  .shoulder_roll = EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD,
-  .shoulder_pitch = EPOS_HOMING_METHOD_NEGATIVE_CURRENT_THRESHOLD,
-  .ellbow_pitch = EPOS_HOMING_METHOD_NEGATIVE_CURRENT_THRESHOLD,
-  .tool_roll = EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD,
-  .tool_opening = EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD,
-};
-
-const era_motor_configuration_t era_motor_home_current_threshold = {
+const era_motor_configuration_t era_motor_homing_current_threshold = {
   .shoulder_yaw = 1700,
   .shoulder_roll = 1200,
   .shoulder_pitch = 1400,
@@ -107,7 +90,7 @@ const era_arm_configuration_t era_motor_gear_transmission = {
   .tool_opening = 0.01*1.0,
 };
 
-static era_motor_configuration_t era_motor_home = {
+era_motor_configuration_t era_motor_home = {
   .shoulder_yaw = 0,
   .shoulder_roll = 0,
   .shoulder_pitch = 0,
@@ -173,14 +156,13 @@ void era_arm_to_motor(
   int* motor_vel = (int*)motor_velocity;
 
   int* zero = (int*)&era_motor_zero;
-  int* home = (int*)&era_motor_home;
   int* tiks_per_revolution = (int*)&era_motor_tiks_per_revolution;
   double* gear = (double*)&era_motor_gear_transmission;
 
   for (i = 0; i < 6; i++) {
     if (arm_conf && motor_conf)
       motor_conf[i] = arm_conf[i]/gear[i]*tiks_per_revolution[i]/(2*M_PI)+
-      zero[i]-home[i];
+      zero[i];
 
     if (arm_vel && motor_vel)
       motor_vel[i] = arm_vel[i]/gear[i]*60/(2*M_PI);
@@ -200,13 +182,12 @@ void era_motor_to_arm(
   double* arm_vel = (double*)arm_velocity;
 
   int* zero = (int*)&era_motor_zero;
-  int* home = (int*)&era_motor_home;
   int* tiks_per_revolution = (int*)&era_motor_tiks_per_revolution;
   double* gear = (double*)&era_motor_gear_transmission;
 
   for (i = 0; i < 6; i++) {
     if (motor_conf && arm_conf)
-      arm_conf[i] = (double)(motor_conf[i]-zero[i]+home[i])*gear[i]*
+      arm_conf[i] = (double)(motor_conf[i]-zero[i])*gear[i]*
       2*M_PI/tiks_per_revolution[i];
 
     if (arm_vel && motor_vel)
@@ -279,28 +260,15 @@ int era_motors_set_mode(
   return 1;
 }
 
-void era_motors_home(
-  int homing_mode) {
+void era_motors_home() {
   int id;
 
-  if ((homing_mode != ERA_HOMING_MODE_SENSORS) &&
-    (homing_mode != ERA_HOMING_MODE_CURRENT))
-    return;
-
   int* motor_home = (int*)&era_motor_home;
-  int* home;
-  int* homing_method;
-  int* current_threshold = (int*)&era_motor_home_current_threshold;
-  int* velocity = (int*)&era_motor_homing_velocity;
-
-  if (homing_mode == ERA_HOMING_MODE_SENSORS) {
-    home = (int*)&era_motor_home_sensors;
-    homing_method = (int*)&era_motor_homing_method_sensors;
-  }
-  else if (homing_mode == ERA_HOMING_MODE_CURRENT) {
-    home = (int*)&era_motor_home_current;
-    homing_method = (int*)&era_motor_homing_method_current;
-  }
+  int* homing_limit = (int*)&era_motor_homing_limit;
+  int* homing_method = (int*)&era_motor_homing_method;
+  int* current_threshold = (int*)&era_motor_homing_current_threshold;
+  int* switch_velocity = (int*)&era_motor_homing_velocity;
+  int* zero_velocity = (int*)&era_motor_homing_velocity;
 
   for (id = 1; id < 7; id++) {
     epos_shutdown(id);
@@ -309,13 +277,23 @@ void era_motors_home(
     epos_shutdown(id);
     epos_enable_operation(id);
 
-    epos_set_homing_method(id, homing_method[id-1]);
-    motor_home[id-1] = home[id-1];
+    if (homing_method[id-1] == ERA_HOMING_METHOD_SENSORS) {
+      if (homing_limit[id-1] < 0) epos_set_homing_method(id,
+        EPOS_HOMING_METHOD_NEGATIVE_LIMIT_SWITCH);
+      else epos_set_homing_method(id,
+        EPOS_HOMING_METHOD_POSITIVE_LIMIT_SWITCH);
+    }
+    else if (homing_method[id-1] == ERA_HOMING_METHOD_CURRENT) {
+      if (homing_limit[id-1] < 0) epos_set_homing_method(id,
+        EPOS_HOMING_METHOD_NEGATIVE_CURRENT_THRESHOLD);
+      else epos_set_homing_method(id,
+        EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD);
+    }
 
-    epos_set_home_offset(id, motor_home[id-1]);
+    epos_set_home_offset(id, abs(homing_limit[id-1]));
     epos_set_homing_current_threshold(id, current_threshold[id-1]);
-    epos_set_homing_speed_switch_search(id, velocity[id-1]);
-    epos_set_homing_speed_zero_search(id, velocity[id-1]);
+    epos_set_homing_speed_switch_search(id, switch_velocity[id-1]);
+    epos_set_homing_speed_zero_search(id, zero_velocity[id-1]);
 
     epos_start_homing_operation(id);
   }
@@ -336,10 +314,13 @@ void era_position_mode_get(
   era_motor_to_arm(&motor_configuration, 0, arm_configuration, 0);
 }
 
-void era_position_mode_set(
+int era_position_mode_set(
   const era_arm_configuration_t* arm_configuration,
   const era_arm_velocity_t* arm_velocity) {
   int id;
+
+  if (era_test_arm_configuration_limits(arm_configuration))
+    return ERA_ERROR_LIMITS_EXCEEDED;
 
   era_motor_configuration_t motor_configuration;
   era_motor_velocity_t motor_velocity;
@@ -355,6 +336,8 @@ void era_position_mode_set(
   }
 
   for (id = 1; id < 7; ++id) epos_activate_position(id);
+
+  return ERA_ERROR_NONE;
 }
 
 void era_velocity_mode_zero(void) {

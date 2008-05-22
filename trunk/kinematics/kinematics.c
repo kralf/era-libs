@@ -16,23 +16,25 @@ const era_arm_geometry_t era_arm_geometry = {
   .tool = 0.188,
 };
 
-const era_arm_configuration_t era_arm_configuration_min = {
-  .shoulder_yaw = -M_PI/2+0.1,
-  .shoulder_roll = 0.1,
-  .shoulder_pitch = -M_PI/9+0.1,
-  .ellbow_pitch = 0.1,
-  .tool_roll = -M_PI*8/9+0.1,
-  .tool_opening = 0,
+era_arm_configuration_t era_arm_configuration_min = {
+  .shoulder_yaw = 0.0,
+  .shoulder_roll = 0.0,
+  .shoulder_pitch = 0.0,
+  .ellbow_pitch = 0.0,
+  .tool_roll = 0.0,
+  .tool_opening = 0.0,
 };
 
-const era_arm_configuration_t era_arm_configuration_max = {
-  .shoulder_yaw = M_PI/6-0.1,
-  .shoulder_roll = M_PI/2-0.1,
-  .shoulder_pitch = M_PI/2-0.1,
-  .ellbow_pitch = M_PI*2/3-0.1,
-  .tool_roll = M_PI*8/9-0.1,
-  .tool_opening = M_PI/2,
+era_arm_configuration_t era_arm_configuration_max = {
+  .shoulder_yaw = 0.0,
+  .shoulder_roll = 0.0,
+  .shoulder_pitch = 0.0,
+  .ellbow_pitch = 0.0,
+  .tool_roll = 0.0,
+  .tool_opening = 0.0,
 };
+
+double era_arm_configuration_safety_margin = 2.5*M_PI/180.0;
 
 void era_print_tool_configuration(
   FILE* stream,
@@ -68,6 +70,13 @@ void era_print_arm_configuration(
     arm_configuration->tool_opening*180/M_PI);
 }
 
+void era_kinematics_init(
+  const era_arm_configuration_t* arm_configuration_min,
+  const era_arm_configuration_t* arm_configuration_max) {
+  era_arm_configuration_min = *arm_configuration_min;
+  era_arm_configuration_max = *arm_configuration_max;
+}
+
 int era_test_arm_configuration_limits(
   const era_arm_configuration_t* arm_configuration) {
   int i;
@@ -75,9 +84,11 @@ int era_test_arm_configuration_limits(
   double* theta_min = (double*)&era_arm_configuration_min;
   double* theta_max = (double*)&era_arm_configuration_max;
 
-  for (i = 0; i < sizeof(era_arm_configuration_t)/sizeof(double); i++)
-    if (theta[i] < theta_min[i] || theta[i] > theta_max[i])
-    return 1;
+  for (i = 0; i < sizeof(era_arm_configuration_t)/sizeof(double); i++) {
+    if ((theta[i] < theta_min[i]+era_arm_configuration_safety_margin) ||
+      (theta[i] > theta_max[i]-era_arm_configuration_safety_margin))
+      return 1;
+  }
 
   return 0;
 }
