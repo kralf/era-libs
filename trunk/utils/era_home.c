@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 
   era_motors_init(argv[1]);
 
-  era_move_home(0.25, 1);
+  era_home(0.25, 1);
 
   era_close();
   return 0;

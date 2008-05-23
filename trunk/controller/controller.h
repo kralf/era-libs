@@ -33,17 +33,13 @@ void era_init(
   */
 void era_close(void);
 
-/** \brief Home the arm
-  */
-void era_home(void);
-
 /** \brief Move the arm to the predefined home configuration
   * \param[in] velocity The velocity of the arm in the range of 0 to 1.
   * \param[in] wait If 0, return instantly, wait for completion of the move
   *   operation otherwise.
   * \return The resulting error code.
   */
-int era_move_home(
+int era_home(
   double velocity,
   int wait);
 

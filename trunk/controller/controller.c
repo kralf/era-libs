@@ -23,25 +23,16 @@ void era_init(
   const char* dev) {
   era_motors_init(dev);
 
-  era_home();
-
   era_arm_configuration_t arm_min, arm_max;
 
-  era_motor_to_arm(&era_motor_homing_limit, 0, &arm_min, 0);
-  era_kinematics_init(&arm_min, &arm_max);
+  era_motors_find_limits(&arm_min, &arm_max);
 }
 
 void era_close() {
   era_motors_close();
 }
 
-void era_home() {
-  era_motors_home();
-
-  era_motors_wait(ERA_HOME_ATTAINED);
-}
-
-int era_move_home(
+int era_home(
   double velocity,
   int wait) {
   era_arm_configuration_t arm_configuration;

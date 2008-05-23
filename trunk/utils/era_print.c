@@ -1,4 +1,4 @@
-/*      Utility program for ERA configuration output
+/*      Utility program for ERA arm and tool configuration output
  *
  *      Ralf Kaestner    ralf.kaestner@gmail.com
  *      Last change:     19.5.2008

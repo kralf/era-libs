@@ -45,11 +45,11 @@ const era_motor_configuration_t era_motor_zero = {
   .tool_opening = 0,
 };
 
-const era_motor_configuration_t era_motor_homing_limit = {
-  .shoulder_yaw = -45592,
+const era_motor_configuration_t era_motor_home_offset = {
+  .shoulder_yaw = 45592,
   .shoulder_roll = 42443,
-  .shoulder_pitch = -42722,
-  .ellbow_pitch = -35608,
+  .shoulder_pitch = 42722,
+  .ellbow_pitch = 35608,
   .tool_roll = 182580,
   .tool_opening = 36300,
 };
@@ -73,10 +73,10 @@ const era_motor_configuration_t era_motor_homing_current_threshold = {
 };
 
 const era_motor_velocity_t era_motor_homing_velocity = {
-  .shoulder_yaw = 200,
+  .shoulder_yaw = -200,
   .shoulder_roll = 200,
-  .shoulder_pitch = 200,
-  .ellbow_pitch = 200,
+  .shoulder_pitch = -200,
+  .ellbow_pitch = -200,
   .tool_roll = 500,
   .tool_opening = 200,
 };
@@ -225,8 +225,14 @@ void era_motors_wait(
     status = 0xFFFFFFFF;
 
     for (id = 1; id < 7; id++) {
-      epos_get_statusword(id);
-      status &= condition & epos_read.node[id-1].status;
+      if (condition == ERA_STOP) {
+        epos_get_actual_velocity(id);
+        status &= (epos_read.node[id-1].actual_velocity == 0);
+      }
+      else {
+        epos_get_statusword(id);
+        status &= condition & epos_read.node[id-1].status;
+      }
     }
 
     if (!status) usleep(ERA_MOTORS_POLL_INTERVAL);
@@ -260,15 +266,17 @@ int era_motors_set_mode(
   return 1;
 }
 
-void era_motors_home() {
+void era_motors_home(
+  const era_motor_configuration_t* switch_search_velocity,
+  const era_motor_configuration_t* zero_search_velocity,
+  const era_motor_configuration_t* home_offset) {
   int id;
 
-  int* motor_home = (int*)&era_motor_home;
-  int* homing_limit = (int*)&era_motor_homing_limit;
+  int* offset = (int*)home_offset;
   int* homing_method = (int*)&era_motor_homing_method;
   int* current_threshold = (int*)&era_motor_homing_current_threshold;
-  int* switch_velocity = (int*)&era_motor_homing_velocity;
-  int* zero_velocity = (int*)&era_motor_homing_velocity;
+  int* switch_velocity = (int*)switch_search_velocity;
+  int* zero_velocity = (int*)zero_search_velocity;
 
   for (id = 1; id < 7; id++) {
     epos_shutdown(id);
@@ -278,25 +286,72 @@ void era_motors_home() {
     epos_enable_operation(id);
 
     if (homing_method[id-1] == ERA_HOMING_METHOD_SENSORS) {
-      if (homing_limit[id-1] < 0) epos_set_homing_method(id,
+      if (switch_velocity[id-1] < 0) epos_set_homing_method(id,
         EPOS_HOMING_METHOD_NEGATIVE_LIMIT_SWITCH);
       else epos_set_homing_method(id,
         EPOS_HOMING_METHOD_POSITIVE_LIMIT_SWITCH);
     }
     else if (homing_method[id-1] == ERA_HOMING_METHOD_CURRENT) {
-      if (homing_limit[id-1] < 0) epos_set_homing_method(id,
+      if (switch_velocity[id-1] < 0) epos_set_homing_method(id,
         EPOS_HOMING_METHOD_NEGATIVE_CURRENT_THRESHOLD);
       else epos_set_homing_method(id,
         EPOS_HOMING_METHOD_POSITIVE_CURRENT_THRESHOLD);
     }
 
-    epos_set_home_offset(id, abs(homing_limit[id-1]));
+    epos_set_home_offset(id, offset[id-1]);
     epos_set_homing_current_threshold(id, current_threshold[id-1]);
-    epos_set_homing_speed_switch_search(id, switch_velocity[id-1]);
-    epos_set_homing_speed_zero_search(id, zero_velocity[id-1]);
+    epos_set_homing_speed_switch_search(id, abs(switch_velocity[id-1]));
+    epos_set_homing_speed_zero_search(id, abs(zero_velocity[id-1]));
 
     epos_start_homing_operation(id);
   }
+}
+
+void era_motors_find_limits(
+  era_arm_configuration_t* arm_configuration_min,
+  era_arm_configuration_t* arm_configuration_max) {
+  /* Perform motor homing as to define the encoder values */
+  printf("stage 1...");
+  fflush(stdout);
+  era_motors_home(&era_motor_homing_velocity, &era_motor_homing_velocity,
+    &era_motor_home_offset);
+
+  era_motors_wait(ERA_HOME_ATTAINED);
+  printf(" done\n");
+
+  /* Move to the opposite limit switches and read the encoder values */
+//   printf("stage 2...");
+//   fflush(stdout);
+//   era_motor_configuration_t switch_search_velocity = {
+//     .shoulder_yaw = era_motor_homing_velocity.shoulder_yaw,
+//     .shoulder_roll = era_motor_homing_velocity.shoulder_roll,
+//     .shoulder_pitch = era_motor_homing_velocity.shoulder_pitch,
+//     .ellbow_pitch = era_motor_homing_velocity.ellbow_pitch,
+//     .tool_roll = era_motor_homing_velocity.tool_roll,
+//     .tool_opening = era_motor_homing_velocity.tool_opening,
+//   };
+//   era_motor_configuration_t zero_search_velocity = {
+//     .shoulder_yaw = 0,
+//     .shoulder_roll = 0,
+//     .shoulder_pitch = 0,
+//     .ellbow_pitch = 0,
+//     .tool_roll = 0,
+//     .tool_opening = 1,
+//   };
+//   era_motors_home(&switch_search_velocity, &zero_search_velocity,
+//     &era_motor_home_offset);
+//
+//   era_motors_wait(ERA_STOP);
+//   printf(" done\n");
+
+  /* Perform motor homing once again to leave the limit switches */
+/*  printf("stage 3...");
+  fflush(stdout);
+  era_motors_home(&era_motor_homing_velocity, &era_motor_homing_velocity,
+    &era_motor_home_offset);
+
+  era_motors_wait(ERA_HOME_ATTAINED);
+  printf(" done\n");*/
 }
 
 void era_position_mode_get(

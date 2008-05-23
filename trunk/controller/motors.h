@@ -30,6 +30,7 @@
 
 /** \brief Wait conditions of the motor controller
   */
+#define ERA_STOP 0x0000
 #define ERA_FAULT 0x0008
 #define ERA_TARGET_REACHED 0x0408
 #define ERA_HOME_ATTAINED 0x1008
@@ -57,8 +58,8 @@ extern const era_motor_configuration_t era_motor_current_limit;
 /** \brief Constant defining the motor zero configuration */
 extern const era_motor_configuration_t era_motor_zero;
 
-/** \brief Constant defining the motor homing limit */
-extern const era_motor_configuration_t era_motor_homing_limit;
+/** \brief Constant defining the motor home offset */
+extern const era_motor_configuration_t era_motor_home_offset;
 /** \brief Constant defining the motor homing methods */
 extern const era_motor_configuration_t era_motor_homing_method;
 /** \brief Constant defining the motor home current threshold */
@@ -158,9 +159,32 @@ void era_motors_wait(
 int era_motors_set_mode(
   int operation_mode);
 
-/** \brief Home the motors using the specified velocities
+/** \brief Perform motor homing
+  * Find predefined limit switches of the motors and return to the
+  * predefined motor home offset.
+  * \param[in] switch_search_velocity The motor velocity to be set for
+  *   searching the limit switches. For positive velocity components, the
+  *   positive limit switch will be searched and vice versa.
+  * \param[in] zero_search_velocity The motor velocity to be set for
+  *   searching the encoder pulse.
+  * \param[in] home_offset The home offset the motors will return to
+  *   after the encoder pulse position has been found.
   */
-void era_motors_home(void);
+void era_motors_home(
+  const era_motor_configuration_t* switch_search_velocity,
+  const era_motor_configuration_t* zero_search_velocity,
+  const era_motor_configuration_t* home_offset);
+
+/** \brief Find the limit switch configurations of the arm
+  * The limit switch search uses the homing operation of the motors.
+  * \param[out] arm_configuration_min The lower limits of the arm
+  *   configuration space as determined through limit switch search.
+  * \param[out] arm_configuration_max The upper limits of the arm
+  *   configuration space as determined through limit switch search.
+  */
+void era_motors_find_limits(
+  era_arm_configuration_t* arm_configuration_min,
+  era_arm_configuration_t* arm_configuration_max);
 
 /** \brief Get arm configuration
   * \param[out] arm_configuration The current arm configuration.

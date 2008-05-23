@@ -1,4 +1,5 @@
-/*      Utility program for ERA homing
+/*      Utility program for generating ERA position commands from
+ *      tool configuration space coordinates
  *
  *      Ralf Kaestner    ralf.kaestner@gmail.com
  *      Last change:     19.5.2008
