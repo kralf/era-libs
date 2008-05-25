@@ -20,20 +20,20 @@
 
 /** \brief Operation modes of the motor controller
   */
-#define ERA_OPERATION_MODE_POSITION 0
-#define ERA_OPERATION_MODE_VELOCITY 1
+#define ERA_MOTORS_OPERATION_MODE_POSITION 0
+#define ERA_MOTORS_OPERATION_MODE_VELOCITY 1
 
 /** \brief Homing methods of the motor controller
   */
-#define ERA_HOMING_METHOD_SENSORS 0
-#define ERA_HOMING_METHOD_CURRENT 1
+#define ERA_MOTORS_HOMING_METHOD_SENSORS 0
+#define ERA_MOTORS_HOMING_METHOD_CURRENT 1
 
 /** \brief Wait conditions of the motor controller
   */
-#define ERA_STOP 0x0000
-#define ERA_FAULT 0x0008
-#define ERA_TARGET_REACHED 0x0408
-#define ERA_HOME_ATTAINED 0x1008
+#define ERA_MOTORS_WAIT_STOP 0x0000
+#define ERA_MOTORS_WAIT_FAULT 0x0008
+#define ERA_MOTORS_WAIT_TARGET_REACHED 0x0408
+#define ERA_MOTORS_WAIT_HOME_ATTAINED 0x1008
 
 /** \brief Structure defining the motor configuration */
 typedef struct {
@@ -50,28 +50,23 @@ typedef struct {
   */
 typedef era_motor_configuration_t era_motor_velocity_t;
 
+/** \brief Structure defining the motor velocity
+  * All components are given in [rad/tiks].
+  */
+typedef era_arm_configuration_t era_motor_transmission_t;
+
 /** \brief Constant defining the number of motor tiks per revolution */
 extern const era_motor_configuration_t era_motor_tiks_per_revolution;
 /** \brief Constant defining the motor current limit */
 extern const era_motor_configuration_t era_motor_current_limit;
 
-/** \brief Constant defining the motor zero configuration */
-extern const era_motor_configuration_t era_motor_zero;
-
-/** \brief Constant defining the motor home offset */
-extern const era_motor_configuration_t era_motor_home_offset;
 /** \brief Constant defining the motor homing methods */
 extern const era_motor_configuration_t era_motor_homing_method;
 /** \brief Constant defining the motor home current threshold */
 extern const era_motor_configuration_t era_motor_homing_current_threshold;
-/** \brief Constant defining the motor homing velocity */
-extern const era_motor_velocity_t era_motor_homing_velocity;
 
-/** \brief Constant defining the motor gear transmission */
-extern const era_arm_configuration_t era_motor_gear_transmission;
-
-/** \brief Structure holding the motor home configuration */
-extern era_motor_configuration_t era_motor_home;
+/** \brief Constant defining the motor transmission */
+extern const era_motor_transmission_t era_motor_transmission;
 
 /** \brief Print a motor configuration
   * \param[in] stream The output stream that will be used for printing the
@@ -91,7 +86,7 @@ void era_print_motor_velocity(
   FILE* stream,
   const era_motor_velocity_t* motor_velocity);
 
-/** \brief Set initial configuration in motor space
+/** \brief Set initial motor space configuration
   * All motor configuration components will be set to their initial values,
   *   namely 0.
   * \param[in] motor_configuration The configuration that will be
@@ -145,8 +140,9 @@ void era_motors_init(
 void era_motors_close(void);
 
 /** \brief Wait for a motor condition
-  * \param[in] condition The wait condition. Possible values are ERA_FAULT,
-  *   ERA_TARGET_REACHED, and ERA_HOME_ATTAINED.
+  * \param[in] condition The wait condition. Possible values are
+  *   ERA_MOTORS_WAIT_STOP, ERA_MOTORS_WAIT_FAULT,
+  *   ERA_MOTORS_WAIT_TARGET_REACHED, and ERA_MOTORS_WAIT_HOME_ATTAINED.
   */
 void era_motors_wait(
   int condition);
@@ -154,7 +150,7 @@ void era_motors_wait(
 /** \brief Set the specified motor operation mode
   * \param[in] operation_mode The motor operation mode to be set. Possible
   *   values are ERA_OPERATION_MODE_POSITION and ERA_OPERATION_MODE_VELOCITY.
-  * \return 1 on success, 0 otherwise.
+  * \return The resulting error code.
   */
 int era_motors_set_mode(
   int operation_mode);
@@ -162,61 +158,50 @@ int era_motors_set_mode(
 /** \brief Perform motor homing
   * Find predefined limit switches of the motors and return to the
   * predefined motor home offset.
-  * \param[in] switch_search_velocity The motor velocity to be set for
-  *   searching the limit switches. For positive velocity components, the
-  *   positive limit switch will be searched and vice versa.
-  * \param[in] zero_search_velocity The motor velocity to be set for
-  *   searching the encoder pulse.
-  * \param[in] home_offset The home offset the motors will return to
-  *   after the encoder pulse position has been found.
+  * \param[in] motor_homing_velocity The motor velocity that will be
+  *   set for searching the limit switches and encoder pulses. For positive
+  *   motor velocity components, the positive limit switch will be searched
+  *   and vice versa.
+  * \param[in] motor_limit The motor configuration that represents the
+  *   motor configuration space limit.
+  * \param[in] motor_home The motor home configuration that will be assumed
+  *   once the home position has been attained.
+  * \return The resulting error code. If any of the limit switches is in
+  *   active state, ERA_ERROR_INVALID_CONFIGURATION will be returned. In fact,
+  *   for the ERA-5/1, the limit switch activities are ambiguous since there
+  *   exists only one switch per joint. This may result in an unsafe behavior
+  *   of the homing operation, eventually causing damage to the arm.
   */
-void era_motors_home(
-  const era_motor_configuration_t* switch_search_velocity,
-  const era_motor_configuration_t* zero_search_velocity,
-  const era_motor_configuration_t* home_offset);
+int era_motors_home(
+  const era_motor_velocity_t* motor_homing_velocity,
+  const era_motor_configuration_t* motor_limit,
+  const era_motor_configuration_t* motor_home);
 
-/** \brief Find the limit switch configurations of the arm
-  * The limit switch search uses the homing operation of the motors.
-  * \param[out] arm_configuration_min The lower limits of the arm
-  *   configuration space as determined through limit switch search.
-  * \param[out] arm_configuration_max The upper limits of the arm
-  *   configuration space as determined through limit switch search.
+/** \brief Get motor configuration and velocity
+  * \param[out] motor_configuration The current motor configuration.
+  *   Can be null.
+  * \param[out] motor_velocity The current motor velocity. Can be null.
   */
-void era_motors_find_limits(
-  era_arm_configuration_t* arm_configuration_min,
-  era_arm_configuration_t* arm_configuration_max);
+void era_motors_get_configuration(
+  era_motor_configuration_t* motor_configuration,
+  era_motor_velocity_t* motor_velocity);
 
-/** \brief Get arm configuration
-  * \param[out] arm_configuration The current arm configuration.
-  */
-void era_position_mode_get(
-  era_arm_configuration_t* arm_configuration);
-
-/** \brief Set arm configuration and velocity
-  * \param[in] arm_configuration The arm configuration to be set.
-  * \param[in] arm_velocity The arm profile velocity to be set.
+/** \brief Set motor configuration and velocity
+  * \param[in] motor_configuration The motor configuration to be set. If null,
+  *   the motors will be switched into velocity mode. Otherwise, the motors
+  *   will be switched into position mode and the motor configuration will
+  *   set as target position.
+  * \param[in] motor_velocity The motor profile velocity to be set.
+  *   Cannot be null.
   * \return The resulting error code.
   */
-int era_position_mode_set(
-  const era_arm_configuration_t* arm_configuration,
-  const era_arm_velocity_t* arm_velocity);
+int era_motors_set_configuration(
+  const era_motor_configuration_t* motor_configuration,
+  const era_motor_velocity_t* motor_velocity);
 
-/** \brief Set motor velocities to 0
+/** \brief Stop the motors
+  * Emits a quick stop message to the motors.
   */
-void era_velocity_mode_zero(void);
-
-/** \brief Set motor velocities
-  * \param[in] arm_velocity The arm profile velocity to be set.
-  */
-void era_velocity_mode_set(
-  const era_arm_velocity_t* arm_velocity);
-
-/** \brief Evaluate the error for a target arm configuration
-  * \param[in] arm_configuration The target arm configuration for which
-  *   the position error will be evaluated.
-  * \return The square root of the squared elements of the configuration error.
-  */
-double era_position_error(
-  const era_arm_configuration_t* arm_configuration);
+void era_motors_stop(void);
 
 #endif

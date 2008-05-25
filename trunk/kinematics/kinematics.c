@@ -39,35 +39,35 @@ double era_arm_configuration_safety_margin = 2.5*M_PI/180.0;
 void era_print_tool_configuration(
   FILE* stream,
   const era_tool_configuration_t* tool_configuration) {
-  fprintf(stream, "x:       %f m\n",
-    tool_configuration->x);
-  fprintf(stream, "y:       %f m\n",
-    tool_configuration->y);
-  fprintf(stream, "z:       %f m\n",
-    tool_configuration->z);
-  fprintf(stream, "yaw:     %f °\n",
-    tool_configuration->yaw*180/M_PI);
-  fprintf(stream, "roll:    %f °\n",
-    tool_configuration->roll*180/M_PI);
-  fprintf(stream, "opening: %f °\n",
-    tool_configuration->opening*180/M_PI);
+  fprintf(stream, "%7s: % 9.4f m\n",
+    "x", tool_configuration->x);
+  fprintf(stream, "%7s: % 9.4f m\n",
+    "y", tool_configuration->y);
+  fprintf(stream, "%7s: % 9.4f m\n",
+    "z", tool_configuration->z);
+  fprintf(stream, "%7s: % 9.4f °\n",
+    "yaw", tool_configuration->yaw*180/M_PI);
+  fprintf(stream, "%7s: % 9.4f °\n",
+    "roll", tool_configuration->roll*180/M_PI);
+  fprintf(stream, "%7s: % 9.4f °\n",
+    "opening", tool_configuration->opening*180/M_PI);
 }
 
 void era_print_arm_configuration(
   FILE* stream,
   const era_arm_configuration_t* arm_configuration) {
-  fprintf(stream, "shoulder_yaw:   %f °\n",
-    arm_configuration->shoulder_yaw*180/M_PI);
-  fprintf(stream, "shoulder_roll:  %f °\n",
-    arm_configuration->shoulder_roll*180/M_PI);
-  fprintf(stream, "shoulder_pitch: %f °\n",
-    arm_configuration->shoulder_pitch*180/M_PI);
-  fprintf(stream, "ellbow_pitch:   %f °\n",
-    arm_configuration->ellbow_pitch*180/M_PI);
-  fprintf(stream, "tool_roll:      %f °\n",
-    arm_configuration->tool_roll*180/M_PI);
-  fprintf(stream, "tool_opening:   %f °\n",
-    arm_configuration->tool_opening*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °\n",
+    "shoulder_yaw", arm_configuration->shoulder_yaw*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °\n",
+    "shoulder_roll", arm_configuration->shoulder_roll*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °\n",
+    "shoulder_pitch", arm_configuration->shoulder_pitch*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °\n",
+    "ellbow_pitch", arm_configuration->ellbow_pitch*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °\n",
+    "tool_roll", arm_configuration->tool_roll*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °\n",
+    "tool_opening", arm_configuration->tool_opening*180/M_PI);
 }
 
 void era_kinematics_init(
@@ -79,6 +79,8 @@ void era_kinematics_init(
 
 int era_test_arm_configuration_limits(
   const era_arm_configuration_t* arm_configuration) {
+  if (!arm_configuration) return 0;
+
   int i;
   double* theta = (double*)arm_configuration;
   double* theta_min = (double*)&era_arm_configuration_min;

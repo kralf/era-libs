@@ -28,17 +28,18 @@ extern const era_arm_velocity_t era_arm_velocity_max;
   *   arm velocity.
   * \param[in] arm_velocity The arm velocity that will be printed.
   */
-void era_print_velocity(
+void era_print_arm_velocity(
   FILE* stream,
   const era_arm_velocity_t* arm_velocity);
 
 /** \brief Test an arm velocity against velocity limits
   * \param[in] arm_velocity The arm velocity that will be tested
-  *   against the velocity limits.
+  *   against the velocity limits. If null, the result will
+  *   always be 0.
   * \return 1 if the provided arm velocity exceeds velocity limits,
   *   0 otherwise.
   */
-int era_test_velocity_limits(
+int era_test_arm_velocity_limits(
   const era_arm_velocity_t* arm_velocity);
 
 /** \brief Synchronize the joint velocities of the arm
@@ -53,7 +54,7 @@ int era_test_velocity_limits(
   *   the arm configuration space.
   * \return The execution time of the movement [s].
   */
-double era_sync_velocity(
+double era_sync_arm_velocity(
   const era_arm_configuration_t* arm_start_configuration,
   const era_arm_configuration_t* arm_target_configuration,
   double velocity,

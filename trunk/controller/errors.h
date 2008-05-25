@@ -19,7 +19,9 @@
 /** \brief Predefined error codes
   */
 #define ERA_ERROR_NONE 0
-#define ERA_ERROR_LIMITS_EXCEEDED 1
+#define ERA_ERROR_INVALID_CONFIGURATION 1
+#define ERA_ERROR_LIMITS_EXCEEDED 2
+#define ERA_ERROR_UNSUPPORTED_OPERATION_MODE 3
 
 /** \brief Predefined error descriptions
   */

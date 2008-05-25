@@ -10,7 +10,9 @@
 
 const char* era_errors[] = {
   "no error",
+  "invalid configuration",
   "configuration space limits exceeded",
+  "unsupported operation mode",
 };
 
 const char* era_error_undefined = "undefined";

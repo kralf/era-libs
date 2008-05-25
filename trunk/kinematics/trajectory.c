@@ -169,7 +169,7 @@ int era_trajectory_mci(
         arm[num_arm_velocities][k] = (arm_b[k]-arm_a[k])/dt;
 
       errors[num_arm_velocities]->velocity_exceeded =
-        era_test_velocity_limits(arm_velocities[num_arm_velocities]);
+        era_test_arm_velocity_limits(arm_velocities[num_arm_velocities]);
 
       num_arm_velocities++;
     }

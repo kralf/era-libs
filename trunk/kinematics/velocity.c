@@ -21,25 +21,27 @@ const era_arm_velocity_t era_arm_velocity_max = {
   .tool_opening = M_PI,
 };
 
-void era_print_velocity(
+void era_print_arm_velocity(
   FILE* stream,
   const era_arm_velocity_t* arm_velocity) {
-  fprintf(stream, "shoulder_yaw:   %f °/s\n",
-    arm_velocity->shoulder_yaw*180/M_PI);
-  fprintf(stream, "shoulder_roll:  %f °/s\n",
-    arm_velocity->shoulder_roll*180/M_PI);
-  fprintf(stream, "shoulder_pitch: %f °/s\n",
-    arm_velocity->shoulder_pitch*180/M_PI);
-  fprintf(stream, "ellbow_pitch:   %f °/s\n",
-    arm_velocity->ellbow_pitch*180/M_PI);
-  fprintf(stream, "tool_roll:      %f °/s\n",
-    arm_velocity->tool_roll*180/M_PI);
-  fprintf(stream, "tool_opening:   %f °/s\n",
-    arm_velocity->tool_opening*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °/s\n",
+    "shoulder_yaw", arm_velocity->shoulder_yaw*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °/s\n",
+    "shoulder_roll", arm_velocity->shoulder_roll*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °/s\n",
+    "shoulder_pitch", arm_velocity->shoulder_pitch*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °/s\n",
+    "ellbow_pitch", arm_velocity->ellbow_pitch*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °/s\n",
+    "tool_roll", arm_velocity->tool_roll*180/M_PI);
+  fprintf(stream, "%14s: % 9.4f °/s\n",
+    "tool_opening", arm_velocity->tool_opening*180/M_PI);
 }
 
-int era_test_velocity_limits(
+int era_test_arm_velocity_limits(
   const era_arm_velocity_t* arm_velocity) {
+  if (!arm_velocity) return 0;
+
   int i;
   double* vel = (double*)arm_velocity;
   double* vel_max = (double*)&era_arm_velocity_max;
@@ -51,7 +53,7 @@ int era_test_velocity_limits(
   return 0;
 }
 
-double era_sync_velocity(
+double era_sync_arm_velocity(
   const era_arm_configuration_t* arm_start_configuration,
   const era_arm_configuration_t* arm_target_configuration,
   double velocity,
