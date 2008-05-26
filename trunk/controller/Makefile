@@ -1,12 +1,14 @@
 CFLAGS += -I../errors -I../kinematics -I../drivers/vanilla/epos
 LDFLAGS += -L../kinematics -L../drivers/vanilla/epos
 
+PREFIX = /usr/local
+
 libera-controller.so: motors.c controller.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o libera-controller.so \
-	motors.c controller.c -lera-kinematics -lepos
+	motors.c timer.c controller.c -lera-kinematics -lepos
 
 install: libera-controller.so
-	install -c -o root -g root -m 644 libera-controller.so /usr/lib
+	install -c -m 644 libera-controller.so $(PREFIX)/lib
 
 clean:
 	rm -f *.o *.a *.so

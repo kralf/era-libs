@@ -9,6 +9,19 @@
 #include <string.h>
 
 #include "trajectory.h"
+#include "errors.h"
+
+int era_read_arm_trajectory(
+  const char *filename,
+  era_arm_configuration_t** arm_trajectory,
+  double** timestamps) {
+  FILE *fd;
+  char buffer[255];
+  era_arm_configuration_t arm_configuration;
+  double timestamp;
+  int result = 0, points = 0, comments = 0;
+  int i;
+}
 
 int era_read_trajectory(
   const char *filename,

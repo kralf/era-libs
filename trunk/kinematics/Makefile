@@ -1,12 +1,14 @@
 CFLAGS += -I../errors
 LDFLAGS += -L../errors
 
+PREFIX = /usr/local
+
 libera-kinematics.so: kinematics.c trajectory.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o libera-kinematics.so \
 	kinematics.c velocity.c trajectory.c -lera-errors -lm
 
 install: libera-kinematics.so
-	install -c -o root -g root -m 644 libera-kinematics.so /usr/lib
+	install -c -m 644 libera-kinematics.so $(PREFIX)/lib
 
 clean:
 	rm -f *.o *.a *.so
