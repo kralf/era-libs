@@ -7,6 +7,7 @@
 #include <math.h>
 
 #include "kinematics.h"
+#include "errors.h"
 
 #define sqr(x) x*x
 
@@ -17,21 +18,21 @@ const era_arm_geometry_t era_arm_geometry = {
 };
 
 era_arm_configuration_t era_arm_configuration_min = {
-  .shoulder_yaw = 0.0,
-  .shoulder_roll = 0.0,
-  .shoulder_pitch = 0.0,
-  .ellbow_pitch = 0.0,
-  .tool_roll = 0.0,
-  .tool_opening = 0.0,
+  .shoulder_yaw = -70.5*M_PI/180.0,
+  .shoulder_roll = 0.0*M_PI/180.0,
+  .shoulder_pitch = -18.7*M_PI/180.0,
+  .ellbow_pitch = 4.9*M_PI/180.0,
+  .tool_roll = -188.0*M_PI/180.0,
+  .tool_opening = -65.3*M_PI/180.0,
 };
 
 era_arm_configuration_t era_arm_configuration_max = {
-  .shoulder_yaw = 0.0,
-  .shoulder_roll = 0.0,
-  .shoulder_pitch = 0.0,
-  .ellbow_pitch = 0.0,
-  .tool_roll = 0.0,
-  .tool_opening = 0.0,
+  .shoulder_yaw = 28.1*M_PI/180.0,
+  .shoulder_roll = 69.7*M_PI/180.0,
+  .shoulder_pitch = 65.7*M_PI/180.0,
+  .ellbow_pitch = 89.0*M_PI/180.0,
+  .tool_roll = 190.5*M_PI/180.0,
+  .tool_opening = 27.0*M_PI/180.0,
 };
 
 double era_arm_configuration_safety_margin = 2.5*M_PI/180.0;
@@ -70,16 +71,9 @@ void era_print_arm_configuration(
     "tool_opening", arm_configuration->tool_opening*180/M_PI);
 }
 
-void era_kinematics_init(
-  const era_arm_configuration_t* arm_configuration_min,
-  const era_arm_configuration_t* arm_configuration_max) {
-  era_arm_configuration_min = *arm_configuration_min;
-  era_arm_configuration_max = *arm_configuration_max;
-}
-
 int era_test_arm_configuration_limits(
   const era_arm_configuration_t* arm_configuration) {
-  if (!arm_configuration) return 0;
+  if (!arm_configuration) return ERA_ERROR_NONE;
 
   int i;
   double* theta = (double*)arm_configuration;
@@ -87,12 +81,15 @@ int era_test_arm_configuration_limits(
   double* theta_max = (double*)&era_arm_configuration_max;
 
   for (i = 0; i < sizeof(era_arm_configuration_t)/sizeof(double); i++) {
+    if (theta[i] != theta[i])
+      return ERA_ERROR_SINGULAR_CONFIGURATION;
+
     if ((theta[i] < theta_min[i]+era_arm_configuration_safety_margin) ||
       (theta[i] > theta_max[i]-era_arm_configuration_safety_margin))
-      return 1;
+      return ERA_ERROR_CONFIGURATION_LIMITS_EXCEEDED;
   }
 
-  return 0;
+  return ERA_ERROR_NONE;
 }
 
 void era_forward_kinematics(
@@ -126,7 +123,7 @@ void era_forward_kinematics(
 
   tool_configuration->yaw = theta[0];
 
-  tool_configuration->roll = theta[4]-theta[1];
+  tool_configuration->roll = theta[4]+theta[1];
 
   tool_configuration->opening = theta[5];
 }
@@ -159,7 +156,7 @@ int era_inverse_kinematics(
   arm_configuration->shoulder_yaw = tool_configuration->yaw;
 
   arm_configuration->shoulder_roll =
-    atan2(fabs(v_normal.z), sqrt(sqr(v_normal.x)+sqr(v_normal.y)));
+    atan2(v_normal.z, sqrt(sqr(v_normal.x)+sqr(v_normal.y)));
 
   x = v_sp.x*sin(theta[1])*cos(theta[0])
       +v_sp.y*sin(theta[1])*sin(theta[0])
@@ -172,7 +169,7 @@ int era_inverse_kinematics(
 
   arm_configuration->ellbow_pitch = atan2(sqrt(1-sqr(c4)), c4);
 
-  arm_configuration->tool_roll = theta[1]+tool_configuration->roll;
+  arm_configuration->tool_roll = tool_configuration->roll-theta[1];
 
   arm_configuration->tool_opening = tool_configuration->opening;
 

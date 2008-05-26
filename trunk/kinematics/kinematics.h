@@ -90,9 +90,8 @@ void era_kinematics_init(
 /** \brief Test an arm configuration against configuration space limits
   * \param[in] arm_configuration The arm configuration that will be tested
   *   against the configuration space limits. If null, the result will
-  *   always be 0.
-  * \return 1 if the provided arm configuration exceeds configuration
-  *   space limits, 0 otherwise.
+  *   always be ERA_ERROR_NONE.
+  * \return The resulting error code.
   */
 int era_test_arm_configuration_limits(
   const era_arm_configuration_t* arm_configuration);

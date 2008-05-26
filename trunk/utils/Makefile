@@ -1,4 +1,4 @@
-LD_LIBRARY_PATH = ../kinematics:../drivers/vanilla/epos:../drivers/vanilla/can
+LD_LIBRARY_PATH = ../errors:../kinematics:../drivers/vanilla/epos:../drivers/vanilla/can
 CFLAGS += -I../kinematics -I../controller
 LDFLAGS += -L../controller -lera-controller
 

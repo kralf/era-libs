@@ -23,11 +23,6 @@ extern const era_arm_velocity_t era_homing_velocity;
 /** \brief Structure holding the home configuration */
 extern era_arm_configuration_t era_home;
 
-/** \brief Constant defining the lower limit of the configuration space */
-extern const era_arm_configuration_t era_min;
-/** \brief Constant defining the upper limit of the configuration space */
-extern const era_arm_configuration_t era_max;
-
 /** \brief Print the current arm and tool configuration
   * \param[in] stream The output stream that will be used for printing the
   *   current arm and tool configuration.

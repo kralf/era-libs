@@ -30,24 +30,6 @@ const era_arm_velocity_t era_homing_velocity = {
   .tool_opening = -10.0*M_PI/180.0,
 };
 
-const era_arm_configuration_t era_min = {
-  .shoulder_yaw = 28.1*M_PI/180.0,
-  .shoulder_roll = 0.0*M_PI/180.0,
-  .shoulder_pitch = -18.7*M_PI/180.0,
-  .ellbow_pitch = 4.9*M_PI/180.0,
-  .tool_roll = -188.0*M_PI/180.0,
-  .tool_opening = -65.3*M_PI/180.0,
-};
-
-const era_arm_configuration_t era_max = {
-  .shoulder_yaw = 0.0,
-  .shoulder_roll = 0.0,
-  .shoulder_pitch = 0.0,
-  .ellbow_pitch = 0.0,
-  .tool_roll = 0.0,
-  .tool_opening = 0.0,
-};
-
 void era_print_configuration(
   FILE* stream) {
   int i;
@@ -91,21 +73,28 @@ int era_init(
 
   era_motors_init(dev);
 
+  era_arm_configuration_t arm_limit;
+  double* lim = (double*)&arm_limit;
+  double* min = (double*)&era_arm_configuration_min;
+  double* max = (double*)&era_arm_configuration_max;
+  double* vel = (double*)&era_homing_velocity;
+
+  for (i = 0; i < sizeof(era_arm_configuration_t)/sizeof(double); i++) {
+    if (vel[i] < 0.0) lim[i] = min[i];
+    else lim[i] = max[i];
+  }
+
   era_motor_configuration_t motor_limit;
   era_motor_configuration_t motor_home;
   era_motor_velocity_t motor_homing_velocity;
-  era_arm_to_motor(&era_min, &era_homing_velocity, &motor_limit,
+  era_arm_to_motor(&arm_limit, &era_homing_velocity, &motor_limit,
     &motor_homing_velocity);
   era_arm_to_motor(&era_home, 0, &motor_home, 0);
 
   int result = era_motors_home(&motor_homing_velocity, &motor_limit,
     &motor_home);
 
-  if (!result) {
-    era_motors_wait(ERA_MOTORS_WAIT_HOME_ATTAINED);
-
-    era_kinematics_init(&era_min, &era_max);
-  }
+  if (!result) era_motors_wait(ERA_MOTORS_WAIT_HOME_ATTAINED);
 
   return result;
 }
@@ -132,9 +121,25 @@ void era_get_configuration(
 int era_set_configuration(
   const era_arm_configuration_t* configuration,
   const era_arm_velocity_t* velocity) {
-  if (era_test_arm_configuration_limits(configuration) ||
-    era_test_arm_velocity_limits(velocity))
-    return ERA_ERROR_LIMITS_EXCEEDED;
+  int result;
+
+  result = era_test_arm_configuration_limits(configuration);
+  if (!result) result = era_test_arm_velocity_limits(velocity);
+
+  if (!result) {
+    era_motor_configuration_t motor_configuration;
+    era_motor_velocity_t motor_velocity;
+    era_arm_to_motor(configuration, velocity, &motor_configuration,
+      &motor_velocity);
+
+    if (configuration)
+      result = era_motors_set_configuration(&motor_configuration,
+      &motor_velocity);
+    else
+      result = era_motors_set_configuration(0, &motor_velocity);
+  }
+
+  return result;
 }
 
 int era_move(

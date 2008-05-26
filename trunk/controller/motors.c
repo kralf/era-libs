@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <signal.h>
 #include <string.h>
 #include <math.h>
 
@@ -159,6 +160,8 @@ void era_motors_init(
   const char* dev) {
   int id;
 
+  signal(SIGINT, era_motors_signaled);
+
   int* current_limit = (int*)&era_motor_current_limit;
 
   can_init(dev);
@@ -175,6 +178,17 @@ void era_motors_close(void) {
   for (id = 1; id < 7; id++) epos_shutdown(id);
 
   can_close();
+}
+
+void era_motors_signaled(
+  int signal) {
+  if (signal == SIGINT) {
+    era_motors_stop();
+
+    era_motors_close();
+  }
+
+  exit(signal);
 }
 
 void era_motors_wait(
@@ -245,7 +259,7 @@ int era_motors_home(
     epos_get_digital_input(id);
 
     if (epos_read.node[id-1].digital_input & ERA_MOTORS_TEST_LIMIT_SWITCHES)
-      return ERA_ERROR_INVALID_CONFIGURATION;
+      return ERA_ERROR_INVALID_INITIAL_CONFIGURATION;
   }
 
   /* Begin homing */

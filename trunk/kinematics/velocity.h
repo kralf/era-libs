@@ -35,9 +35,8 @@ void era_print_arm_velocity(
 /** \brief Test an arm velocity against velocity limits
   * \param[in] arm_velocity The arm velocity that will be tested
   *   against the velocity limits. If null, the result will
-  *   always be 0.
-  * \return 1 if the provided arm velocity exceeds velocity limits,
-  *   0 otherwise.
+  *   always be ERA_ERROR_NONE.
+  * \return The resulting error code.
   */
 int era_test_arm_velocity_limits(
   const era_arm_velocity_t* arm_velocity);

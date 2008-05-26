@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
   target.roll *= M_PI/180.0;
   target.opening *= M_PI/180.0;
 
-  int result = era_move_tool(&target, 0.25, 1);
+  int result = era_move_tool(&target, 0.05, 1);
 
   if (result) era_print_error(stdout, result);
 

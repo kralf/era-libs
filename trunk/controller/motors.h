@@ -139,6 +139,13 @@ void era_motors_init(
   */
 void era_motors_close(void);
 
+/** \brief Termination signal handler
+  * This handler performs a motor quick stop on program termination.
+  * \param[in] signal The caught signal, should be SIGINT.
+  */
+void era_motors_signaled(
+  int signal);
+
 /** \brief Wait for a motor condition
   * \param[in] condition The wait condition. Possible values are
   *   ERA_MOTORS_WAIT_STOP, ERA_MOTORS_WAIT_FAULT,
@@ -167,10 +174,11 @@ int era_motors_set_mode(
   * \param[in] motor_home The motor home configuration that will be assumed
   *   once the home position has been attained.
   * \return The resulting error code. If any of the limit switches is in
-  *   active state, ERA_ERROR_INVALID_CONFIGURATION will be returned. In fact,
-  *   for the ERA-5/1, the limit switch activities are ambiguous since there
-  *   exists only one switch per joint. This may result in an unsafe behavior
-  *   of the homing operation, eventually causing damage to the arm.
+  *   active state, ERA_ERROR_INVALID_INITIAL_CONFIGURATION will be returned.
+  *   In fact, for the ERA-5/1, the limit switch activities are ambiguous
+  *   since there exists only one switch per joint. This may result in an
+  *   unsafe behavior of the homing operation, eventually causing damage to
+  *   the arm.
   */
 int era_motors_home(
   const era_motor_velocity_t* motor_homing_velocity,

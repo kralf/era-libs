@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include "velocity.h"
+#include "errors.h"
 
 #define max(x, y) x>=y?x:y
 
@@ -40,7 +41,7 @@ void era_print_arm_velocity(
 
 int era_test_arm_velocity_limits(
   const era_arm_velocity_t* arm_velocity) {
-  if (!arm_velocity) return 0;
+  if (!arm_velocity) return ERA_ERROR_NONE;
 
   int i;
   double* vel = (double*)arm_velocity;
@@ -48,9 +49,9 @@ int era_test_arm_velocity_limits(
 
   for (i = 0; i < sizeof(era_arm_velocity_t)/sizeof(double); i++)
     if (vel[i] > vel_max[i] || vel[i] < -vel_max[i])
-    return 1;
+    return ERA_ERROR_VELOCITY_LIMITS_EXCEEDED;
 
-  return 0;
+  return ERA_ERROR_NONE;
 }
 
 double era_sync_arm_velocity(
