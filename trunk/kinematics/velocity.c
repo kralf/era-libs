@@ -25,17 +25,17 @@ const era_arm_velocity_t era_arm_velocity_max = {
 void era_print_arm_velocity(
   FILE* stream,
   const era_arm_velocity_t* arm_velocity) {
-  fprintf(stream, "%14s: % 9.4f °/s\n",
+  fprintf(stream, "%14s: % 7.2f °/s\n",
     "shoulder_yaw", arm_velocity->shoulder_yaw*180/M_PI);
-  fprintf(stream, "%14s: % 9.4f °/s\n",
+  fprintf(stream, "%14s: % 7.2f °/s\n",
     "shoulder_roll", arm_velocity->shoulder_roll*180/M_PI);
-  fprintf(stream, "%14s: % 9.4f °/s\n",
+  fprintf(stream, "%14s: % 7.2f °/s\n",
     "shoulder_pitch", arm_velocity->shoulder_pitch*180/M_PI);
-  fprintf(stream, "%14s: % 9.4f °/s\n",
+  fprintf(stream, "%14s: % 7.2f °/s\n",
     "ellbow_pitch", arm_velocity->ellbow_pitch*180/M_PI);
-  fprintf(stream, "%14s: % 9.4f °/s\n",
+  fprintf(stream, "%14s: % 7.2f °/s\n",
     "tool_roll", arm_velocity->tool_roll*180/M_PI);
-  fprintf(stream, "%14s: % 9.4f °/s\n",
+  fprintf(stream, "%14s: % 7.2f °/s\n",
     "tool_opening", arm_velocity->tool_opening*180/M_PI);
 }
 

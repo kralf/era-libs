@@ -67,17 +67,17 @@ const era_motor_transmission_t era_motor_transmission = {
 void era_print_motor_configuration(
   FILE* stream,
   const era_motor_configuration_t* motor_configuration) {
-  fprintf(stream, "%14s: % 10d tiks\n",
+  fprintf(stream, "%14s: % 6d tiks\n",
     "shoulder_yaw", motor_configuration->shoulder_yaw);
-  fprintf(stream, "%14s: % 10d tiks\n",
+  fprintf(stream, "%14s: % 6d tiks\n",
     "shoulder_roll", motor_configuration->shoulder_roll);
-  fprintf(stream, "%14s: % 10d tiks\n",
+  fprintf(stream, "%14s: % 6d tiks\n",
     "shoulder_pitch", motor_configuration->shoulder_pitch);
-  fprintf(stream, "%14s: % 10d tiks\n",
+  fprintf(stream, "%14s: % 6d tiks\n",
     "ellbow_pitch", motor_configuration->ellbow_pitch);
-  fprintf(stream, "%14s: % 10d tiks\n",
+  fprintf(stream, "%14s: % 6d tiks\n",
     "tool_roll", motor_configuration->tool_roll);
-  fprintf(stream, "%14s: % 10d tiks\n",
+  fprintf(stream, "%14s: % 6d tiks\n",
     "tool_opening", motor_configuration->tool_opening);
 }
 

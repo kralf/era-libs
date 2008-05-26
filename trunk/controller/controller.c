@@ -33,37 +33,41 @@ const era_arm_velocity_t era_homing_velocity = {
 void era_print_configuration(
   FILE* stream) {
   int i;
-  era_motor_configuration_t motor_configuration;
   era_arm_configuration_t arm_configuration;
+  era_arm_velocity_t arm_velocity;
   era_tool_configuration_t tool_configuration;
 
-  era_motors_get_configuration(&motor_configuration, 0);
-  era_motor_to_arm(&motor_configuration, 0, &arm_configuration, 0);
+  era_get_configuration(&arm_configuration, &arm_velocity);
   era_forward_kinematics(&arm_configuration, &tool_configuration);
 
-  fprintf(stream, "%14s: % 10d tiks  %14s: % 9.4f °  %7s: % 9.4f m\n",
-    "shoulder_yaw", motor_configuration.shoulder_yaw,
+  fprintf(stream, "%s %21s  %27s  %18s\n",
+    "ARM", "CONFIGURATION",
+    "VELOCITY",
+    "TOOL CONFIGURATION");
+
+  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f m\n",
     "shoulder_yaw", arm_configuration.shoulder_yaw*180/M_PI,
+    "shoulder_yaw", arm_velocity.shoulder_yaw*180/M_PI,
     "x", tool_configuration.x);
-  fprintf(stream, "%14s: % 10d tiks  %14s: % 9.4f °  %7s: % 9.4f m\n",
-    "shoulder_roll", motor_configuration.shoulder_roll,
+  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f m\n",
     "shoulder_roll", arm_configuration.shoulder_roll*180/M_PI,
+    "shoulder_roll", arm_velocity.shoulder_roll*180/M_PI,
     "y", tool_configuration.y);
-  fprintf(stream, "%14s: % 10d tiks  %14s: % 9.4f °  %7s: % 9.4f m\n",
-    "shoulder_pitch", motor_configuration.shoulder_pitch,
+  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f m\n",
     "shoulder_pitch", arm_configuration.shoulder_pitch*180/M_PI,
+    "shoulder_pitch", arm_velocity.shoulder_pitch*180/M_PI,
     "z", tool_configuration.z);
-  fprintf(stream, "%14s: % 10d tiks  %14s: % 9.4f °  %7s: % 9.4f °\n",
-    "ellbow_pitch", motor_configuration.ellbow_pitch,
+  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f °\n",
     "ellbow_pitch", arm_configuration.ellbow_pitch*180/M_PI,
+    "ellbow_pitch", arm_velocity.ellbow_pitch*180/M_PI,
     "yaw", tool_configuration.yaw*180/M_PI);
-  fprintf(stream, "%14s: % 10d tiks  %14s: % 9.4f °  %7s: % 9.4f °\n",
-    "tool_roll", motor_configuration.tool_roll,
+  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f °\n",
     "tool_roll", arm_configuration.tool_roll*180/M_PI,
+    "tool_roll", arm_velocity.tool_roll*180/M_PI,
     "roll", tool_configuration.roll*180/M_PI);
-  fprintf(stream, "%14s: % 10d tiks  %14s: % 9.4f °  %7s: % 9.4f °\n",
-    "tool_opening", motor_configuration.tool_opening,
+  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f °\n",
     "tool_opening", arm_configuration.tool_opening*180/M_PI,
+    "tool_opening", arm_velocity.tool_opening*180/M_PI,
     "opening", tool_configuration.opening*180/M_PI);
 }
 
