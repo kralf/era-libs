@@ -10,6 +10,7 @@
 
 #include "kinematics.h"
 #include "velocity.h"
+#include "trajectory.h"
 
 /** \file
   * \brief The BlueBotics ERA-5/1 controller

@@ -45,15 +45,15 @@ void era_print_configuration(
     "VELOCITY",
     "TOOL CONFIGURATION");
 
-  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f m\n",
+  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.4f m\n",
     "shoulder_yaw", arm_configuration.shoulder_yaw*180/M_PI,
     "shoulder_yaw", arm_velocity.shoulder_yaw*180/M_PI,
     "x", tool_configuration.x);
-  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f m\n",
+  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.4f m\n",
     "shoulder_roll", arm_configuration.shoulder_roll*180/M_PI,
     "shoulder_roll", arm_velocity.shoulder_roll*180/M_PI,
     "y", tool_configuration.y);
-  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f m\n",
+  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.4f m\n",
     "shoulder_pitch", arm_configuration.shoulder_pitch*180/M_PI,
     "shoulder_pitch", arm_velocity.shoulder_pitch*180/M_PI,
     "z", tool_configuration.z);

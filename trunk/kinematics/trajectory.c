@@ -6,105 +6,126 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <string.h>
 
 #include "trajectory.h"
 #include "errors.h"
 
-int era_read_arm_trajectory(
-  const char *filename,
-  era_arm_configuration_t** arm_trajectory,
-  double** timestamps) {
-  FILE *fd;
-  char buffer[255];
-  era_arm_configuration_t arm_configuration;
-  double timestamp;
-  int result = 0, points = 0, comments = 0;
+void era_print_tool_trajectory(
+  FILE* stream,
+  const era_tool_configuration_t* tool_trajectory,
+  int num_configurations) {
   int i;
+
+  fprintf(stream, "%14s  %14s  %14s  %14s  %14s  %14s\n",
+    "x",
+    "y",
+    "z",
+    "yaw",
+    "roll",
+    "opening");
+
+  for (i = 0; i < num_configurations; i++) {
+    fprintf(stream,
+      "%12.4f m  %12.4f m  %12.4f m  %12.2f °  %12.2f °  %12.2f °\n",
+      tool_trajectory[i].x,
+      tool_trajectory[i].y,
+      tool_trajectory[i].z,
+      tool_trajectory[i].yaw*180/M_PI,
+      tool_trajectory[i].roll*180/M_PI,
+      tool_trajectory[i].opening*180/M_PI);
+  }
 }
 
-int era_read_trajectory(
-  const char *filename,
-  era_tool_configuration_t** tool_configurations,
-  double** timestamps) {
-  FILE *fd;
-  char buffer[255];
-  era_tool_configuration_t point;
-  double timestamp;
-  int result = 0, points = 0, comments = 0;
+void era_print_arm_trajectory(
+  FILE* stream,
+  const era_arm_configuration_t* arm_trajectory,
+  int num_configurations) {
   int i;
 
-  *tool_configurations = 0;
-  *timestamps = 0;
+  fprintf(stream, "%14s  %14s  %14s  %14s  %14s  %14s\n",
+    "shoulder_yaw",
+    "shoulder_roll",
+    "shoulder_pitch",
+    "ellbow_pitch",
+    "tool_roll",
+    "tool_opening");
 
-  fd = fopen(filename,"r");
-
-  if (fd == NULL) {
-    printf("File not found!\n");
-    return 0;
+  for (i = 0; i < num_configurations; i++) {
+    fprintf(stream,
+      "%12.2f °  %12.2f °  %12.2f °  %12.2f °  %12.2f °  %12.2f °\n",
+      arm_trajectory[i].shoulder_yaw*180/M_PI,
+      arm_trajectory[i].shoulder_roll*180/M_PI,
+      arm_trajectory[i].shoulder_pitch*180/M_PI,
+      arm_trajectory[i].ellbow_pitch*180/M_PI,
+      arm_trajectory[i].tool_roll*180/M_PI,
+      arm_trajectory[i].tool_opening*180/M_PI);
   }
+}
 
-  while (fgets(buffer, sizeof(buffer), fd) != NULL) {
-    if (buffer[0] == '/' && buffer[1] == '/') {
-      comments++;
-      continue;
-    }
+int era_trajectory_test_arm_configuration_limits(
+  const era_arm_configuration_t* arm_trajectory,
+  int num_configurations) {
+  int i, result;
 
-    result = sscanf(buffer, "%lf %lf %lf %lf %lf %lf %lf",
-      &point.x, &point.y, &point.z, &point.yaw, &point.roll, &point.opening,
-      &timestamp);
+  for (i = 0; (i < num_configurations) && !result; ++i)
+    result = era_test_arm_configuration_limits(&arm_trajectory[i]);
 
-    if (result != 7) {
-      printf("Error in trajectory file at line %d!\n", (points+1)+comments);
-      return points;
-    }
+  return result;
+}
 
-    *tool_configurations = realloc(*tool_configurations,
-      (points+1)*sizeof(era_tool_configuration_t));
-    memcpy(&(*tool_configurations)[points], &point,
-      sizeof(era_tool_configuration_t));
-    *timestamps = realloc(*timestamps, (points+1)*sizeof(double));
-    (*timestamps)[points] = timestamp;
+void era_trajectory_forward_kinematics(
+  const era_arm_configuration_t* arm_trajectory,
+  int num_configurations,
+  era_tool_configuration_t* tool_trajectory) {
+  int i;
 
-    points++;
-  }
+  for (i = 0; i < num_configurations; i++)
+    era_forward_kinematics(&arm_trajectory[i], &tool_trajectory[i]);
+}
 
-  return points;
+void era_trajectory_inverse_kinematics(
+  const era_tool_configuration_t* tool_trajectory,
+  int num_configurations,
+  era_arm_configuration_t* arm_trajectory) {
+  int i;
+
+  for (i = 0; i < num_configurations; i++)
+    era_inverse_kinematics(&tool_trajectory[i], &arm_trajectory[i]);
 }
 
 int era_trajectory_velocities(
-  const era_tool_configuration_t* tool_configurations,
+  const era_tool_configuration_t* trajectory,
   const double* timestamps,
-  int num_tool_configurations,
+  int num_configurations,
   double dt,
-  era_arm_velocity_t** arm_velocities,
+  era_arm_velocity_t** velocity_profile,
   era_trajectory_error_t** errors) {
-  era_tool_configuration_t m[num_tool_configurations];
+  era_tool_configuration_t m[num_configurations];
 
-  era_trajectory_mci_gradients(tool_configurations, num_tool_configurations, m);
+  era_trajectory_mci_gradients(trajectory, num_configurations, m);
 
-  return era_trajectory_mci(tool_configurations, timestamps, m,
-    num_tool_configurations, dt, arm_velocities, errors);
+  return era_trajectory_mci(trajectory, timestamps, m,
+    num_configurations, dt, velocity_profile, errors);
 }
 
 void era_trajectory_mci_gradients(
-  const era_tool_configuration_t* tool_configurations,
-  int num_tool_configurations,
-  era_tool_configuration_t* tool_configuration_gradients) {
+  const era_tool_configuration_t* trajectory,
+  int num_configurations,
+  era_tool_configuration_t* trajectory_gradients) {
   int i, j;
   double delta, alpha, beta, tau;
 
-  double** tool = (double**)tool_configurations;
-  double** m = (double**)tool_configuration_gradients;
+  double** tool = (double**)trajectory;
+  double** m = (double**)trajectory_gradients;
 
   for (j = 0; j < sizeof(era_tool_configuration_t)/sizeof(double); j++) {
     m[0][j] = 0;
-    m[num_tool_configurations-1][j] = 0;
+    m[num_configurations-1][j] = 0;
 
-    for(i = 1; i < num_tool_configurations-1; i++)
+    for(i = 1; i < num_configurations-1; i++)
       m[i][j] = (tool[i+1][j]-tool[i-1][j])/2;
 
-    for(i = 0; i < num_tool_configurations-1; i++) {
+    for(i = 0; i < num_configurations-1; i++) {
       delta = tool[i+1][j]-tool[i][j];
 
       if (delta == 0) {
@@ -129,19 +150,19 @@ void era_trajectory_mci_gradients(
 }
 
 int era_trajectory_mci(
-  const era_tool_configuration_t* tool_configurations,
+  const era_tool_configuration_t* trajectory,
   const double* timestamps,
-  const era_tool_configuration_t* tool_configuration_gradients,
-  int num_tool_configurations,
+  const era_tool_configuration_t* trajectory_gradients,
+  int num_configurations,
   double dt,
-  era_arm_velocity_t** arm_velocities,
+  era_arm_velocity_t** velocity_profile,
   era_trajectory_error_t** errors) {
   int i, j, k, steps;
   double dj;
-  int num_arm_velocities = 0;
+  int num_velocities = 0;
 
-  double** tool = (double**)tool_configurations;
-  double** m = (double**)tool_configuration_gradients;
+  double** tool = (double**)trajectory;
+  double** m = (double**)trajectory_gradients;
   double** arm;
 
   era_tool_configuration_t tool_configuration_a;
@@ -153,15 +174,15 @@ int era_trajectory_mci(
   double* arm_a = (double*)&arm_configuration_a;
   double* arm_b = (double*)&arm_configuration_b;
 
-  for (i = 0; i < (num_tool_configurations-1); i++) {
+  for (i = 0; i < (num_configurations-1); i++) {
     steps = (int)(timestamps[i]/dt)+1;
     dj = 1/(double)steps;
 
-    *arm_velocities = realloc(*arm_velocities,
-      (num_arm_velocities+steps)*sizeof(era_arm_velocity_t));
-    arm = (double**)arm_velocities;
+    *velocity_profile = realloc(*velocity_profile,
+      (num_velocities+steps)*sizeof(era_arm_velocity_t));
+    arm = (double**)velocity_profile;
     *errors = realloc(*errors,
-      (num_arm_velocities+steps)*sizeof(era_trajectory_error_t));
+      (num_velocities+steps)*sizeof(era_trajectory_error_t));
 
     for (j = 0; j < steps; j++) {
       for (k = 0; k < 6; k++) {
@@ -171,24 +192,22 @@ int era_trajectory_mci(
           m[i+1][k], j*dj);
       }
 
-      errors[num_arm_velocities]->point = i;
-      if (era_inverse_kinematics(&tool_configuration_b, &arm_configuration_b))
-        errors[num_arm_velocities]->limits_exceeded = 1;
-      else
-        errors[num_arm_velocities]->limits_exceeded = 0;
+      era_inverse_kinematics(&tool_configuration_b, &arm_configuration_b);
 
+      errors[num_velocities]->limits_exceeded =
+        era_test_arm_configuration_limits(&arm_configuration_b);
 
       for (k = 0; k < 6; k++)
-        arm[num_arm_velocities][k] = (arm_b[k]-arm_a[k])/dt;
+        arm[num_velocities][k] = (arm_b[k]-arm_a[k])/dt;
 
-      errors[num_arm_velocities]->velocity_exceeded =
-        era_test_arm_velocity_limits(arm_velocities[num_arm_velocities]);
+      errors[num_velocities]->velocity_exceeded =
+        era_test_arm_velocity_limits(velocity_profile[num_velocities]);
 
-      num_arm_velocities++;
+      num_velocities++;
     }
   }
 
-  return num_arm_velocities;
+  return num_velocities;
 }
 
 double era_trajectory_eval(

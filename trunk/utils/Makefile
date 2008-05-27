@@ -2,14 +2,16 @@ LD_LIBRARY_PATH = ../errors:../kinematics:../drivers/vanilla/epos:../drivers/van
 CFLAGS += -I../kinematics -I../controller
 LDFLAGS += -L../controller -lera-controller
 
+PREFIX = /usr/local
+
 OBJS = era_init era_home era_limits era_move_tool era_move_arm era_print \
-	era_trajectory
+	era_tool_to_arm era_trajectory
 SRCS = $(OBJ)
 
 all: $(OBJS)
 
 install: $(OBJS)
-	install -c -o root -g root -m 755 $(OBJS) /usr/bin
+	install -c -m 755 $(OBJS) $(PREFIX)/bin
 
 clean:
 	rm -f *.o $(OBJS)

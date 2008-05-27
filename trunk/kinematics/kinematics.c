@@ -40,11 +40,11 @@ double era_arm_configuration_safety_margin = 2.5*M_PI/180.0;
 void era_print_tool_configuration(
   FILE* stream,
   const era_tool_configuration_t* tool_configuration) {
-  fprintf(stream, "%7s: % 7.2f m\n",
+  fprintf(stream, "%7s: % 7.4f m\n",
     "x", tool_configuration->x);
-  fprintf(stream, "%7s: % 7.2f m\n",
+  fprintf(stream, "%7s: % 7.4f m\n",
     "y", tool_configuration->y);
-  fprintf(stream, "%7s: % 7.2f m\n",
+  fprintf(stream, "%7s: % 7.4f m\n",
     "z", tool_configuration->z);
   fprintf(stream, "%7s: % 7.2f °\n",
     "yaw", tool_configuration->yaw*180/M_PI);
@@ -128,7 +128,7 @@ void era_forward_kinematics(
   tool_configuration->opening = theta[5];
 }
 
-int era_inverse_kinematics(
+void era_inverse_kinematics(
   const era_tool_configuration_t* tool_configuration,
   era_arm_configuration_t* arm_configuration) {
   double x, y, c4;
@@ -176,8 +176,6 @@ int era_inverse_kinematics(
   if (arm_configuration->shoulder_roll > -0.1 &&
     arm_configuration->shoulder_roll < 0.1)
     arm_configuration->shoulder_roll = 0.1;
-
-  return era_test_arm_configuration_limits(arm_configuration) ;
 }
 
 void era_set_tool_yaw(

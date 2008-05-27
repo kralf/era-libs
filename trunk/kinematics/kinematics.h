@@ -111,10 +111,8 @@ void era_forward_kinematics(
   *   configuration will be calculated.
   * \param[out] arm_configuration The arm configuration that results from
   *   the inverse kinematic calculations.
-  * \return 1 if the resulting arm configuration exceeds configuration
-  *   space limits, 0 otherwise.
   */
-int era_inverse_kinematics(
+void era_inverse_kinematics(
   const era_tool_configuration_t* tool_configuration,
   era_arm_configuration_t* arm_configuration);
 
