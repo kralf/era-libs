@@ -22,6 +22,16 @@ const era_arm_velocity_t era_arm_velocity_max = {
   .tool_opening = M_PI,
 };
 
+void era_init_arm_velocity(
+  era_arm_velocity_t* arm_velocity) {
+  int i;
+
+  double* vel = (double*)arm_velocity;
+
+  for (i = 0; i < sizeof(era_arm_velocity_t)/sizeof(double); i++)
+    vel[i] = 0.0;
+}
+
 void era_print_arm_velocity(
   FILE* stream,
   const era_arm_velocity_t* arm_velocity) {
@@ -52,6 +62,21 @@ int era_test_arm_velocity_limits(
     return ERA_ERROR_VELOCITY_LIMITS_EXCEEDED;
 
   return ERA_ERROR_NONE;
+}
+
+void era_arm_velocity(
+  const era_arm_configuration_t* arm_start_configuration,
+  const era_arm_configuration_t* arm_target_configuration,
+  double time,
+  era_arm_velocity_t* arm_velocity) {
+  int i;
+
+  double* start = (double*)arm_start_configuration;
+  double* target = (double*)arm_target_configuration;
+  double* vel = (double*)arm_velocity;
+
+  for (i = 0; i < sizeof(era_arm_configuration_t)/sizeof(double); i++)
+    vel[i] = (target[i]-start[i])/time;
 }
 
 double era_sync_arm_velocity(

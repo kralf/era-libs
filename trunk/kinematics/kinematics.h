@@ -59,6 +59,20 @@ extern era_arm_configuration_t era_arm_configuration_max;
 /** \brief Variable holding the safety margin of the arm configuration space */
 extern double era_arm_configuration_safety_margin;
 
+/** \brief Initialize a tool configuration
+  * \param[in] tool_configuration The tool configuration to be initialized
+  *   with 0.
+  */
+void era_init_tool_configuration(
+  era_tool_configuration_t* tool_configuration);
+
+/** \brief Initialize an arm configuration
+  * \param[in] arm_configuration The arm configuration to be initialized
+  *   with 0.
+  */
+void era_init_arm_configuration(
+  era_arm_configuration_t* arm_configuration);
+
 /** \brief Print a tool configuration
   * \param[in] stream The output stream that will be used for printing the
   *   tool configuration.

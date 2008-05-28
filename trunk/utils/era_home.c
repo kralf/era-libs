@@ -4,7 +4,7 @@
  *      Last change:     19.5.2008
  */
 
-#include <controller.h>
+#include <era.h>
 
 int main(int argc, char **argv) {
   if (argc != 2) {
@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 
   era_motors_init(argv[1]);
 
-  int result = era_move_home(0.2, 1);
+  int result = era_move_home(ERA_DEFAULT_VELOCITY, 1);
 
   if (result) era_print_error(stdout, result);
 

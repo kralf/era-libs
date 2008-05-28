@@ -1,7 +1,7 @@
 /*	Header-file for
  *      Velocity calculations for BlueBotics ERA-5/1
  *
- * 	Fritz Stoeckli   stfritz@ethz.ch
+ * 	Ralf Kaestner    ralf.kaestner@gmail.com
  * 	Last change:     6.5.2008
  */
 
@@ -23,6 +23,12 @@ typedef era_arm_configuration_t era_arm_velocity_t;
 /** \brief Constant defining the upper arm velocity limit */
 extern const era_arm_velocity_t era_arm_velocity_max;
 
+/** \brief Initialize an arm velocity
+  * \param[in] arm_velocity The arm velocity to be initialized with 0.
+  */
+void era_init_arm_velocity(
+  era_arm_velocity_t* arm_velocity);
+
 /** \brief Print an arm velocity
   * \param[in] stream The output stream that will be used for printing the
   *   arm velocity.
@@ -40,6 +46,20 @@ void era_print_arm_velocity(
   */
 int era_test_arm_velocity_limits(
   const era_arm_velocity_t* arm_velocity);
+
+/** \brief Calculate an arm velocity for a given configuration change in time
+  * \param[in] arm_start_configuration The arm start configuration.
+  * \param[in] arm_target_configuration The arm target configuration.
+  * \param[in] time The time required to move from the start configuration
+  *   to the target configuration.
+  * \param[out] arm_velocity The resulting velocity for each component of
+  *   the arm configuration space.
+  */
+void era_arm_velocity(
+  const era_arm_configuration_t* arm_start_configuration,
+  const era_arm_configuration_t* arm_target_configuration,
+  double time,
+  era_arm_velocity_t* arm_velocity);
 
 /** \brief Synchronize the joint velocities of the arm
   * Calculates the joint angle velocities such that all joints finish their

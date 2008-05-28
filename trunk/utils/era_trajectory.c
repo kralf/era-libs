@@ -1,49 +1,53 @@
-/*      Utility program for ERA path tracking
+/*      Utility program for ERA trajectory control
  *
  *      Ralf Kaestner    ralf.kaestner@gmail.com
  *      Last change:     19.5.2008
  */
 
-#include <controller.h>
+#include <era.h>
+
+#define ERA_ESCAPE 0x1B
+
+#define ERA_CURSOR_FORWARD 'C'
+#define ERA_CURSOR_BACKWARD 'D'
+#define ERA_CURSOR_UP 'A'
+#define ERA_CURSOR_DOWN 'B'
+
+void print(
+  const era_arm_configuration_t* configuration,
+  const era_arm_velocity_t* velocity,
+  double actual_frequency) {
+  era_print_configuration(stdout, configuration, velocity);
+
+  fprintf(stdout, "%s %5.1f Hz\n", "UPDATE FREQUENCY", actual_frequency);
+  fprintf(stdout, "%c[%d%c\r", ERA_ESCAPE, 8, ERA_CURSOR_UP);
+}
 
 int main(int argc, char **argv) {
   if (argc != 3) {
-    fprintf(stderr, "Usage: %s DEV PATH_FILE\n", argv[0]);
+    fprintf(stderr, "Usage: %s DEV FILE\n", argv[0]);
     return -1;
   }
 
   era_motors_init(argv[1]);
 
-  era_tool_configuration_t* trajectory;
+  era_arm_configuration_t* trajectory;
   double* timestamps;
 
-  int result = era_read_tool_trajectory(argv[2], &trajectory, &timestamps);
+  int result = era_read_arm_trajectory(argv[2], &trajectory, &timestamps);
 
   if (result > 0) {
-    printf("%d tool trajectory configurations\n", result);
+    era_sensors_start(print, 10.0);
 
-    double dt = 0.1;
-    era_arm_velocity_t* velocity_profile;
-    era_trajectory_error_t* errors;
+    result = era_move_trajectory(trajectory, timestamps, result);
 
-    result = era_trajectory_velocities(trajectory, timestamps, result, dt,
-      &velocity_profile, &errors);
-
-    if (result > 0) {
-      result = era_write_velocity_profile("vel.txt", &velocity_profile,
-        &timestamps, result);
-
-      free(velocity_profile);
-      free(errors);
-    }
-
-    //era_move_trajectory(tool_configurations, timestamps, 1);
+    era_sensors_exit();
 
     free(trajectory);
     free(timestamps);
   }
 
-  if (result < 0) era_print_error(stdout, -result);
+  if (result < 0) era_print_error(stdout, result);
 
   era_motors_close();
   return 0;

@@ -64,6 +64,26 @@ const era_motor_transmission_t era_motor_transmission = {
   .tool_opening = -0.01*1.0,
 };
 
+void era_init_motor_configuration(
+  era_motor_configuration_t* motor_configuration) {
+  int i;
+
+  double* conf = (double*)motor_configuration;
+
+  for (i = 0; i < sizeof(era_motor_configuration_t)/sizeof(int); i++)
+    conf[i] = 0;
+}
+
+void era_init_motor_velocity(
+  era_motor_velocity_t* motor_velocity) {
+  int i;
+
+  double* vel = (double*)motor_velocity;
+
+  for (i = 0; i < sizeof(era_motor_velocity_t)/sizeof(int); i++)
+    vel[i] = 0;
+}
+
 void era_print_motor_configuration(
   FILE* stream,
   const era_motor_configuration_t* motor_configuration) {
@@ -96,16 +116,6 @@ void era_print_motor_velocity(
     "tool_roll", motor_velocity->tool_roll);
   fprintf(stream, "%14s: % 6d rpm\n",
     "tool_opening", motor_velocity->tool_opening);
-}
-
-void era_motor_configuration_init(
-  era_motor_configuration_t* motor_configuration) {
-  motor_configuration->shoulder_yaw = 0;
-  motor_configuration->shoulder_roll = 0;
-  motor_configuration->shoulder_pitch = 0;
-  motor_configuration->ellbow_pitch = 0;
-  motor_configuration->tool_roll = 0;
-  motor_configuration->tool_opening = 0;
 }
 
 void era_arm_to_motor(

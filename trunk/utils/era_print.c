@@ -4,7 +4,7 @@
  *      Last change:     19.5.2008
  */
 
-#include <controller.h>
+#include <era.h>
 #include <timer.h>
 
 #define ERA_ESCAPE 0x1B
@@ -13,6 +13,16 @@
 #define ERA_CURSOR_BACKWARD 'D'
 #define ERA_CURSOR_UP 'A'
 #define ERA_CURSOR_DOWN 'B'
+
+void print(
+  const era_arm_configuration_t* configuration,
+  const era_arm_velocity_t* velocity,
+  double actual_frequency) {
+  era_print_configuration(stdout, configuration, velocity);
+
+  fprintf(stdout, "%s %5.1f Hz\n", "UPDATE FREQUENCY", actual_frequency);
+  fprintf(stdout, "%c[%d%c\r", ERA_ESCAPE, 8, ERA_CURSOR_UP);
+}
 
 int main(int argc, char **argv) {
   if ((argc < 2) || (argc > 3)) {
@@ -25,18 +35,9 @@ int main(int argc, char **argv) {
 
   can_init(argv[1]);
 
-  while (1) {
-    double timestamp;
-    era_timer_start(&timestamp);
+  int result = era_sensors_start(print, frequency);
 
-    era_print_configuration(stdout);
-
-    era_timer_wait(timestamp, frequency);
-
-    fprintf(stdout, "%s %5.1f Hz\n", "UPDATE FREQUENCY",
-      era_timer_get_frequency(timestamp));
-    fprintf(stdout, "%c[%d%c\r", ERA_ESCAPE, 8, ERA_CURSOR_UP);
-  }
+  if (!result) era_thread_wait_exit(&era_sensors_thread);
 
   can_close();
   return 0;

@@ -5,6 +5,7 @@
  */
 
 #include <sys/time.h>
+#include <pthread.h>
 
 #include "timer.h"
 #include "errors.h"
@@ -12,17 +13,21 @@
 void era_timer_start(
   double* timestamp) {
   struct timeval time;
+  double million = 1000000.0;
+
   gettimeofday(&time, 0);
 
-  *timestamp = time.tv_sec+time.tv_usec/1000000.0;
+  *timestamp = time.tv_sec+time.tv_usec/million;
 }
 
 double era_timer_stop(
   double timestamp) {
   struct timeval time;
+  double million = 1000000.0;
+
   gettimeofday(&time, 0);
 
-  return time.tv_sec+time.tv_usec/1000000.0-timestamp;
+  return time.tv_sec+time.tv_usec/million-timestamp;
 }
 
 double era_timer_get_frequency(

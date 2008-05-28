@@ -4,7 +4,7 @@
  *      Last change:     19.5.2008
  */
 
-#include <controller.h>
+#include <era.h>
 
 int main(int argc, char **argv) {
   if (argc < 2) {

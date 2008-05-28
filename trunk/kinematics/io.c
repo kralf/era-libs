@@ -191,7 +191,7 @@ int era_write_tool_trajectory(
 
 int era_read_velocity_profile(
   const char *filename,
-  era_arm_velocity_t** velocity_profile,
+  era_arm_velocity_t** arm_velocities,
   double** timestamps) {
   int i, result;
   int num_velocities = 0;
@@ -201,7 +201,7 @@ int era_read_velocity_profile(
   era_arm_velocity_t arm_velocity;
   double timestamp;
 
-  *velocity_profile = 0;
+  *arm_velocities = 0;
   *timestamps = 0;
 
   file = fopen(filename, "r");
@@ -224,9 +224,9 @@ int era_read_velocity_profile(
         return -ERA_ERROR_FILE_FORMAT;
       }
 
-      *velocity_profile = realloc(*velocity_profile,
+      *arm_velocities = realloc(*arm_velocities,
         (num_velocities+1)*sizeof(era_arm_velocity_t));
-      (*velocity_profile)[num_velocities] = arm_velocity;
+      (*arm_velocities)[num_velocities] = arm_velocity;
       *timestamps = realloc(*timestamps, (num_velocities+1)*sizeof(double));
       (*timestamps)[num_velocities] = timestamp;
 
@@ -240,7 +240,7 @@ int era_read_velocity_profile(
 
 int era_write_velocity_profile(
   const char *filename,
-  const era_arm_velocity_t* velocity_profile,
+  const era_arm_velocity_t* arm_velocities,
   const double* timestamps,
   int num_velocities) {
   int i, result;
@@ -253,12 +253,12 @@ int era_write_velocity_profile(
 
   for (i = 0; i < num_velocities; i++) {
     result = sprintf(buffer, "%.6f %.6f %.6f %.6f %.6f %.6f\n",
-      velocity_profile[i].shoulder_yaw,
-      velocity_profile[i].shoulder_roll,
-      velocity_profile[i].shoulder_pitch,
-      velocity_profile[i].ellbow_pitch,
-      velocity_profile[i].tool_roll,
-      velocity_profile[i].tool_opening,
+      arm_velocities[i].shoulder_yaw,
+      arm_velocities[i].shoulder_roll,
+      arm_velocities[i].shoulder_pitch,
+      arm_velocities[i].ellbow_pitch,
+      arm_velocities[i].tool_roll,
+      arm_velocities[i].tool_opening,
       timestamps[i]);
 
     if (fputs(buffer, file) <= 0) {

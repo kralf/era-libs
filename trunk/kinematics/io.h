@@ -88,7 +88,7 @@ int era_write_tool_trajectory(
 
 /** \brief Read velocity profile from file
   * \param[in] filename The name of the file containing the velocity profile.
-  * \param[out] velocity_profile An array of arm velocities representing
+  * \param[out] arm_velocities An array of arm velocities representing
   *   the velocity profile.
   *   The array will be allocated and must be freed by the caller.
   * \param[out] timestamps An array of absolute timestamps associated with
@@ -99,7 +99,7 @@ int era_write_tool_trajectory(
   */
 int era_read_velocity_profile(
   const char *filename,
-  era_arm_velocity_t** velocity_profile,
+  era_arm_velocity_t** arm_velocities,
   double** timestamps);
 
 /** \brief Write velocity profile to file
@@ -116,7 +116,7 @@ int era_read_velocity_profile(
   */
 int era_write_velocity_profile(
   const char *filename,
-  const era_arm_velocity_t* velocity_profile,
+  const era_arm_velocity_t* arm_velocities,
   const double* timestamps,
   int num_velocities);
 

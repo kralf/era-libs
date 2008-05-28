@@ -8,9 +8,8 @@
 #ifndef _CONTROLLER_H
 #define _CONTROLLER_H
 
-#include "kinematics.h"
-#include "velocity.h"
-#include "trajectory.h"
+#include "velocity_profile.h"
+#include "thread.h"
 
 /** \file
   * \brief The BlueBotics ERA-5/1 controller
@@ -18,109 +17,43 @@
   * The motion controller for the BlueBotics ERA-5/1.
   */
 
-/** \brief Constant defining the homing velocity */
-extern const era_arm_velocity_t era_homing_velocity;
+/** \brief Structure defining the controller arguments */
+typedef struct {
+  const era_arm_velocity_t*
+    arm_velocities;    //!< The velocities of the profile to be executed.
+  const double*
+    timestamps;        //!< The timestamps associated with the velocities [s].
+  int num_velocities;  //!< The number of velocities in the profile.
+} era_controller_argument_t;
 
-/** \brief Structure holding the home configuration */
-extern era_arm_configuration_t era_home;
+/** \brief Static variable containing the controller thread */
+extern era_thread_t era_controller_thread;
 
-/** \brief Print the current arm and tool configuration
-  * \param[in] stream The output stream that will be used for printing the
-  *   current arm and tool configuration.
-  */
-void era_print_configuration(
-  FILE* stream);
-
-/** \brief Initialize communication with the arm and perform homing
-  * \param[in] dev The character device the arm is attached to.
+/** \brief Start the motion controller
+  * Performs a timed feed of velocity commands to the motors.
+  * \param[in] arm_velocities The arm velocities that will be fed to the
+  *   motors.
+  * \param[in] timestamps An array of absolute timestamps associated with
+  *   the arm velocities [s].
+  * \param[in] num_velocities The number of velocities contained in the
+  *   profile.
   * \return The resulting error code.
   */
-int era_init(
-  const char* dev);
+int era_controller_start(
+  const era_arm_velocity_t* arm_velocities,
+  const double* timestamps,
+  int num_velocities);
 
-/** \brief Close communication with the arm
+/** \brief Exit the motion controller
   */
-void era_close(void);
+void era_controller_exit(void);
 
-/** \brief Get the current arm configuration and velocity
-  * \param[out] configuration The current arm configuration. Can be null.
-  * \param[out] velocity The current arm velocity. Can be null.
+/** \brief Run the motion controller
+  * This function is run within the controller thread and should never
+  * be called directly.
+  * \param[in] arg The arguments passed to the controller thread.
+  * \return The result of the controller thread.
   */
-void era_get_configuration(
-  era_arm_configuration_t* configuration,
-  era_arm_velocity_t* velocity);
-
-/** \brief Set arm configuration and velocity
-  * \param[in] configuration The arm configuration to be set. Can be null.
-  * \param[in] velocity The arm velocity to be set. Cannot be null.
-  * \return The resulting error code.
-  */
-int era_set_configuration(
-  const era_arm_configuration_t* configuration,
-  const era_arm_velocity_t* velocity);
-
-/** \brief Move the arm to a specified configuration
-  * \param[in] target The target arm configuration.
-  * \param[in] velocity The velocity of the arm in the range of 0 to 1.
-  * \param[in] wait If 0, return instantly, wait for completion of the move
-  *   operation otherwise.
-  * \return The resulting error code.
-  */
-int era_move(
-  const era_arm_configuration_t* target,
-  double velocity,
-  int wait);
-
-/** \brief Move the arm to the predefined home configuration
-  * \param[in] velocity The velocity of the arm in the range of 0 to 1.
-  * \param[in] wait If 0, return instantly, wait for completion of the move
-  *   operation otherwise.
-  * \return The resulting error code.
-  */
-int era_move_home(
-  double velocity,
-  int wait);
-
-/** \brief Move the tool to a specified configuration
-  * \param[in] target The target tool configuration.
-  * \param[in] velocity The velocity of the arm in the range of 0 to 1.
-  * \param[in] wait If 0, return instantly, wait for completion of the move
-  *   operation otherwise.
-  * \return The resulting error code.
-  */
-int era_move_tool(
-  const era_tool_configuration_t* target,
-  double velocity,
-  int wait);
-
-/** \brief Move the arm along a given trajectory
-  * \param[in] trajectory An array of arm configurations representing
-  *   the arm trajectory.
-  * \param[in] timestamps An array of relative timestamps associated with
-  *   the arm trajectory points [s].
-  * \return The resulting error code.
-  */
-int era_move_trajectory(
-  const era_arm_configuration_t* trajectory,
-  const double* timestamps);
-
-/** \brief Move the tool along a given trajectory
-  * \param[in] trajectory An array of tool configurations representing
-  *   the tool trajectory.
-  * \param[in] timestamps An array of relative timestamps associated with
-  *   the tool trajectory points [s].
-  * \return The resulting error code.
-  */
-int era_move_tool_trajectory(
-  const era_tool_configuration_t* trajectory,
-  const double* timestamps);
-
-/** \brief Evaluate the error for a specified target arm configuration
-  * \param[in] target The target arm configuration for which the configuration
-  *   error will be evaluated.
-  * \return The square root of the squared elements of the configuration error.
-  */
-double era_get_configuration_error(
-  const era_arm_configuration_t* target);
+void* era_controller_run(void* arg);
 
 #endif

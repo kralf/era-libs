@@ -7,7 +7,7 @@
 
 #include <math.h>
 
-#include <controller.h>
+#include <era.h>
 
 int main(int argc, char **argv) {
   if (argc != 8) {
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
   target.roll *= M_PI/180.0;
   target.opening *= M_PI/180.0;
 
-  int result = era_move_tool(&target, 0.2, 1);
+  int result = era_move_tool(&target, ERA_DEFAULT_VELOCITY, 1);
 
   if (result) era_print_error(stdout, result);
 

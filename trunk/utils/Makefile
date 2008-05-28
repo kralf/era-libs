@@ -5,7 +5,7 @@ LDFLAGS += -L../controller -lera-controller
 PREFIX = /usr/local
 
 OBJS = era_init era_home era_limits era_move_tool era_move_arm era_print \
-	era_tool_to_arm era_trajectory
+	era_kinematics era_velocity era_trajectory era_simulate
 SRCS = $(OBJ)
 
 all: $(OBJS)

@@ -10,6 +10,7 @@
 #define _MOTORS_H
 
 #include <trajectory.h>
+#include <velocity_profile.h>
 
 /** \file
   * \brief Interfacing kinematic system model with EPOS controller
@@ -68,6 +69,19 @@ extern const era_motor_configuration_t era_motor_homing_current_threshold;
 /** \brief Constant defining the motor transmission */
 extern const era_motor_transmission_t era_motor_transmission;
 
+/** \brief Initialize a motor configuration
+  * \param[in] motor_configuration The motor configuration to be initialized
+  *   with 0.
+  */
+void era_init_motor_configuration(
+  era_motor_configuration_t* motor_configuration);
+
+/** \brief Initialize a motor velocity
+  * \param[in] motor_velocity The motor velocity to be initialized  with 0.
+  */
+void era_init_motor_velocity(
+  era_motor_velocity_t* motor_velocity);
+
 /** \brief Print a motor configuration
   * \param[in] stream The output stream that will be used for printing the
   *   motor configuration.
@@ -85,15 +99,6 @@ void era_print_motor_configuration(
 void era_print_motor_velocity(
   FILE* stream,
   const era_motor_velocity_t* motor_velocity);
-
-/** \brief Set initial motor space configuration
-  * All motor configuration components will be set to their initial values,
-  *   namely 0.
-  * \param[in] motor_configuration The configuration that will be
-  *   initialized.
-  */
-void era_motor_configuration_init(
-  era_motor_configuration_t* motor_configuration);
 
 /** \brief Convert arm configuration and velocity into motor space
   * \param[in] arm_configuration The arm configuration to be converted

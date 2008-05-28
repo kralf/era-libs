@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
       result);
   }
 
-  if (result < 0) era_print_error(stdout, -result);
+  if (result < 0) era_print_error(stdout, result);
 
   return 0;
 }

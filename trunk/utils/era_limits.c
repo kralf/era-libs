@@ -6,7 +6,7 @@
 
 #include <limits.h>
 
-#include <controller.h>
+#include <era.h>
 #include <motors.h>
 
 #define limit(x) x<0?1000000:-1000000
@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 
   era_motors_wait(ERA_MOTORS_WAIT_FAULT);
 
-  era_print_configuration(stdout);
+  era_print(stdout);
 
   era_close();
   return 0;

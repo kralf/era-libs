@@ -35,7 +35,27 @@ era_arm_configuration_t era_arm_configuration_max = {
   .tool_opening = 27.0*M_PI/180.0,
 };
 
-double era_arm_configuration_safety_margin = 2.5*M_PI/180.0;
+double era_arm_configuration_safety_margin = 1.0*M_PI/180.0;
+
+void era_init_tool_configuration(
+  era_tool_configuration_t* tool_configuration) {
+  int i;
+
+  double* conf = (double*)tool_configuration;
+
+  for (i = 0; i < sizeof(era_tool_configuration_t)/sizeof(double); i++)
+    conf[i] = 0.0;
+}
+
+void era_init_arm_configuration(
+  era_arm_configuration_t* arm_configuration) {
+  int i;
+
+  double* conf = (double*)arm_configuration;
+
+  for (i = 0; i < sizeof(era_arm_configuration_t)/sizeof(double); i++)
+    conf[i] = 0.0;
+}
 
 void era_print_tool_configuration(
   FILE* stream,
