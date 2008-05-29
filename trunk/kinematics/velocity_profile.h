@@ -58,4 +58,11 @@ void era_velocity_profile(
   int num_configurations,
   era_arm_velocity_t* arm_velocities);
 
+void era_velocity_profile_hack(
+  const era_arm_configuration_t* arm_trajectory,
+  double* timestamps,
+  int num_configurations,
+  double velocity,
+  era_arm_velocity_t* arm_velocities);
+
 #endif

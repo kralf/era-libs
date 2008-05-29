@@ -7,6 +7,9 @@
 #include <pthread.h>
 #include <math.h>
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "era.h"
 #include "motors.h"
 #include "errors.h"
@@ -226,8 +229,11 @@ int era_move_trajectory(
   if (!result) {
     era_arm_velocity_t velocities[num_configurations];
 
-    era_velocity_profile(trajectory, timestamps, num_configurations,
-      velocities);
+    double* hacked_timestamps = malloc(num_configurations*sizeof(double));
+    memcpy(hacked_timestamps, timestamps, num_configurations*sizeof(double));
+
+    era_velocity_profile_hack(trajectory, hacked_timestamps, num_configurations,
+      ERA_DEFAULT_VELOCITY, velocities);
 
     result = era_test_velocity_profile_limits(velocities, num_configurations);
 
