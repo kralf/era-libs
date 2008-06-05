@@ -63,19 +63,3 @@ void era_velocity_profile(
     era_arm_velocity(&arm_trajectory[i], &arm_trajectory[i-1],
     timestamps[i]-timestamps[i-1], &arm_velocities[i]);
 }
-
-void era_velocity_profile_hack(
-  const era_arm_configuration_t* arm_trajectory,
-  double* timestamps,
-  int num_configurations,
-  double velocity,
-  era_arm_velocity_t* arm_velocities) {
- int i;
-
-  if (num_configurations > 0) era_init_arm_velocity(&arm_velocities[0]);
-
-  for (i = 1; i < num_configurations; i++)
-    timestamps[i] = timestamps[i-1]+
-    era_sync_arm_velocity(&arm_trajectory[i-1], &arm_trajectory[i],
-    velocity, &arm_velocities[i]);
-}

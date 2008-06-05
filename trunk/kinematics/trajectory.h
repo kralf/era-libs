@@ -44,11 +44,16 @@ void era_print_arm_trajectory(
   *   always be ERA_ERROR_NONE.
   * \param[in] num_configurations The number of arm configurations
   *   in the trajectory.
-  * \return The resulting error code.
+  * \param[out] errors The resulting error code for each arm configuration
+  *   in the trajectory. Can be null.
+  * \return If errors is null, the resulting error code will be returned.
+  *   Otherwise, the return value will contain the number of errors
+  *   found.
   */
 int era_test_trajectory_limits(
   const era_arm_configuration_t* arm_trajectory,
-  int num_configurations);
+  int num_configurations,
+  int* errors);
 
 /** \brief Trajectory forward kinematic calculations
   * \param[in] arm_trajectory The arm trajectory for which the tool

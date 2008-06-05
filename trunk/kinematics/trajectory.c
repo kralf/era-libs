@@ -64,11 +64,20 @@ void era_print_arm_trajectory(
 
 int era_test_trajectory_limits(
   const era_arm_configuration_t* arm_trajectory,
-  int num_configurations) {
+  int num_configurations,
+  int* errors) {
   int i, result = ERA_ERROR_NONE;
 
-  for (i = 0; (i < num_configurations) && !result; ++i)
-    result = era_test_arm_configuration_limits(&arm_trajectory[i]);
+  if (errors) {
+    for (i = 0; i < num_configurations; ++i) {
+      errors[i] = era_test_arm_configuration_limits(&arm_trajectory[i]);
+      result += (errors[i] != ERA_ERROR_NONE);
+    }
+  }
+  else {
+    for (i = 0; (i < num_configurations) && !result; ++i)
+      result = era_test_arm_configuration_limits(&arm_trajectory[i]);
+  }
 
   return result;
 }

@@ -224,16 +224,13 @@ int era_move_trajectory(
   int num_configurations) {
   int result;
 
-  result = era_test_trajectory_limits(trajectory, num_configurations);
+  result = era_test_trajectory_limits(trajectory, num_configurations, 0);
 
   if (!result) {
     era_arm_velocity_t velocities[num_configurations];
 
-    double* hacked_timestamps = malloc(num_configurations*sizeof(double));
-    memcpy(hacked_timestamps, timestamps, num_configurations*sizeof(double));
-
-    era_velocity_profile_hack(trajectory, hacked_timestamps, num_configurations,
-      ERA_DEFAULT_VELOCITY, velocities);
+    era_velocity_profil(trajectory, timestamps, num_configurations,
+      velocities);
 
     result = era_test_velocity_profile_limits(velocities, num_configurations);
 
