@@ -1,5 +1,5 @@
 LD_LIBRARY_PATH = ../errors:../kinematics:../drivers/vanilla/epos:../drivers/vanilla/can
-CFLAGS += -I../kinematics -I../controller
+CFLAGS += -I../kinematics -I../controller -I../drivers/vanilla/epos
 LDFLAGS += -L../controller -lera-controller
 
 PREFIX = /usr/local

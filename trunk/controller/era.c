@@ -229,7 +229,7 @@ int era_move_trajectory(
   if (!result) {
     era_arm_velocity_t velocities[num_configurations];
 
-    era_velocity_profil(trajectory, timestamps, num_configurations,
+    era_velocity_profile(trajectory, timestamps, num_configurations,
       velocities);
 
     result = era_test_velocity_profile_limits(velocities, num_configurations);
