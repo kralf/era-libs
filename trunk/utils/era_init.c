@@ -12,6 +12,8 @@ int main(int argc, char **argv) {
     return -1;
   }
 
+  era_motors_init(argv[1]);
+
   int result = era_init(argv[1]);
 
   if (result) era_print_error(stdout, result);

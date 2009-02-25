@@ -1,4 +1,4 @@
-CFLAGS += -I../errors -I../kinematics -I../drivers/vanilla/epos
+CFLAGS += -I../errors -I../kinematics -I../drivers/vanilla/epos -fPIC
 LDFLAGS += -L../kinematics -L../drivers/vanilla/epos
 
 PREFIX = /usr/local

@@ -44,32 +44,32 @@ void era_print_configuration(
 
   era_forward_kinematics(arm_configuration, &tool_configuration);
 
-  fprintf(stream, "%s %21s  %27s  %18s\n",
+  fprintf(stream, "%s %23s  %29s  %21s\n",
     "ARM", "CONFIGURATION",
     "VELOCITY",
     "TOOL CONFIGURATION");
 
-  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.4f m\n",
+  fprintf(stream, "%14s: % 7.2f deg  %14s: % 7.2f deg/s  %7s: % 7.4f m\n",
     "shoulder_yaw", arm_configuration->shoulder_yaw*180/M_PI,
     "shoulder_yaw", arm_velocity->shoulder_yaw*180/M_PI,
     "x", tool_configuration.x);
-  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.4f m\n",
+  fprintf(stream, "%14s: % 7.2f deg  %14s: % 7.2f deg/s  %7s: % 7.4f m\n",
     "shoulder_roll", arm_configuration->shoulder_roll*180/M_PI,
     "shoulder_roll", arm_velocity->shoulder_roll*180/M_PI,
     "y", tool_configuration.y);
-  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.4f m\n",
+  fprintf(stream, "%14s: % 7.2f deg  %14s: % 7.2f deg/s  %7s: % 7.4f m\n",
     "shoulder_pitch", arm_configuration->shoulder_pitch*180/M_PI,
     "shoulder_pitch", arm_velocity->shoulder_pitch*180/M_PI,
     "z", tool_configuration.z);
-  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f °\n",
+  fprintf(stream, "%14s: % 7.2f deg  %14s: % 7.2f deg/s  %7s: % 7.2f deg\n",
     "ellbow_pitch", arm_configuration->ellbow_pitch*180/M_PI,
     "ellbow_pitch", arm_velocity->ellbow_pitch*180/M_PI,
     "yaw", tool_configuration.yaw*180/M_PI);
-  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f °\n",
+  fprintf(stream, "%14s: % 7.2f deg  %14s: % 7.2f deg/s  %7s: % 7.2f deg\n",
     "tool_roll", arm_configuration->tool_roll*180/M_PI,
     "tool_roll", arm_velocity->tool_roll*180/M_PI,
     "roll", tool_configuration.roll*180/M_PI);
-  fprintf(stream, "%14s: % 7.2f °  %14s: % 7.2f °/s  %7s: % 7.2f °\n",
+  fprintf(stream, "%14s: % 7.2f deg  %14s: % 7.2f deg/s  %7s: % 7.2f deg\n",
     "tool_opening", arm_configuration->tool_opening*180/M_PI,
     "tool_opening", arm_velocity->tool_opening*180/M_PI,
     "opening", tool_configuration.opening*180/M_PI);

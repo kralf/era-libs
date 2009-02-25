@@ -1,4 +1,4 @@
-CFLAGS += -I../errors
+CFLAGS += -I../errors -fPIC
 LDFLAGS += -L../errors
 
 PREFIX = /usr/local
