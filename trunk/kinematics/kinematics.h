@@ -1,140 +1,95 @@
-/*	Header-file for
- *      Kinematic system model for BlueBotics ERA-5/1
- *
- * 	Fritz Stoeckli   stfritz@ethz.ch
- * 	Last change:     6.5.2008
- */
+/***************************************************************************
+ *   Copyright (C) 2008 by Fritz Stoeckli, Ralf Kaestner                   *
+ *   stfritz@ethz.ch, ralf.kaestner@gmail.com                              *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 
-#ifndef _KINEMATICS_H
-#define _KINEMATICS_H
+#ifndef ERA_KINEMATICS_H
+#define ERA_KINEMATICS_H
 
-#include <stdio.h>
-
-/** \file
-  * \brief Kinematic system model
-  * Inverse and forward calculations for BlueBotics ERA-5/1 robot arm.
+/** \brief ERA kinematic system model
+  * Inverse and forward kinemtatics for BlueBotics ERA-5/1 robot arm.
   */
 
-/** \brief Structure defining a cartesian vector */
-typedef struct {
-  double x;  //!< The cartesian X-coordinate [m].
-  double y;  //!< The cartesian Y-coordinate [m].
-  double z;  //!< The cartesian Z-coordinate [m].
-} era_cartesian_t;
+#include <base/geometry.h>
+#include <base/joint.h>
+#include <base/tool.h>
 
-/** \brief Structure defining the arm geometry */
-typedef struct {
-  double upper;  //!< The upper arm's length [m].
-  double lower;  //!< The forearm's length [m].
-  double tool;   //!< The tool's length [m].
-} era_arm_geometry_t;
-
-/** \brief Structure defining the tool configuration */
-typedef struct {
-  double x;        //!< The tool's X-coordinate [m].
-  double y;        //!< The tool's Y-coordinate [m].
-  double z;        //!< The tool's Z-coordinate [m].
-  double yaw;      //!< The tool's yaw angle [rad], denoted beta1.
-  double roll;     //!< The tool's roll angle [rad], denoted beta2.
-  double opening;  //!< The tool's opening angle [rad].
-} era_tool_configuration_t;
-
-/** \brief Structure defining the arm configuration */
-typedef struct {
-  double shoulder_yaw;    //!< The shoulder's yaw angle [rad], denoted theta1.
-  double shoulder_roll;   //!< The shoulder's roll angle [rad], denoted theta2.
-  double shoulder_pitch;  //!< The shoulder's pitch angle [rad], denoted theta3.
-  double ellbow_pitch;    //!< The ellbow's pitch angle [rad], denoted theta4.
-  double tool_roll;       //!< The tool's roll angle [rad], denoted theta6.
-  double tool_opening;    //!< The tool's opening angle [rad].
-} era_arm_configuration_t;
-
-/** \brief Constant defining the arm's geometry */
-extern const era_arm_geometry_t era_arm_geometry;
-
-/** \brief Structure holding the lower limit of the arm configuration space */
-extern era_arm_configuration_t era_arm_configuration_min;
-/** \brief Structure holding the upper limit of the arm configuration space */
-extern era_arm_configuration_t era_arm_configuration_max;
-/** \brief Variable holding the safety margin of the arm configuration space */
-extern double era_arm_configuration_safety_margin;
-
-/** \brief Initialize a tool configuration
-  * \param[in] tool_configuration The tool configuration to be initialized
-  *   with 0.
-  */
-void era_init_tool_configuration(
-  era_tool_configuration_t* tool_configuration);
-
-/** \brief Initialize an arm configuration
-  * \param[in] arm_configuration The arm configuration to be initialized
-  *   with 0.
-  */
-void era_init_arm_configuration(
-  era_arm_configuration_t* arm_configuration);
-
-/** \brief Print a tool configuration
-  * \param[in] stream The output stream that will be used for printing the
-  *   tool configuration.
-  * \param[in] tool_configuration The tool configuration that will be printed.
-  */
-void era_print_tool_configuration(
-  FILE* stream,
-  const era_tool_configuration_t* tool_configuration);
-
-/** \brief Print an arm configuration
-  * \param[in] stream The output stream that will be used for printing the
-  *   arm configuration.
-  * \param[in] arm_configuration The arm configuration that will be printed.
-  */
-void era_print_arm_configuration(
-  FILE* stream,
-  const era_arm_configuration_t* arm_configuration);
-
-/** \brief Initialize the kinematic model
-  * \param[in] arm_configuration_min The lower limit of the arm configuration
-  *    space.
-  * \param[in] arm_configuration_max The upper limit of the arm configuration
-  *    space.
-  */
-void era_kinematics_init(
-  const era_arm_configuration_t* arm_configuration_min,
-  const era_arm_configuration_t* arm_configuration_max);
-
-/** \brief Test an arm configuration against configuration space limits
-  * \param[in] arm_configuration The arm configuration that will be tested
-  *   against the configuration space limits. If null, the result will
-  *   always be ERA_ERROR_NONE.
-  * \return The resulting error code.
-  */
-int era_test_arm_configuration_limits(
-  const era_arm_configuration_t* arm_configuration);
-
-/** \brief Forward kinematic calculations
-  * \param[in] arm_configuration The arm configuration for which the tool
-  *   configuration will be calculated.
-  * \param[out] tool_configuration The tool configuration that results from
+/** \brief Calculate forward kinematics for a single configuration
+  * \param[in] geometry The arm geometry that will be considered in the
+  *   forward kinematic calculations.
+  * \param[in] joint_config The joint space configuration for which the tool
+  *   space configuration will be calculated.
+  * \param[out] tool_config The tool space configuration that results from
   *   the forward kinematic calculations.
   */
-void era_forward_kinematics(
-  const era_arm_configuration_t* arm_configuration,
-  era_tool_configuration_t* tool_configuration);
+void era_kinematics_forward_config(
+  era_geometry_p geometry,
+  era_joint_config_p joint_config,
+  era_tool_config_p tool_config);
 
-/** \brief Inverse kinematic calculations
-  * \param[in] tool_configuration The tool configuration for which the arm
-  *   configuration will be calculated.
-  * \param[out] arm_configuration The arm configuration that results from
+/** \brief Calculate forward kinematics for a trajectory
+  * \note The trajectories should be equal in the number of points.
+  * \param[in] geometry The arm geometry that will be considered in the
+  *   forward kinematic calculations.
+  * \param[in] joint_trajectory The joint space trajectory for which the tool
+  *   space trajectory will be calculated.
+  * \param[out] tool_trajectory The tool space trajectory that results from
+  *   the forward kinematic calculations.
+  * \return The number of converted trajectory points.
+  */
+ssize_t era_kinematics_forward_trajectory(
+  era_geometry_p geometry,
+  era_joint_trajectory_p joint_trajectory,
+  era_tool_trajectory_p tool_trajectory);
+
+/** \brief Calculate inverse kinematics for a single configuration
+  * \param[in] geometry The arm geometry that will be considered in the
+  *   inverse kinematic calculations.
+  * \param[in] tool_config The tool space configuration for which the joint
+  *   space configuration will be calculated.
+  * \param[out] joint_config The joint space configuration that results from
   *   the inverse kinematic calculations.
   */
-void era_inverse_kinematics(
-  const era_tool_configuration_t* tool_configuration,
-  era_arm_configuration_t* arm_configuration);
+void era_kinematics_inverse_config(
+  era_geometry_p geometry,
+  era_tool_config_p tool_config,
+  era_joint_config_p joint_config);
+
+/** \brief Calculate inverse kinematics for a trajectory
+  * \note The trajectories should be equal in the number of points.
+  * \param[in] geometry The arm geometry that will be considered in the
+  *   inverse kinematic calculations.
+  * \param[in] tool_trajectory The tool space trajectory for which the joint
+  *   space trajectory will be calculated.
+  * \param[out] joint_trajectory The joint space trajectory that results from
+  *   the inverse kinematic calculations.
+  * \return The number of converted trajectory points.
+  */
+ssize_t era_kinematics_inverse_trajectory(
+  era_geometry_p geometry,
+  era_tool_trajectory_p tool_trajectory,
+  era_joint_trajectory_p joint_trajectory);
 
 /** \brief Calculate and set the tool's yaw angle
-  * \param[in,out] tool_configuration The tool configuration for which the
+  * \param[in,out] tool_config The tool space configuration for which the
   *   yaw angle will be calculated and set.
   */
-void era_set_tool_yaw(
-  era_tool_configuration_t* tool_configuration);
+void era_kinematics_set_config_yaw(
+  era_tool_config_p tool_config);
 
 #endif

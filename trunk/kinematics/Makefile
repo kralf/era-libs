@@ -1,15 +1,19 @@
-CFLAGS += -I../errors -fPIC
-LDFLAGS += -L../errors
+CFLAGS += -I../ -fPIC
+LDFLAGS += -L../base -lera-base
 
 PREFIX = /usr/local
+OBJECTS = kinematics.o limits.o
 
-libera-kinematics.so: kinematics.c trajectory.c velocity_profile.c io.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o libera-kinematics.so \
-	kinematics.c velocity.c trajectory.c velocity_profile.c io.c \
-	-lera-errors -lm
+%.o: %.c %.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+libera-kinematics.so: $(OBJECTS)
+	$(CC) $(LDFLAGS) -shared -o libera-kinematics.so $(OBJECTS)
 
 install: libera-kinematics.so
-	install -c -m 644 libera-kinematics.so $(PREFIX)/lib
+	install -c -m 755 libera-kinematics.so $(PREFIX)/lib
 
 clean:
-	rm -f *.o *.a *.so
+	rm -f *.o
+	rm -f *.a
+	rm -f *.so
