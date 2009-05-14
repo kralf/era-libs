@@ -1,8 +1,11 @@
-CFLAGS += -fPIC
-LDFLAGS += -lm
+CFLAGS += -I../drivers/vanilla/epos -I../drivers/vanilla/can \
+	-I../posix/config -I../ -fPIC
+LDFLAGS += -L../config -lera-config -L../motors -lera-motors \
+ 	-L../security -lera-security -L../kinematics -lera-kinematics \
+	-L../dynamics -lera-dynamics -lm
 
 PREFIX = /usr/local
-OBJECTS = geometry.o tool.o joint.o velocity.o
+OBJECTS = geometry.o tool.o joint.o velocity.o era.o
 
 %.o: %.c %.h
 	$(CC) -c $(CFLAGS) $< -o $@

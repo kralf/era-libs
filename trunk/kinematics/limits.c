@@ -22,27 +22,27 @@
 
 const char* era_kinematics_limits_errors[] = {
   "success",
-  "configuration space limits exceeded",
-  "singular configuration",
+  "joint space limits exceeded",
+  "singular state",
 };
 
 void era_kinematics_limits_init(era_kinematics_limits_p limits,
-  era_joint_config_p min, era_joint_config_p max, era_joint_config_p margin) {
+  era_joint_state_p min, era_joint_state_p max, era_joint_state_p margin) {
   limits->min = *min;
   limits->max = *max;
 
   limits->margin = *margin;
 }
 
-int era_kinematics_limits_test_config(era_kinematics_limits_p limits,
-  era_joint_config_p config) {
+int era_kinematics_limits_test_state(era_kinematics_limits_p limits,
+  era_joint_state_p state) {
   int i;
-  double* theta = (double*)config;
+  double* theta = (double*)state;
   double* theta_min = (double*)&limits->min;
   double* theta_max = (double*)&limits->max;
   double* theta_margin = (double*)&limits->margin;
 
-  for (i = 0; i < sizeof(era_joint_config_t)/sizeof(double); ++i) {
+  for (i = 0; i < sizeof(era_joint_state_t)/sizeof(double); ++i) {
     if (theta[i] != theta[i])
       return ERA_KINEMATICS_LIMITS_ERROR_SINGULARITY;
 
@@ -60,7 +60,7 @@ ssize_t era_kinematics_limits_test_trajectory(era_kinematics_limits_p limits,
 
   int i;
   for (i = 0; i < trajectory->num_points; ++i) {
-    trajectory->limit_errors[i] = era_limits_test_joint_config(limits,
+    trajectory->limit_errors[i] = era_kinematics_limits_test_state(limits,
       &trajectory->points[i]);
     trajectory->num_limit_errors +=
       (trajectory->limit_errors[i] != ERA_KINEMATICS_LIMITS_ERROR_NONE);

@@ -22,14 +22,14 @@
 
 #include "kinematics.h"
 
-void era_kinematics_forward_config(era_geometry_p geometry, era_joint_config_p
-  joint_config, era_tool_config_p tool_config) {
+void era_kinematics_forward_state(era_geometry_p geometry, era_joint_state_p
+  joint_state, era_tool_state_p tool_state) {
   double a3 = geometry->upper_length;
   double a4 = geometry->lower_length;
   double a5 = geometry->tool_length;
-  double* theta = (double*)joint_config;
+  double* theta = (double*)joint_state;
 
-  tool_config->x =
+  tool_state->x =
     -a4*cos(theta[3])*sin(theta[0])*sin(theta[2])
     -a4*sin(theta[3])*sin(theta[0])*cos(theta[2])
     +a3*cos(theta[0])*sin(theta[1])*cos(theta[2])
@@ -38,23 +38,23 @@ void era_kinematics_forward_config(era_geometry_p geometry, era_joint_config_p
     -a4*sin(theta[3])*cos(theta[0])*sin(theta[1])*sin(theta[2])
     -sin(theta[0])*a5;
 
-  tool_config->y =
+  tool_state->y =
     cos(theta[0])*a5+a3*sin(theta[0])*sin(theta[1])*cos(theta[2])
     +a4*sin(theta[3])*cos(theta[0])*cos(theta[2])
     +a4*cos(theta[3])*cos(theta[0])*sin(theta[2])+a3*cos(theta[0])*sin(theta[2])
     +a4*cos(theta[3])*sin(theta[0])*sin(theta[1])*cos(theta[2])
     -a4*sin(theta[3])*sin(theta[0])*sin(theta[1])*sin(theta[2]);
 
-  tool_config->z =
+  tool_state->z =
     -cos(theta[1])*cos(theta[2])*cos(theta[3])*a4
     +cos(theta[1])*sin(theta[2])*sin(theta[3])*a4
     -cos(theta[1])*cos(theta[2])*a3+a3+a4;
 
-  tool_config->yaw = theta[0];
+  tool_state->yaw = theta[0];
 
-  tool_config->roll = theta[4]+theta[1];
+  tool_state->roll = theta[4]+theta[1];
 
-  tool_config->opening = theta[5];
+  tool_state->opening = theta[5];
 }
 
 ssize_t era_kinematics_forward_trajectory(era_geometry_p geometry,
@@ -65,39 +65,39 @@ ssize_t era_kinematics_forward_trajectory(era_geometry_p geometry,
     tool_trajectory->num_points);
 
   for (i = 0; i < num_points; i++)
-    era_kinematics_forward_config(geometry, &joint_trajectory->points[i],
+    era_kinematics_forward_state(geometry, &joint_trajectory->points[i],
       &tool_trajectory->points[i]);
 
   return num_points;
 }
 
-void era_kinematics_inverse_config(era_geometry_p geometry, era_tool_config_p
-  tool_config, era_joint_config_p joint_config) {
+void era_kinematics_inverse_state(era_geometry_p geometry, era_tool_state_p
+  tool_state, era_joint_state_p joint_state) {
   double x, y, c4;
   double a3 = geometry->upper_length;
   double a4 = geometry->lower_length;
   double a5 = geometry->tool_length;
-  double* theta = (double*)joint_config;
+  double* theta = (double*)joint_state;
 
   double v_sp_x, v_sp_y, v_sp_z;
   double v_beta1_x, v_beta1_y, v_beta1_z;
   double v_normal_x, v_normal_y, v_normal_z;
 
-  v_beta1_x = -sin(tool_config->yaw);
-  v_beta1_y = cos(tool_config->yaw);
+  v_beta1_x = -sin(tool_state->yaw);
+  v_beta1_y = cos(tool_state->yaw);
   v_beta1_z = 0;
 
-  v_sp_x = tool_config->x-a5*v_beta1_x ;
-  v_sp_y = tool_config->y-a5*v_beta1_y ;
-  v_sp_z = tool_config->z-(a3+a4)-a5*v_beta1_z;
+  v_sp_x = tool_state->x-a5*v_beta1_x ;
+  v_sp_y = tool_state->y-a5*v_beta1_y ;
+  v_sp_z = tool_state->z-(a3+a4)-a5*v_beta1_z;
 
   v_normal_x = (v_sp_y*v_beta1_z-v_sp_z*v_beta1_y);
   v_normal_y = (v_sp_z*v_beta1_x-v_sp_x*v_beta1_z);
   v_normal_z = (v_sp_x*v_beta1_y-v_sp_y*v_beta1_x);
 
-  joint_config->shoulder_yaw = tool_config->yaw;
+  joint_state->shoulder_yaw = tool_state->yaw;
 
-  joint_config->shoulder_roll =
+  joint_state->shoulder_roll =
     atan2(v_normal_z, sqrt(sqr(v_normal_x)+sqr(v_normal_y)));
 
   x = v_sp_x*sin(theta[1])*cos(theta[0])
@@ -106,18 +106,18 @@ void era_kinematics_inverse_config(era_geometry_p geometry, era_tool_config_p
   y = -v_sp_x*sin(theta[0])+v_sp_y*cos(theta[0]);
   c4 = (sqr(x)+sqr(y)-sqr(a3)-sqr(a4))/(2*a4*a3);
 
-  joint_config->shoulder_pitch =
+  joint_state->shoulder_pitch =
     atan2(y, x)-atan2((a4*sqrt(1-sqr(c4))), (a3+a4*c4));
 
-  joint_config->ellbow_pitch = atan2(sqrt(1-sqr(c4)), c4);
+  joint_state->elbow_pitch = atan2(sqrt(1-sqr(c4)), c4);
 
-  joint_config->tool_roll = tool_config->roll-theta[1];
+  joint_state->tool_roll = tool_state->roll-theta[1];
 
-  joint_config->tool_opening = tool_config->opening;
+  joint_state->tool_opening = tool_state->opening;
 
-  if (joint_config->shoulder_roll > -0.1 &&
-    joint_config->shoulder_roll < 0.1)
-    joint_config->shoulder_roll = 0.1;
+  if (joint_state->shoulder_roll > -0.1 &&
+    joint_state->shoulder_roll < 0.1)
+    joint_state->shoulder_roll = 0.1;
 }
 
 ssize_t era_kinematics_inverse_trajectory(era_geometry_p geometry,
@@ -128,12 +128,12 @@ ssize_t era_kinematics_inverse_trajectory(era_geometry_p geometry,
     joint_trajectory->num_points);
 
   for (i = 0; i < num_points; i++)
-    era_kinematics_inverse_config(geometry, &tool_trajectory->points[i],
+    era_kinematics_inverse_state(geometry, &tool_trajectory->points[i],
       &joint_trajectory->points[i]);
 
   return num_points;
 }
 
-void era_kinematics_set_config_yaw(era_tool_config_p tool_config) {
-  tool_config->yaw = -tan(tool_config->x/tool_config->y);
+void era_kinematics_set_state_yaw(era_tool_state_p tool_state) {
+  tool_state->yaw = -tan(tool_state->x/tool_state->y);
 }

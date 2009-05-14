@@ -21,14 +21,14 @@
 #ifndef ERA_JOINT_H
 #define ERA_JOINT_H
 
-/** \brief ERA joint space configuration
-  * Joint space configuration of the BlueBotics ERA-5/1 robot arm.
+/** \brief ERA joint space state
+  * Joint space state of the BlueBotics ERA-5/1 robot arm.
   */
 
 #include <stdlib.h>
 #include <stdio.h>
 
-/** \brief Predefined joint space configuration error codes
+/** \brief Predefined joint space state error codes
   */
 #define ERA_JOINT_ERROR_NONE                  0
 #define ERA_JOINT_ERROR_FILE_OPEN             1
@@ -36,45 +36,44 @@
 #define ERA_JOINT_ERROR_FILE_CREATE           3
 #define ERA_JOINT_ERROR_FILE_WRITE            4
 
-/** \brief Predefined joint space configuration error descriptions
+/** \brief Predefined joint space state error descriptions
   */
 extern const char* era_joint_errors[];
 
-/** \brief Structure defining the joint space configuration
+/** \brief Structure defining the joint space state
   */
-typedef struct era_joint_config_t {
-  double shoulder_yaw;    //!< The shoulder's yaw angle [rad], denoted theta1.
-  double shoulder_roll;   //!< The shoulder's roll angle [rad], denoted theta2.
-  double shoulder_pitch;  //!< The shoulder's pitch angle [rad], denoted theta3.
+typedef struct era_joint_state_t {
+  double shoulder_yaw;    //!< The shoulder's yaw angle in [rad].
+  double shoulder_roll;   //!< The shoulder's roll angle in [rad].
+  double shoulder_pitch;  //!< The shoulder's pitch angle in [rad].
 
-  double ellbow_pitch;    //!< The ellbow's pitch angle [rad], denoted theta4.
+  double elbow_pitch;     //!< The elbow's pitch angle in [rad].
 
-  double tool_roll;       //!< The tool's roll angle [rad], denoted theta6.
-  double tool_opening;    //!< The tool's opening angle [rad].
-} era_joint_config_t, *era_joint_config_p;
+  double tool_roll;       //!< The tool's roll angle in [rad].
+  double tool_opening;    //!< The tool's opening angle in [rad].
+} era_joint_state_t, *era_joint_state_p;
 
 /** \brief Structure defining the joint space trajectory
   */
 typedef struct era_joint_trajectory_t {
   ssize_t num_points;          //!< The number of trajectory points.
 
-  era_joint_config_p points;   //!< The joint space configuration points.
+  era_joint_state_p points;    //!< The points of the joint space trajectory.
   double* timestamps;          //!< The associated timestamps in [s].
 
   ssize_t num_limit_errors;    //!< The number of trajectory limit errors.
   int* limit_errors;           //!< The limit error associated with each point.
 } era_joint_trajectory_t, *era_joint_trajectory_p;
 
-/** \brief Initialize a joint space configuration
-  * \param[in] config The joint space configuration to be initialized
-  *   with zeros.
+/** \brief Initialize a joint space state
+  * \param[in] state The joint space state to be initialized with zeros.
   */
-void era_joint_init_config(
-  era_joint_config_p config);
+void era_joint_init_state(
+  era_joint_state_p state);
 
 /** \brief Initialize a joint space trajectory
   * \param[in] trajectory The joint space trajectory to be initialized
-  *   with zero configurations.
+  *   with zero states.
   * \param[in] num_points The number of joint space trajectory points.
   */
 void era_joint_init_trajectory(
@@ -87,14 +86,14 @@ void era_joint_init_trajectory(
 void era_joint_destroy_trajectory(
   era_joint_trajectory_p trajectory);
 
-/** \brief Print a joint space configuration
+/** \brief Print a joint space state
   * \param[in] stream The output stream that will be used for printing the
-  *   joint space configuration.
-  * \param[in] config The joint space configuration that will be printed.
+  *   joint space state.
+  * \param[in] state The joint space state that will be printed.
   */
-void era_joint_print_config(
+void era_joint_print_stateg(
   FILE* stream,
-  era_joint_config_p config);
+  era_joint_state_p state);
 
 /** \brief Print a joint space trajectory
   * \param[in] stream The output stream that will be used for printing the

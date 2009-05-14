@@ -39,7 +39,7 @@ extern const char* era_dynamics_limits_errors[];
 /** \brief Structure defining dynamic limits
   */
 typedef struct era_dynamics_limits_t {
-  era_velocity_config_t max_vel;      //!< The upper velocity space limit.
+  era_velocity_state_t max_vel;       //!< The upper velocity space limit.
 } era_dynamics_limits_t, *era_dynamics_limits_p;
 
 /** \brief Initialize the dynamic limits
@@ -48,18 +48,18 @@ typedef struct era_dynamics_limits_t {
   */
 void era_dynamics_limits_init(
   era_dynamics_limits_p limits,
-  era_velocity_config_p max_vel);
+  era_velocity_state_p max_vel);
 
-/** \brief Test a velocity space configuration against dynamic limits
-  * \param[in] limits The dynamic limits the given velocity space
-  *   configuration will be tested against.
-  * \param[in] config The velocity space configuration that will be tested
-  *   against the specified dynamic limits.
+/** \brief Test a velocity space state against dynamic limits
+  * \param[in] limits The dynamic limits the given velocity space state 
+  *   will be tested against.
+  * \param[in] state The velocity space state that will be tested against 
+  *   the specified dynamic limits.
   * \return The resulting error code.
   */
-int era_dynamics_limits_test_config(
+int era_dynamics_limits_test_state(
   era_dynamics_limits_p limits,
-  era_velocity_config_p config);
+  era_velocity_state_p state);
 
 /** \brief Test a velocity space profile against dynamic limits
   * \param[in] limits The dynamic limits the given profile will be

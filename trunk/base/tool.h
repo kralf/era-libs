@@ -21,14 +21,14 @@
 #ifndef ERA_TOOL_H
 #define ERA_TOOL_H
 
-/** \brief ERA tool space configuration
-  * Tool space configuration of the BlueBotics ERA-5/1 robot arm.
+/** \brief ERA tool space state
+  * Tool space state of the BlueBotics ERA-5/1 robot arm.
   */
 
 #include <stdlib.h>
 #include <stdio.h>
 
-/** \brief Predefined tool space configuration error codes
+/** \brief Predefined tool space state error codes
   */
 #define ERA_TOOL_ERROR_NONE                  0
 #define ERA_TOOL_ERROR_FILE_OPEN             1
@@ -36,13 +36,13 @@
 #define ERA_TOOL_ERROR_FILE_CREATE           3
 #define ERA_TOOL_ERROR_FILE_WRITE            4
 
-/** \brief Predefined tool space configuration error descriptions
+/** \brief Predefined tool space state error descriptions
   */
 extern const char* era_tool_errors[];
 
-/** \brief Structure defining the tool space configuration
+/** \brief Structure defining the tool space state
   */
-typedef struct era_tool_config_t {
+typedef struct era_tool_state_t {
   double x;        //!< The tool's X-coordinate [m].
   double y;        //!< The tool's Y-coordinate [m].
   double z;        //!< The tool's Z-coordinate [m].
@@ -50,27 +50,26 @@ typedef struct era_tool_config_t {
   double yaw;      //!< The tool's yaw angle [rad], denoted beta1.
   double roll;     //!< The tool's roll angle [rad], denoted beta2.
   double opening;  //!< The tool's opening angle [rad].
-} era_tool_config_t, *era_tool_config_p;
+} era_tool_state_t, *era_tool_state_p;
 
 /** \brief Structure defining the tool space trajectory
   */
 typedef struct era_tool_trajectory_t {
   ssize_t num_points;          //!< The number of trajectory points.
 
-  era_tool_config_p points;   //!< The tool space configuration points.
+  era_tool_state_p points;     //!< The points of the tool space trajectory.
   double* timestamps;          //!< The associated timestamps in [s].
 } era_tool_trajectory_t, *era_tool_trajectory_p;
 
-/** \brief Initialize a tool space configuration
-  * \param[in] config The tool space configuration to be initialized
-  *   with zeros.
+/** \brief Initialize a tool space state
+  * \param[in] state The tool space state to be initialized with zeros.
   */
-void era_tool_init_config(
-  era_tool_config_p config);
+void era_tool_init_state(
+  era_tool_state_p state);
 
 /** \brief Initialize a tool space trajectory
   * \param[in] trajectory The tool space trajectory to be initialized
-  *   with zero configurations.
+  *   with zero states.
   * \param[in] num_points The number of tool space trajectory points.
   */
 void era_tool_init_trajectory(
@@ -83,14 +82,14 @@ void era_tool_init_trajectory(
 void era_tool_destroy_trajectory(
   era_tool_trajectory_p trajectory);
 
-/** \brief Print a tool space configuration
+/** \brief Print a tool space state
   * \param[in] stream The output stream that will be used for printing the
-  *   tool space configuration.
-  * \param[in] config The tool space configuration that will be printed.
+  *   tool space state.
+  * \param[in] state The tool space state that will be printed.
   */
-void era_tool_print_config(
+void era_tool_print_state(
   FILE* stream,
-  era_tool_config_p config);
+  era_tool_state_p state);
 
 /** \brief Print a tool space trajectory
   * \param[in] stream The output stream that will be used for printing the

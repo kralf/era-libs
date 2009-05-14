@@ -22,16 +22,16 @@
 
 #include "dynamics.h"
 
-void era_dynamics_linear_config(era_joint_config_p start_config,
-  era_joint_config_p end_config, double time, era_velocity_config_p
-  vel_config) {
+void era_dynamics_linear_state(era_joint_state_p start_state,
+  era_joint_state_p end_state, double time, era_velocity_state_p
+  vel_state) {
   int i;
-  double* theta_start = (double*)start_config;
-  double* theta_end = (double*)end_config;
-  double* omega = (double*)vel_config;
+  double* theta_start = (double*)start_state;
+  double* theta_end = (double*)end_state;
+  double* omega = (double*)vel_state;
 
-  for (i = 0; i < min(sizeof(era_joint_config_t)/sizeof(double),
-    sizeof(era_velocity_config_t)/sizeof(double)); i++)
+  for (i = 0; i < min(sizeof(era_joint_state_t)/sizeof(double),
+    sizeof(era_velocity_state_t)/sizeof(double)); i++)
     omega[i] = (theta_end[i]-theta_start[i])/time;
 }
 
@@ -41,12 +41,12 @@ ssize_t era_dynamics_linear_profile(era_joint_trajectory_p trajectory,
   ssize_t num_points = min(trajectory->num_points, profile->num_points);
 
   if (num_points > 0) {
-    era_velocity_init_config(&profile->points[0]);
+    era_velocity_init_state(&profile->points[0]);
     profile->timestamps[0] = trajectory->timestamps[0];
   }
 
   for (i = 1; i < num_points; i++) {
-    era_dynamics_linear_config(&trajectory->points[i-1],
+    era_dynamics_linear_state(&trajectory->points[i-1],
       &trajectory->points[i], trajectory->timestamps[i]-
       trajectory->timestamps[i-1], &profile->points[i]);
     profile->timestamps[i] = trajectory->timestamps[i];
@@ -55,33 +55,33 @@ ssize_t era_dynamics_linear_profile(era_joint_trajectory_p trajectory,
   return num_points;
 }
 
-double era_dynamics_limit_config(era_joint_config_p start_config,
-  era_joint_config_p end_config, era_dynamics_limits_p limits, double
-  vel_factor, era_velocity_config_p vel_config) {
+double era_dynamics_limit_state(era_joint_state_p start_state,
+  era_joint_state_p end_state, era_dynamics_limits_p limits, double
+  vel_factor, era_velocity_state_p vel_state) {
   int i;
   double dtheta_max = 0.0, domega_max = 0.0;
-  double* theta_start = (double*)start_config;
-  double* theta_end = (double*)end_config;
-  double* omega = (double*)vel_config;
+  double* theta_start = (double*)start_state;
+  double* theta_end = (double*)end_state;
+  double* omega = (double*)vel_state;
   double* omega_max = (double*)&limits->max_vel;
 
-  for (i = 0; i < sizeof(era_joint_config_t)/sizeof(double); i++)
+  for (i = 0; i < sizeof(era_joint_state_t)/sizeof(double); i++)
     dtheta_max = max(dtheta_max, abs(theta_end[i]-theta_start[i]));
 
   if (dtheta_max == 0.0) {
-    for (i = 0; i < sizeof(era_velocity_config_t)/sizeof(double); i++)
+    for (i = 0; i < sizeof(era_velocity_state_t)/sizeof(double); i++)
       omega[i] = 0.0;
 
     return 0.0;
   }
 
-  for (i = 0; i < min(sizeof(era_joint_config_t)/sizeof(double),
-    sizeof(era_velocity_config_t)/sizeof(double)); i++) {
+  for (i = 0; i < min(sizeof(era_joint_state_t)/sizeof(double),
+    sizeof(era_velocity_state_t)/sizeof(double)); i++) {
     omega[i] = (theta_end[i]-theta_start[i])/dtheta_max;
     domega_max = max(domega_max, abs(omega[i])*vel_factor*omega_max[i]);
   }
 
-  for (i = 0; i < sizeof(era_velocity_config_t)/sizeof(double); i++)
+  for (i = 0; i < sizeof(era_velocity_state_t)/sizeof(double); i++)
     omega[i] *= domega_max;
 
   return dtheta_max/domega_max;
@@ -94,12 +94,12 @@ ssize_t era_dynamics_limit_profile(era_joint_trajectory_p trajectory,
   ssize_t num_points = min(trajectory->num_points, profile->num_points);
 
   if (num_points > 0) {
-    era_velocity_init_config(&profile->points[0]);
+    era_velocity_init_state(&profile->points[0]);
     profile->timestamps[0] = trajectory->timestamps[0];
   }
 
   for (i = 1; i < num_points; i++) {
-    double dt = era_dynamics_limit_config(&trajectory->points[i-1],
+    double dt = era_dynamics_limit_state(&trajectory->points[i-1],
       &trajectory->points[i], limits, vel_factor, &profile->points[i]);
     profile->timestamps[i] = profile->timestamps[i-1]+dt;
   }

@@ -1,11 +1,11 @@
-LD_LIBRARY_PATH = ../errors:../kinematics:../drivers/vanilla/epos:../drivers/vanilla/can
-CFLAGS += -I../kinematics -I../controller -I../drivers/vanilla/epos
-LDFLAGS += -L../controller -lera-controller
+CFLAGS += -I../posix/config -I../posix/timer -I../drivers/vanilla/can \
+	-I../drivers/vanilla/epos -I../
+LDFLAGS += -L../base -lera-base -L../posix/timer -ltimer
 
 PREFIX = /usr/local
 
-OBJS = era_init era_home era_limits era_move_tool era_move_arm era_print \
-	era_kinematics era_velocity era_trajectory era_simulate
+OBJS = era_init era_tool_state era_joint_state era_velocity_state era_state \
+	era_home
 
 all: $(OBJS)
 

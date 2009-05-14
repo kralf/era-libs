@@ -19,15 +19,33 @@
  ***************************************************************************/
 
 #include <stdio.h>
+#include <signal.h>
+#include <math.h>
 
 #include <base/era.h>
+
+int quit = 0;
+
+void era_signaled(int signal) {
+  quit = 1;
+}
 
 int main(int argc, char **argv) {
   era_arm_t arm;
   era_init_arg(&arm, argc, argv, 0);
 
+  signal(SIGINT, era_signaled);
+
   if (era_open(&arm))
     return -1;
+  while (!quit) {
+    era_tool_state_t state;
+
+    era_get_tool_state(&arm, &state);
+    era_tool_print_state(stdout, &state);
+    fprintf(stdout, "%c[6A\r", 0x1B);
+  }
+  fprintf(stdout, "%c[6B\n", 0x1B);
   era_close(&arm);
 
   era_destroy(&arm);

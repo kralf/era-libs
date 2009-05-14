@@ -28,17 +28,17 @@ const char* era_dynamics_limits_errors[] = {
 };
 
 void era_dynamics_limits_init(era_dynamics_limits_p limits,
-  era_velocity_config_p max_vel) {
+  era_velocity_state_p max_vel) {
   limits->max_vel = *max_vel;
 }
 
-int era_dynamics_limits_test_config(era_dynamics_limits_p limits,
-  era_velocity_config_p config) {
+int era_dynamics_limits_test_state(era_dynamics_limits_p limits,
+  era_velocity_state_p state) {
   int i;
-  double* omega = (double*)config;
+  double* omega = (double*)state;
   double* omega_max = (double*)&limits->max_vel;
 
-  for (i = 0; i < sizeof(era_velocity_config_t)/sizeof(double); ++i) {
+  for (i = 0; i < sizeof(era_velocity_state_t)/sizeof(double); ++i) {
     if (abs(omega[i]) > abs(omega_max[i]))
       return ERA_DYNAMICS_LIMITS_ERROR_EXCEEDED;
   }
@@ -52,7 +52,7 @@ ssize_t era_dynamics_limits_test_profile(era_dynamics_limits_p limits,
 
   int i;
   for (i = 0; i < profile->num_points; ++i) {
-    profile->limit_errors[i] = era_dynamics_limits_test_config(limits,
+    profile->limit_errors[i] = era_dynamics_limits_test_state(limits,
       &profile->points[i]);
     profile->num_limit_errors +=
       (profile->limit_errors[i] != ERA_DYNAMICS_LIMITS_ERROR_NONE);

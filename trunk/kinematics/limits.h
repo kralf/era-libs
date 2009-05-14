@@ -40,34 +40,34 @@ extern const char* era_kinematics_limits_errors[];
 /** \brief Structure defining kinematic limits
   */
 typedef struct era_kinematics_limits_t {
-  era_joint_config_t min;     //!< The lower configuration space limit.
-  era_joint_config_t max;     //!< The upper configuration space limit.
+  era_joint_state_t min;      //!< The lower joint space limit.
+  era_joint_state_t max;      //!< The upper joint space limit.
 
-  era_joint_config_t margin;  //!< The configuration space safety margin.
+  era_joint_state_t margin;   //!< The joint space safety margin.
 } era_kinematics_limits_t, *era_kinematics_limits_p;
 
 /** \brief Initialize the kinematic limits
   * \param[in] limits The kinematic limits to be initialized.
-  * \param[in] min The lower configuration space limit.
-  * \param[in] max The upper configuration space limit.
-  * \param[in] margin The configuration space safety margin.
+  * \param[in] min The lower joint space limit.
+  * \param[in] max The upper joint space limit.
+  * \param[in] margin The joint space safety margin.
   */
 void era_kinematics_limits_init(
   era_kinematics_limits_p limits,
-  era_joint_config_p min,
-  era_joint_config_p max,
-  era_joint_config_p margin);
+  era_joint_state_p min,
+  era_joint_state_p max,
+  era_joint_state_p margin);
 
-/** \brief Test a joint space configuration against kinematic limits
-  * \param[in] limits The kinematic limits the given joint space
-  *   configuration will be tested against.
-  * \param[in] config The joint space configuration that will be tested
-  *   against the specified kinematic limits.
+/** \brief Test a joint space state against kinematic limits
+  * \param[in] limits The kinematic limits the given joint space state
+  *   will be tested against.
+  * \param[in] state The joint space state that will be tested against 
+  *   the specified kinematic limits.
   * \return The resulting error code.
   */
-int era_kinematics_limits_test_config(
+int era_kinematics_limits_test_state(
   era_kinematics_limits_p limits,
-  era_joint_config_p config);
+  era_joint_state_p state);
 
 /** \brief Test a joint space trajectory against kinematic limits
   * \param[in] limits The kinematic limits the given trajectory will be

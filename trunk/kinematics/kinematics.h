@@ -29,18 +29,18 @@
 #include <base/joint.h>
 #include <base/tool.h>
 
-/** \brief Calculate forward kinematics for a single configuration
+/** \brief Calculate forward kinematics for a single state
   * \param[in] geometry The arm geometry that will be considered in the
   *   forward kinematic calculations.
-  * \param[in] joint_config The joint space configuration for which the tool
-  *   space configuration will be calculated.
-  * \param[out] tool_config The tool space configuration that results from
-  *   the forward kinematic calculations.
+  * \param[in] joint_state The joint space state for which the tool space 
+  *   state will be calculated.
+  * \param[out] tool_state The tool space state that results from the 
+  *   forward kinematic calculations.
   */
-void era_kinematics_forward_config(
+void era_kinematics_forward_state(
   era_geometry_p geometry,
-  era_joint_config_p joint_config,
-  era_tool_config_p tool_config);
+  era_joint_state_p joint_state,
+  era_tool_state_p tool_state);
 
 /** \brief Calculate forward kinematics for a trajectory
   * \note The trajectories should be equal in the number of points.
@@ -57,18 +57,18 @@ ssize_t era_kinematics_forward_trajectory(
   era_joint_trajectory_p joint_trajectory,
   era_tool_trajectory_p tool_trajectory);
 
-/** \brief Calculate inverse kinematics for a single configuration
+/** \brief Calculate inverse kinematics for a single state
   * \param[in] geometry The arm geometry that will be considered in the
   *   inverse kinematic calculations.
-  * \param[in] tool_config The tool space configuration for which the joint
-  *   space configuration will be calculated.
-  * \param[out] joint_config The joint space configuration that results from
-  *   the inverse kinematic calculations.
+  * \param[in] tool_state The tool space state for which the joint space 
+  *   state will be calculated.
+  * \param[out] joint_state The joint space state that results from the 
+  *   inverse kinematic calculations.
   */
-void era_kinematics_inverse_config(
+void era_kinematics_inverse_state(
   era_geometry_p geometry,
-  era_tool_config_p tool_config,
-  era_joint_config_p joint_config);
+  era_tool_state_p tool_state,
+  era_joint_state_p joint_state);
 
 /** \brief Calculate inverse kinematics for a trajectory
   * \note The trajectories should be equal in the number of points.
@@ -86,10 +86,10 @@ ssize_t era_kinematics_inverse_trajectory(
   era_joint_trajectory_p joint_trajectory);
 
 /** \brief Calculate and set the tool's yaw angle
-  * \param[in,out] tool_config The tool space configuration for which the
-  *   yaw angle will be calculated and set.
+  * \param[in,out] tool_state The tool space state for which the yaw angle 
+  *   will be calculated and set.
   */
-void era_kinematics_set_config_yaw(
-  era_tool_config_p tool_config);
+void era_kinematics_set_state_yaw(
+  era_tool_state_p tool_state);
 
 #endif

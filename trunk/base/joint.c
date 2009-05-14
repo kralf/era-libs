@@ -32,8 +32,8 @@ const char* era_joint_errors[] = {
   "error writing file",
 };
 
-void era_joint_init_config(era_joint_config_p config) {
-  memset(config, 0, sizeof(era_joint_config_t));
+void era_joint_init_state(era_joint_state_p state) {
+  memset(state, 0, sizeof(era_joint_state_t));
 }
 
 void era_joint_init_trajectory(era_joint_trajectory_p trajectory,
@@ -50,7 +50,7 @@ void era_joint_init_trajectory(era_joint_trajectory_p trajectory,
     trajectory->limit_errors = malloc(num_points*sizeof(int));
 
     for (i = 0; i < num_points; ++i) {
-      era_joint_init_config(&trajectory->points[i]);
+      era_joint_init_state(&trajectory->points[i]);
       trajectory->timestamps[i] = 0.0;
 
       trajectory->limit_errors = ERA_JOINT_ERROR_NONE;
@@ -79,19 +79,19 @@ void era_joint_destroy_trajectory(era_joint_trajectory_p trajectory) {
   }
 }
 
-void era_joint_print_config(FILE* stream, era_joint_config_p config) {
-  fprintf(stream, "%14s: % 7.2f °\n",
-    "shoulder_yaw", rad_to_deg(config->shoulder_yaw));
-  fprintf(stream, "%14s: % 7.2f °\n",
-    "shoulder_roll", rad_to_deg(config->shoulder_roll));
-  fprintf(stream, "%14s: % 7.2f °\n",
-    "shoulder_pitch", rad_to_deg(config->shoulder_pitch));
-  fprintf(stream, "%14s: % 7.2f °\n",
-    "ellbow_pitch", rad_to_deg(config->ellbow_pitch));
-  fprintf(stream, "%14s: % 7.2f °\n",
-    "tool_roll", rad_to_deg(config->tool_roll));
-  fprintf(stream, "%14s: % 7.2f °\n",
-    "tool_opening", rad_to_deg(config->tool_opening));
+void era_joint_print_state(FILE* stream, era_joint_state_p state) {
+  fprintf(stream, "%14s: % 8.2f °\n",
+    "shoulder_yaw", rad_to_deg(state->shoulder_yaw));
+  fprintf(stream, "%14s: % 8.2f °\n",
+    "shoulder_roll", rad_to_deg(state->shoulder_roll));
+  fprintf(stream, "%14s: % 8.2f °\n",
+    "shoulder_pitch", rad_to_deg(state->shoulder_pitch));
+  fprintf(stream, "%14s: % 8.2f °\n",
+    "elbow_pitch", rad_to_deg(state->elbow_pitch));
+  fprintf(stream, "%14s: % 8.2f °\n",
+    "tool_roll", rad_to_deg(state->tool_roll));
+  fprintf(stream, "%14s: % 8.2f °\n",
+    "tool_opening", rad_to_deg(state->tool_opening));
 }
 
 void era_joint_print_trajectory(FILE* stream, era_joint_trajectory_p
@@ -100,7 +100,7 @@ void era_joint_print_trajectory(FILE* stream, era_joint_trajectory_p
     "shoulder_yaw",
     "shoulder_roll",
     "shoulder_pitch",
-    "ellbow_pitch",
+    "elbow_pitch",
     "tool_roll",
     "tool_opening",
     "limit_error");
@@ -112,7 +112,7 @@ void era_joint_print_trajectory(FILE* stream, era_joint_trajectory_p
       rad_to_deg(trajectory->points[i].shoulder_yaw),
       rad_to_deg(trajectory->points[i].shoulder_roll),
       rad_to_deg(trajectory->points[i].shoulder_pitch),
-      rad_to_deg(trajectory->points[i].ellbow_pitch),
+      rad_to_deg(trajectory->points[i].elbow_pitch),
       rad_to_deg(trajectory->points[i].tool_roll),
       rad_to_deg(trajectory->points[i].tool_opening),
       trajectory->limit_errors[i]);
@@ -125,7 +125,7 @@ int era_joint_read_trajectory(const char* filename, era_joint_trajectory_p
   FILE* file;
   char buffer[1024];
 
-  era_joint_config_t point;
+  era_joint_state_t point;
   double timestamp;
 
   era_joint_init_trajectory(trajectory, 0);
@@ -140,7 +140,7 @@ int era_joint_read_trajectory(const char* filename, era_joint_trajectory_p
         &point.shoulder_yaw,
         &point.shoulder_roll,
         &point.shoulder_pitch,
-        &point.ellbow_pitch,
+        &point.elbow_pitch,
         &point.tool_roll,
         &point.tool_opening,
         &timestamp);
@@ -151,7 +151,7 @@ int era_joint_read_trajectory(const char* filename, era_joint_trajectory_p
       }
 
       trajectory->points = realloc(trajectory->points,
-        (trajectory->num_points+1)*sizeof(era_joint_config_t));
+        (trajectory->num_points+1)*sizeof(era_joint_state_t));
       trajectory->points[trajectory->num_points] = point;
 
       if (result == 7) {
@@ -185,7 +185,7 @@ int era_joint_write_trajectory(const char* filename, era_joint_trajectory_p
       trajectory->points[i].shoulder_yaw,
       trajectory->points[i].shoulder_roll,
       trajectory->points[i].shoulder_pitch,
-      trajectory->points[i].ellbow_pitch,
+      trajectory->points[i].elbow_pitch,
       trajectory->points[i].tool_roll,
       trajectory->points[i].tool_opening,
       trajectory->timestamps[i]);

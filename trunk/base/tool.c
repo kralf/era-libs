@@ -32,8 +32,8 @@ const char* era_tool_errors[] = {
   "error writing file",
 };
 
-void era_tool_init_config(era_tool_config_p config) {
-  memset(config, 0, sizeof(era_tool_config_t));
+void era_tool_init_state(era_tool_state_p state) {
+  memset(state, 0, sizeof(era_tool_state_t));
 }
 
 void era_tool_init_trajectory(era_tool_trajectory_p trajectory,
@@ -47,7 +47,7 @@ void era_tool_init_trajectory(era_tool_trajectory_p trajectory,
     trajectory->timestamps = malloc(num_points*sizeof(double));
 
     for (i = 0; i < num_points; ++i) {
-      era_tool_init_config(&trajectory->points[i]);
+      era_tool_init_state(&trajectory->points[i]);
       trajectory->timestamps[i] = 0.0;
     }
   }
@@ -68,19 +68,19 @@ void era_tool_destroy_trajectory(era_tool_trajectory_p trajectory) {
   }
 }
 
-void era_tool_print_config(FILE* stream, era_tool_config_p config) {
-  fprintf(stream, "%7s: % 7.4f m\n",
-    "x", config->x);
-  fprintf(stream, "%7s: % 7.4f m\n",
-    "y", config->y);
-  fprintf(stream, "%7s: % 7.4f m\n",
-    "z", config->z);
-  fprintf(stream, "%7s: % 7.2f °\n",
-    "yaw", rad_to_deg(config->yaw));
-  fprintf(stream, "%7s: % 7.2f °\n",
-    "roll", rad_to_deg(config->roll));
-  fprintf(stream, "%7s: % 7.2f °\n",
-    "opening", rad_to_deg(config->opening));
+void era_tool_print_state(FILE* stream, era_tool_state_p state) {
+  fprintf(stream, "%7s: % 8.4f m\n",
+    "x", state->x);
+  fprintf(stream, "%7s: % 8.4f m\n",
+    "y", state->y);
+  fprintf(stream, "%7s: % 8.4f m\n",
+    "z", state->z);
+  fprintf(stream, "%7s: % 8.2f °\n",
+    "yaw", rad_to_deg(state->yaw));
+  fprintf(stream, "%7s: % 8.2f °\n",
+    "roll", rad_to_deg(state->roll));
+  fprintf(stream, "%7s: % 8.2f °\n",
+    "opening", rad_to_deg(state->opening));
 }
 
 void era_tool_print_trajectory(FILE* stream, era_tool_trajectory_p
@@ -112,7 +112,7 @@ int era_tool_read_trajectory(const char* filename, era_tool_trajectory_p
   FILE* file;
   char buffer[1024];
 
-  era_tool_config_t point;
+  era_tool_state_t point;
   double timestamp;
 
   era_tool_init_trajectory(trajectory, 0);
@@ -138,7 +138,7 @@ int era_tool_read_trajectory(const char* filename, era_tool_trajectory_p
       }
 
       trajectory->points = realloc(trajectory->points,
-        (trajectory->num_points+1)*sizeof(era_tool_config_t));
+        (trajectory->num_points+1)*sizeof(era_tool_state_t));
       trajectory->points[trajectory->num_points] = point;
 
       if (result == 7) {

@@ -32,8 +32,8 @@ const char* era_velocity_errors[] = {
   "error writing file",
 };
 
-void era_velocity_init_config(era_velocity_config_p config) {
-  memset(config, 0, sizeof(era_velocity_config_t));
+void era_velocity_init_state(era_velocity_state_p state) {
+  memset(state, 0, sizeof(era_velocity_state_t));
 }
 
 void era_velocity_init_profile(era_velocity_profile_p profile, ssize_t
@@ -50,7 +50,7 @@ void era_velocity_init_profile(era_velocity_profile_p profile, ssize_t
     profile->limit_errors = malloc(num_points*sizeof(int));
 
     for (i = 0; i < num_points; ++i) {
-      era_velocity_init_config(&profile->points[i]);
+      era_velocity_init_state(&profile->points[i]);
       profile->timestamps[i] = 0.0;
 
       profile->limit_errors = ERA_VELOCITY_ERROR_NONE;
@@ -79,19 +79,19 @@ void era_velocity_destroy_profile(era_velocity_profile_p profile) {
   }
 }
 
-void era_velocity_print_config(FILE* stream, era_velocity_config_p config) {
-  fprintf(stream, "%14s: % 7.2f °/s\n",
-    "shoulder_yaw", rad_to_deg(config->shoulder_yaw));
-  fprintf(stream, "%14s: % 7.2f °/s\n",
-    "shoulder_roll", rad_to_deg(config->shoulder_roll));
-  fprintf(stream, "%14s: % 7.2f °/s\n",
-    "shoulder_pitch", rad_to_deg(config->shoulder_pitch));
-  fprintf(stream, "%14s: % 7.2f °/s\n",
-    "ellbow_pitch", rad_to_deg(config->ellbow_pitch));
-  fprintf(stream, "%14s: % 7.2f °/s\n",
-    "tool_roll", rad_to_deg(config->tool_roll));
-  fprintf(stream, "%14s: % 7.2f °/s\n",
-    "tool_opening", rad_to_deg(config->tool_opening));
+void era_velocity_print_state(FILE* stream, era_velocity_state_p state) {
+  fprintf(stream, "%14s: % 8.2f °/s\n",
+    "shoulder_yaw", rad_to_deg(state->shoulder_yaw));
+  fprintf(stream, "%14s: % 8.2f °/s\n",
+    "shoulder_roll", rad_to_deg(state->shoulder_roll));
+  fprintf(stream, "%14s: % 8.2f °/s\n",
+    "shoulder_pitch", rad_to_deg(state->shoulder_pitch));
+  fprintf(stream, "%14s: % 8.2f °/s\n",
+    "elbow_pitch", rad_to_deg(state->elbow_pitch));
+  fprintf(stream, "%14s: % 8.2f °/s\n",
+    "tool_roll", rad_to_deg(state->tool_roll));
+  fprintf(stream, "%14s: % 8.2f °/s\n",
+    "tool_opening", rad_to_deg(state->tool_opening));
 }
 
 void era_velocity_print_profile(FILE* stream, era_velocity_profile_p profile) {
@@ -99,7 +99,7 @@ void era_velocity_print_profile(FILE* stream, era_velocity_profile_p profile) {
     "shoulder_yaw",
     "shoulder_roll",
     "shoulder_pitch",
-    "ellbow_pitch",
+    "elbow_pitch",
     "tool_roll",
     "tool_opening",
     "limit_error");
@@ -112,7 +112,7 @@ void era_velocity_print_profile(FILE* stream, era_velocity_profile_p profile) {
       rad_to_deg(profile->points[i].shoulder_yaw),
       rad_to_deg(profile->points[i].shoulder_roll),
       rad_to_deg(profile->points[i].shoulder_pitch),
-      rad_to_deg(profile->points[i].ellbow_pitch),
+      rad_to_deg(profile->points[i].elbow_pitch),
       rad_to_deg(profile->points[i].tool_roll),
       rad_to_deg(profile->points[i].tool_opening),
       profile->limit_errors[i]);
@@ -125,7 +125,7 @@ int era_velocity_read_profile(const char* filename, era_velocity_profile_p
   FILE* file;
   char buffer[1024];
 
-  era_velocity_config_t point;
+  era_velocity_state_t point;
   double timestamp;
 
   era_velocity_init_profile(profile, 0);
@@ -140,7 +140,7 @@ int era_velocity_read_profile(const char* filename, era_velocity_profile_p
         &point.shoulder_yaw,
         &point.shoulder_roll,
         &point.shoulder_pitch,
-        &point.ellbow_pitch,
+        &point.elbow_pitch,
         &point.tool_roll,
         &point.tool_opening,
         &timestamp);
@@ -151,7 +151,7 @@ int era_velocity_read_profile(const char* filename, era_velocity_profile_p
       }
 
       profile->points = realloc(profile->points,
-        (profile->num_points+1)*sizeof(era_velocity_config_t));
+        (profile->num_points+1)*sizeof(era_velocity_state_t));
       profile->points[profile->num_points] = point;
 
       profile->timestamps = realloc(profile->timestamps,
@@ -183,7 +183,7 @@ int era_velocity_write_profile(const char* filename, era_velocity_profile_p
       profile->points[i].shoulder_yaw,
       profile->points[i].shoulder_roll,
       profile->points[i].shoulder_pitch,
-      profile->points[i].ellbow_pitch,
+      profile->points[i].elbow_pitch,
       profile->points[i].tool_roll,
       profile->points[i].tool_opening,
       profile->timestamps[i]);

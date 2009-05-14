@@ -21,14 +21,14 @@
 #ifndef ERA_VELOCITY_H
 #define ERA_VELOCITY_H
 
-/** \brief ERA velocity space configuration
-  * Velocity space configuration of the BlueBotics ERA-5/1 robot arm.
+/** \brief ERA velocity space state
+  * Velocity space state of the BlueBotics ERA-5/1 robot arm.
   */
 
 #include <stdlib.h>
 #include <stdio.h>
 
-/** \brief Predefined velocity space configuration error codes
+/** \brief Predefined velocity space state error codes
   */
 #define ERA_VELOCITY_ERROR_NONE                  0
 #define ERA_VELOCITY_ERROR_FILE_OPEN             1
@@ -36,45 +36,44 @@
 #define ERA_VELOCITY_ERROR_FILE_CREATE           3
 #define ERA_VELOCITY_ERROR_FILE_WRITE            4
 
-/** \brief Predefined velocity space configuration error descriptions
+/** \brief Predefined velocity space state error descriptions
   */
 extern const char* era_velocity_errors[];
 
-/** \brief Structure defining the velocity space configuration
+/** \brief Structure defining the velocity space state
   */
-typedef struct era_velocity_config_t {
+typedef struct era_velocity_state_t {
   double shoulder_yaw;    //!< The shoulder's yaw velocity in [rad/s].
   double shoulder_roll;   //!< The shoulder's roll angle in [rad/s].
   double shoulder_pitch;  //!< The shoulder's pitch angle in [rad/s].
 
-  double ellbow_pitch;    //!< The ellbow's pitch angle in [rad/s].
+  double elbow_pitch;     //!< The elbow's pitch angle in [rad/s].
 
   double tool_roll;       //!< The tool's roll angle in [rad/s].
   double tool_opening;    //!< The tool's opening angle in [rad/s].
-} era_velocity_config_t, *era_velocity_config_p;
+} era_velocity_state_t, *era_velocity_state_p;
 
 /** \brief Structure defining the velocity space profile
   */
 typedef struct era_velocity_profile_t {
   ssize_t num_points;           //!< The number of profile points.
 
-  era_velocity_config_p points; //!< The velocity space configuration points.
+  era_velocity_state_p points;  //!< The points of the velocity profile.
   double* timestamps;           //!< The associated timestamps in [s].
 
   ssize_t num_limit_errors;     //!< The number of profile limit errors.
   int* limit_errors;            //!< The limit error associated with each point.
 } era_velocity_profile_t, *era_velocity_profile_p;
 
-/** \brief Initialize a velocity space configuration
-  * \param[in] config The velocity space configuration to be initialized
-  *   with zeros.
+/** \brief Initialize a velocity space state
+  * \param[in] state The velocity space state to be initialized with zeros.
   */
-void era_velocity_init_config(
-  era_velocity_config_p config);
+void era_velocity_init_state(
+  era_velocity_state_p state);
 
 /** \brief Initialize a velocity space profile
   * \param[in] profile The velocity space profile to be initialized
-  *   with zero configurations.
+  *   with zero states.
   * \param[in] num_points The number of velocity space profile points.
   */
 void era_velocity_init_profile(
@@ -87,14 +86,14 @@ void era_velocity_init_profile(
 void era_velocity_destroy_profile(
   era_velocity_profile_p profile);
 
-/** \brief Print a velocity space configuration
+/** \brief Print a velocity space state
   * \param[in] stream The output stream that will be used for printing the
-  *   velocity space configuration.
-  * \param[in] config The velocity space configuration that will be printed.
+  *   velocity space state.
+  * \param[in] state The velocity space state that will be printed.
   */
-void era_velocity_print_config(
+void era_velocity_print_state(
   FILE* stream,
-  era_velocity_config_p config);
+  era_velocity_state_p state);
 
 /** \brief Print a velocity space profile
   * \param[in] stream The output stream that will be used for printing the
