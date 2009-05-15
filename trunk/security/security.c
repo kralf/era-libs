@@ -45,8 +45,7 @@ int era_security_enable(era_security_p security, era_motors_p motors) {
   epos_input_func_t switch_func = 
     {security->switch_channel, epos_input_high, 1, 1};
 
-//   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
-  for (i = 0; i < 1; ++i) {
+  for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
     result &= epos_input_set_func(&node_a[i].input, 
       (security->func == era_security_neg_switch_pos_estop) ?
       epos_input_pos_switch : epos_input_neg_switch, &estop_func);
@@ -82,12 +81,19 @@ int era_security_enable_home(era_security_p security, era_motors_p motors) {
   int i, result = EPOS_INPUT_ERROR_NONE;
   epos_node_p node_a = (epos_node_p)motors;
 
+  /* Check for limit switch states */
+  for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
+    if (epos_input_get_func_state(&node_a[i].input, epos_input_neg_switch) ||
+      epos_input_get_func_state(&node_a[i].input, epos_input_pos_switch))
+      return ERA_SECURITY_ERROR_ENABLE;
+  }
+
+  /* Disable limit switch functionality */
   epos_input_func_t estop_func = 
     {security->estop_channel, epos_input_low, 1, 1};
   epos_input_func_t switch_func = 
     {security->switch_channel, epos_input_high, 0, 1};
-//   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
-  for (i = 0; i < 1; ++i) {
+  for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
     epos_home_method_t method = config_get_int(&node_a[i].config, 
       EPOS_PARAMETER_HOME_METHOD);
 

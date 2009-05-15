@@ -27,6 +27,8 @@
 
 #include <motors/motors.h>
 #include <security/security.h>
+#include <kinematics/limits.h>
+#include <dynamics/limits.h>
 
 #include "geometry.h"
 #include "tool.h"
@@ -35,12 +37,16 @@
 
 /** \brief Predefined ERA constants
   */
-#define ERA_PARAMETER_SECURITY_FUNC             "security-func"
-#define ERA_PARAMETER_ESTOP_CHANNEL             "estop-channel"
-#define ERA_PARAMETER_SWITCH_CHANNEL            "switch-channel"
-#define ERA_PARAMETER_UPPER_LENGTH              "upper-length"
-#define ERA_PARAMETER_LOWER_LENGTH              "lower-length"
-#define ERA_PARAMETER_TOOL_LENGTH               "tool-length"
+#define ERA_PARAMETER_ARM_SECURITY_FUNC             "security-func"
+#define ERA_PARAMETER_ARM_ESTOP_CHANNEL             "estop-channel"
+#define ERA_PARAMETER_ARM_SWITCH_CHANNEL            "switch-channel"
+#define ERA_PARAMETER_ARM_UPPER_LENGTH              "upper-length"
+#define ERA_PARAMETER_ARM_LOWER_LENGTH              "lower-length"
+#define ERA_PARAMETER_ARM_TOOL_LENGTH               "tool-length"
+
+#define ERA_PARAMETER_JOINT_MIN_POSITION            "min-pos"
+#define ERA_PARAMETER_JOINT_MAX_POSITION            "max-pos"
+#define ERA_PARAMETER_JOINT_MAX_VELOCITY            "max-vel"
 
 /** \brief Predefined ERA error codes
   */
@@ -52,12 +58,14 @@
 /** \brief Structure defining the BlueBotics ERA-5/1
   */
 typedef struct era_arm_t {
-  era_motors_t motors;          //!< The motors of the arm.
-  era_security_t security;      //!< The arm's security module.
+  era_motors_t motors;                 //!< The motors of the arm.
+  era_security_t security;             //!< The arm's security module.
 
-  era_geometry_t geometry;      //!< The geometry of the arm.
+  era_geometry_t geometry;             //!< The geometry of the arm.
+  era_kinematics_limits_t kin_limits;  //!< The arm's kinematic limits.
+  era_dynamics_limits_t dyn_limits;    //!< The arm's dynamic limits.
 
-  era_config_t config;          //!< The arm's configuration parameters.
+  era_config_t config;                 //!< The arm's configuration parameters.
 } era_arm_t, *era_arm_p;
 
 /** \brief Predefined ERA error descriptions

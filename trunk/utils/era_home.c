@@ -37,12 +37,15 @@ int main(int argc, char **argv) {
 
   if (era_open(&arm))
     return -1;
-  if (!era_security_enable_home(&arm.security, &arm.motors) &&
-    !era_motors_home(&arm.motors, &arm.security, 0.0)) {
-    while (!quit && era_motors_home_wait(&arm.motors, 0.1));
-    era_motors_home_stop(&arm.motors);
+  if (!era_security_enable_home(&arm.security, &arm.motors)) {
+    if (!era_motors_home(&arm.motors, &arm.security, 0.0)) {
+      while (!quit && era_motors_home_wait(&arm.motors, 0.1));
+      era_motors_home_stop(&arm.motors);
+    }
     era_security_enable(&arm.security, &arm.motors);
   }
+  else
+    fprintf(stderr, "security error\n");
   era_close(&arm);
 
   era_destroy(&arm);
