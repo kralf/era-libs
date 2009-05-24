@@ -26,7 +26,6 @@
   */
 
 #include <epos.h>
-#include <home.h>
 
 #include <config/config.h>
 
@@ -39,7 +38,7 @@
 #define ERA_MOTORS_ERROR_NONE               0
 #define ERA_MOTORS_ERROR_OPEN               1
 #define ERA_MOTORS_ERROR_CLOSE              2
-#define ERA_MOTORS_ERROR_HOME               3
+#define ERA_MOTORS_ERROR_MOVE               3
 #define ERA_MOTORS_ERROR_WAIT_TIMEOUT       4
 
 struct era_security_t;
@@ -47,14 +46,14 @@ struct era_security_t;
 /** \brief Structure defining the arm's motors
   */
 typedef struct era_motors_t {
-  epos_node_t shoulder_yaw;     //!< The shoulder yaw motor node.
-  epos_node_t shoulder_roll;    //!< The shoulder roll motor node.
-  epos_node_t shoulder_pitch;   //!< The shoulder pitch motor node.
+  epos_node_t shoulder_yaw;                 //!< The shoulder yaw motor node.
+  epos_node_t shoulder_roll;                //!< The shoulder roll motor node.
+  epos_node_t shoulder_pitch;               //!< The shoulder pitch motor node.
 
-  epos_node_t elbow_pitch;      //!< The elbow pitch motor node.
+  epos_node_t elbow_pitch;                  //!< The elbow pitch motor node.
 
-  epos_node_t tool_roll;        //!< The tool roll motor node.
-  epos_node_t tool_opening;     //!< The tool opening motor node.
+  epos_node_t tool_roll;                    //!< The tool roll motor node.
+  epos_node_t tool_opening;                 //!< The tool opening motor node.
 } era_motors_t, *era_motors_p;
 
 /** \brief Predefined motor error descriptions
@@ -102,34 +101,6 @@ int era_motors_close(
 int era_motors_wait_status(
   era_motors_p motors,
   short status,
-  double timeout);
-
-/** \brief Start motor homing operation
-  * \note This method requires the security module in order to exchange
-  *   the motor's input functionalities with respect to their homing direction.
-  * \param[in] motors The opened motors to start homing operation for.
-  * \param[in] security The security module of the motors to be homed.
-  * \param[in] timeout The timeout of the wait operation in [s].
-  * \return The resulting error code.
-  */
-int era_motors_home(
-  era_motors_p motors,
-  struct era_security_t* security,
-  double timeout);
-
-/** \brief Stop motor homing operation
-  * \param[in] motors The opened motors to stop homing operation for.
-  */
-void era_motors_home_stop(
-  era_motors_p motors);
-
-/** \brief Wait for completion of motor homing
-  * \param[in] motors The opened motors to complete the homing operation.
-  * \param[in] timeout The timeout of the wait operation in [s].
-  * \return The resulting error code.
-  */
-int era_motors_home_wait(
-  era_motors_p motors,
   double timeout);
 
 #endif

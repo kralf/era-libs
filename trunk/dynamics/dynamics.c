@@ -78,7 +78,8 @@ double era_dynamics_limit_state(era_joint_state_p start_state,
   for (i = 0; i < min(sizeof(era_joint_state_t)/sizeof(double),
     sizeof(era_velocity_state_t)/sizeof(double)); i++) {
     omega[i] = (theta_end[i]-theta_start[i])/dtheta_max;
-    domega_max = max(domega_max, abs(omega[i])*vel_factor*omega_max[i]);
+    domega_max = max(domega_max, abs(omega[i])*clip(vel_factor, 0.0, 1.0)*
+      omega_max[i]);
   }
 
   for (i = 0; i < sizeof(era_velocity_state_t)/sizeof(double); i++)

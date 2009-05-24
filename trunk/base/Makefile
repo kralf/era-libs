@@ -5,7 +5,7 @@ LDFLAGS += -L../config -lera-config -L../motors -lera-motors \
 	-L../dynamics -lera-dynamics -lm
 
 PREFIX = /usr/local
-OBJECTS = geometry.o tool.o joint.o velocity.o era.o
+OBJECTS = geometry.o tool.o joint.o velocity.o acceleration.o era.o
 
 %.o: %.c %.h
 	$(CC) -c $(CFLAGS) $< -o $@

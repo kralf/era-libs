@@ -44,13 +44,13 @@ extern const char* era_velocity_errors[];
   */
 typedef struct era_velocity_state_t {
   double shoulder_yaw;    //!< The shoulder's yaw velocity in [rad/s].
-  double shoulder_roll;   //!< The shoulder's roll angle in [rad/s].
-  double shoulder_pitch;  //!< The shoulder's pitch angle in [rad/s].
+  double shoulder_roll;   //!< The shoulder's roll velocity in [rad/s].
+  double shoulder_pitch;  //!< The shoulder's pitch velocity in [rad/s].
 
-  double elbow_pitch;     //!< The elbow's pitch angle in [rad/s].
+  double elbow_pitch;     //!< The elbow's pitch velocity in [rad/s].
 
-  double tool_roll;       //!< The tool's roll angle in [rad/s].
-  double tool_opening;    //!< The tool's opening angle in [rad/s].
+  double tool_roll;       //!< The tool's roll velocity in [rad/s].
+  double tool_opening;    //!< The tool's opening velocity in [rad/s].
 } era_velocity_state_t, *era_velocity_state_p;
 
 /** \brief Structure defining the velocity space profile

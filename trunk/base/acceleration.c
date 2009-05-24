@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2008 by Ralf Kaestner                                   *
- *   ralf.kaestner@gmail.com                                               *
+ *   Copyright (C) 2008 by Fritz Stoeckli, Ralf Kaestner                   *
+ *   stfritz@ethz.ch, ralf.kaestner@gmail.com                              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,17 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef ERA_GLOBAL_H
-#define ERA_GLOBAL_H
+#include <string.h>
 
-#include <math.h>
+#include "acceleration.h"
 
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#define clip(a, b, c) max(min(a, c), b)
-#define sqr(a) ((a)*(a))
+#include "global.h"
 
-#define rad_to_deg(a) ((a)*180.0/M_PI)
-#define deg_to_rad(a) ((a)*M_PI/180.0)
+const char* era_acceleration_errors[] = {
+  "success",
+};
 
-#endif
+void era_acceleration_init_state(era_acceleration_state_p state) {
+  memset(state, 0, sizeof(era_acceleration_state_t));
+}
+
+void era_acceleration_print_state(FILE* stream, era_acceleration_state_p 
+  state) {
+  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+    "shoulder_yaw", rad_to_deg(state->shoulder_yaw));
+  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+    "shoulder_roll", rad_to_deg(state->shoulder_roll));
+  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+    "shoulder_pitch", rad_to_deg(state->shoulder_pitch));
+  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+    "elbow_pitch", rad_to_deg(state->elbow_pitch));
+  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+    "tool_roll", rad_to_deg(state->tool_roll));
+  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+    "tool_opening", rad_to_deg(state->tool_opening));
+}

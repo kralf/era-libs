@@ -18,17 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <base/era.h>
-#include <security/security.h>
-
 #include "motors.h"
+
+#include "home.h"
 
 const char* era_motors_errors[] = {
   "success",
   "error opening motors",
   "error closing motors",
-  "error homing motors",
-  "error homing motors",
+  "error moving motors",
   "wait operation timed out",
 };
 
@@ -42,32 +40,10 @@ void era_motors_init(era_motors_p motors, can_device_p can_dev,
   epos_node_p node_a = (epos_node_p)motors;
   config_p config_a = (config_p)config;
   int i;
-  for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
-    epos_home_method_t method = config_get_int(&config_a[i],
-      EPOS_PARAMETER_HOME_METHOD);
-    double gear_trans = config_get_float(&config_a[i],
-      EPOS_PARAMETER_GEAR_TRANSMISSION);
-    double home_pos = config_get_float(&config_a[i], 
-      EPOS_PARAMETER_HOME_POSITION);
-
-    double min_pos = config_get_float(&config_a[i], 
-      ERA_PARAMETER_JOINT_MIN_POSITION);
-    double max_pos = config_get_float(&config_a[i], 
-      ERA_PARAMETER_JOINT_MAX_POSITION);
-    double limit_pos;
-
-    if ((method == epos_home_neg_switch_index) ||
-      (method == epos_home_neg_switch) ||
-      (method == epos_home_neg_current_index) ||
-      (method == epos_home_neg_current))
-      limit_pos = (gear_trans > 0.0) ? min_pos : max_pos;
-    else
-      limit_pos = (gear_trans > 0.0) ? max_pos : min_pos;
-
-    config_set_float(&config_a[i], EPOS_PARAMETER_HOME_OFFSET,
-      abs(limit_pos-home_pos));
+  for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i)
     epos_init(&node_a[i], can_dev, &config_a[i]);
-  }
+
+  era_motors_home_init(motors);
 }
 
 void era_motors_destroy(era_motors_p motors) {
@@ -127,35 +103,4 @@ int era_motors_wait_status(era_motors_p motors, short status, double timeout) {
   while (!result);
 
   return ERA_MOTORS_ERROR_NONE;
-}
-
-int era_motors_home(era_motors_p motors, era_security_p security, 
-  double timeout) {
-  int i;
-  epos_node_p node_a = (epos_node_p)motors;
-
-  int result = EPOS_ERROR_NONE;
-  for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i)
-    result &= epos_home(&node_a[i], 0.0);
-
-  if (!result) {
-    era_motors_home_wait(motors, timeout);
-    return ERA_MOTORS_ERROR_NONE;
-  }
-  else {
-    era_motors_home_stop(motors);
-    return ERA_MOTORS_ERROR_HOME;
-  }
-}
-
-void era_motors_home_stop(era_motors_p motors) {
-  int i;
-  epos_node_p node_a = (epos_node_p)motors;
-
-  for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i)
-    epos_home_stop(&node_a[i]);
-}
-
-int era_motors_home_wait(era_motors_p motors, double timeout) {
-  return era_motors_wait_status(motors, EPOS_HOME_STATUS_REACHED, timeout);
 }

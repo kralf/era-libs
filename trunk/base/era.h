@@ -34,6 +34,7 @@
 #include "tool.h"
 #include "joint.h"
 #include "velocity.h"
+#include "acceleration.h"
 
 /** \brief Predefined ERA constants
   */
@@ -46,7 +47,9 @@
 
 #define ERA_PARAMETER_JOINT_MIN_POSITION            "min-pos"
 #define ERA_PARAMETER_JOINT_MAX_POSITION            "max-pos"
+#define ERA_PARAMETER_JOINT_POSITION_MARGIN         "pos-margin"
 #define ERA_PARAMETER_JOINT_MAX_VELOCITY            "max-vel"
+#define ERA_PARAMETER_JOINT_MAX_ACCELERATION        "max-accel"
 
 /** \brief Predefined ERA error codes
   */
@@ -54,6 +57,8 @@
 #define ERA_ERROR_OPEN                     1
 #define ERA_ERROR_CLOSE                    2
 #define ERA_ERROR_HOME                     3
+#define ERA_ERROR_MOVE                     4
+#define ERA_ERROR_LIMITS                   5
 
 /** \brief Structure defining the BlueBotics ERA-5/1
   */
@@ -154,13 +159,43 @@ void era_get_velocity_state(
 
 /** \brief Home the arm
   * \param[in] arm The opened arm to be homed.
-  * \return The resulting motors error code.
+  * \return The resulting error code.
   */
 int era_home(
   era_arm_p arm);
 
+/** \brief Move the arm to a target joint space state
+  * \note The arm will be moved such that all joints finish their linear
+  *    motion simultaneously.
+  * \param[in] arm The opened arm to be moved.
+  * \param[in] target_state The target joint space state.
+  * \param[in] vel_factor A velocity factor in the range 0 to 1.
+  * \return The resulting error code.
+  */
+int era_move_joints(
+  era_arm_p arm,
+  era_joint_state_p target_state,
+  double vel_factor);
 
+/** \brief Move the arm to a goal tool space state
+  * \param[in] arm The opened arm to be moved.
+  * \param[in] tool_state The goal tool space state.
+  * \param[in] vel_factor A velocity factor in the range 0 to 1.
+  * \return The resulting error code.
+  */
+int era_move_tool(
+  era_arm_p arm,
+  era_tool_state_p tool_state,
+  double vel_factor);
 
+/** \brief Move the arm to its home state
+  * \param[in] arm The opened arm to be moved to its home state.
+  * \param[in] vel_factor A velocity factor in the range 0 to 1.
+  * \return The resulting error code.
+  */
+int era_move_home(
+  era_arm_p arm,
+  double vel_factor);
 
 
 
