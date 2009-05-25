@@ -59,7 +59,7 @@ int era_motors_open(era_motors_p motors) {
   epos_node_p node_a = (epos_node_p)motors;
 
   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i)
-    result &= epos_open(&node_a[i]);
+    result |= epos_open(&node_a[i]);
 
   if (result)
     return ERA_MOTORS_ERROR_OPEN;
@@ -72,7 +72,7 @@ int era_motors_close(era_motors_p motors) {
   epos_node_p node_a = (epos_node_p)motors;
 
   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i)
-    result &= epos_close(&node_a[i]);
+    result |= epos_close(&node_a[i]);
 
   if (result)
     return ERA_MOTORS_ERROR_CLOSE;

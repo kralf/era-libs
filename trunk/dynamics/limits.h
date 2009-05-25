@@ -41,6 +41,8 @@ extern const char* era_dynamics_limits_errors[];
   */
 typedef struct era_dynamics_limits_t {
   era_velocity_state_t max_vel;        //!< The upper velocity space limit.
+
+  era_acceleration_state_t min_accel;  //!< The lower acceleration space limit.
   era_acceleration_state_t max_accel;  //!< The upper acceleration space limit.
 } era_dynamics_limits_t, *era_dynamics_limits_p;
 
@@ -48,10 +50,12 @@ typedef struct era_dynamics_limits_t {
   * \param[in] limits The dynamic limits to be initialized.
   * \param[in] max_vel The upper velocity space limit.
   * \param[in] max_accel The upper acceleration space limit.
+  * \param[in] max_decel The lower acceleration space limit.
   */
 void era_dynamics_limits_init(
   era_dynamics_limits_p limits,
   era_velocity_state_p max_vel,
+  era_acceleration_state_p min_accel,
   era_acceleration_state_p max_accel);
 
 /** \brief Test a velocity space state against dynamic limits

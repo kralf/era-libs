@@ -23,28 +23,18 @@
 #include <base/era.h>
 
 int main(int argc, char **argv) {
-  era_tool_state_t tool_state;
-  if (argc < 8) {
-    fprintf(stderr, "usage: %s X Y Z YAW ROLL OPENING VEL [PARAMS]\n", 
-      argv[0]);
+  if (argc < 2) {
+    fprintf(stderr, "usage: %s VEL [PARAMS]\n", argv[0]);
     return -1;
   }
-  tool_state.x = atof(argv[1]);
-  tool_state.y = atof(argv[2]);
-  tool_state.z = atof(argv[3]);
-  tool_state.yaw = deg_to_rad(atof(argv[4]));
-  tool_state.roll = deg_to_rad(atof(argv[5]));
-  tool_state.opening = deg_to_rad(atof(argv[6]));
-  float vel_factor = atof(argv[7]);
+  float vel_factor = atof(argv[1]);
 
   era_arm_t arm;
   era_init_arg(&arm, argc, argv, 0);
 
   if (era_open(&arm))
     return -1;
-  int result;
-  if (result = era_move_tool(&arm, &tool_state, vel_factor))
-    printf("%s\n", era_errors[result]);
+  era_move_home(&arm, vel_factor);
   era_close(&arm);
 
   era_destroy(&arm);

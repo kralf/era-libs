@@ -5,7 +5,7 @@ LDFLAGS += -L../base -lera-base -L../posix/timer -ltimer
 PREFIX = /usr/local
 
 OBJS = era_init era_tool_state era_joint_state era_velocity_state era_state \
-	era_home
+	era_home era_move_joints era_move_tool era_move_home
 
 all: $(OBJS)
 

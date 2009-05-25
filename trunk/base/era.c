@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include <kinematics/kinematics.h>
+#include <motors/position_profile.h>
 
 #include "era.h"
 
@@ -62,6 +63,7 @@ param_t era_default_shoulder_yaw_joint_params[] = {
   {ERA_PARAMETER_JOINT_MAX_POSITION, "28.1"},
   {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
   {ERA_PARAMETER_JOINT_MAX_VELOCITY, "20.0"},
+  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-20.0"},
   {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "20.0"},
 };
 
@@ -82,6 +84,7 @@ param_t era_default_shoulder_roll_joint_params[] = {
   {ERA_PARAMETER_JOINT_MAX_POSITION, "69.7"},
   {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
   {ERA_PARAMETER_JOINT_MAX_VELOCITY, "15.0"},
+  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-15.0"},
   {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "15.0"},
 };
 
@@ -102,6 +105,7 @@ param_t era_default_shoulder_pitch_joint_params[] = {
   {ERA_PARAMETER_JOINT_MAX_POSITION, "65.7"},
   {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
   {ERA_PARAMETER_JOINT_MAX_VELOCITY, "15.0"},
+  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-15.0"},
   {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "15.0"},
 };
 
@@ -122,6 +126,7 @@ param_t era_default_elbow_pitch_joint_params[] = {
   {ERA_PARAMETER_JOINT_MAX_POSITION, "102.5"},
   {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
   {ERA_PARAMETER_JOINT_MAX_VELOCITY, "15.0"},
+  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-15.0"},
   {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "15.0"},
 };
 
@@ -142,6 +147,7 @@ param_t era_default_tool_roll_joint_params[] = {
   {ERA_PARAMETER_JOINT_MAX_POSITION, "150.0"},
   {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
   {ERA_PARAMETER_JOINT_MAX_VELOCITY, "60.0"},
+  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-60.0"},
   {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "60.0"},
 };
 
@@ -162,6 +168,7 @@ param_t era_default_tool_opening_joint_params[] = {
   {ERA_PARAMETER_JOINT_MAX_POSITION, "27.0"},
   {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
   {ERA_PARAMETER_JOINT_MAX_VELOCITY, "30.0"},
+  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-30.0"},
   {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "30.0"},
 };
 
@@ -197,22 +204,24 @@ void era_init(era_arm_p arm, can_device_p can_dev, era_config_p config) {
 
   era_joint_state_t min_state, max_state, state_margin;
   era_velocity_state_t max_vel;
-  era_acceleration_state_t max_accel;
+  era_acceleration_state_t min_accel, max_accel;
   era_geometry_init(&arm->geometry,
     config_get_float(&arm->config.arm, ERA_PARAMETER_ARM_UPPER_LENGTH),
     config_get_float(&arm->config.arm, ERA_PARAMETER_ARM_LOWER_LENGTH),
     config_get_float(&arm->config.arm, ERA_PARAMETER_ARM_TOOL_LENGTH));
   era_kinematics_limits_init(&arm->kin_limits,
-    (era_joint_state_p)era_config_joint_get_float(&arm->config, 
+    (era_joint_state_p)era_config_joint_get_rad(&arm->config, 
       ERA_PARAMETER_JOINT_MIN_POSITION, (double*)&min_state),
-    (era_joint_state_p)era_config_joint_get_float(&arm->config, 
+    (era_joint_state_p)era_config_joint_get_rad(&arm->config, 
       ERA_PARAMETER_JOINT_MAX_POSITION, (double*)&max_state),
-    (era_joint_state_p)era_config_joint_get_float(&arm->config, 
+    (era_joint_state_p)era_config_joint_get_rad(&arm->config, 
       ERA_PARAMETER_JOINT_POSITION_MARGIN, (double*)&state_margin));
   era_dynamics_limits_init(&arm->dyn_limits,
-    (era_velocity_state_p)era_config_joint_get_float(&arm->config, 
+    (era_velocity_state_p)era_config_joint_get_rad(&arm->config, 
       ERA_PARAMETER_JOINT_MAX_VELOCITY, (double*)&max_vel),
-    (era_acceleration_state_p)era_config_joint_get_float(&arm->config, 
+    (era_acceleration_state_p)era_config_joint_get_rad(&arm->config, 
+      ERA_PARAMETER_JOINT_MIN_ACCELERATION, (double*)&min_accel),
+    (era_acceleration_state_p)era_config_joint_get_rad(&arm->config, 
       ERA_PARAMETER_JOINT_MAX_ACCELERATION, (double*)&max_accel));
 }
 
@@ -307,30 +316,33 @@ void era_get_velocity_state(era_arm_p arm, era_velocity_state_p vel_state) {
 }
 
 int era_home(era_arm_p arm) {
-  if (!era_motors_home_start(&arm->motors, &arm->security)) {
-    era_motors_home_wait(&arm->motors);
-    return ERA_ERROR_NONE;
-  }
+  if (!era_motors_home_start(&arm->motors, &arm->security))
+    return era_motors_home_wait(&arm->motors, ERA_MOTORS_WAIT_FOREVER);
   else
     return ERA_ERROR_HOME;
 }
 
-int era_move_joints(era_arm_p arm, era_joint_state_p joint_state, double 
+int era_move_joints(era_arm_p arm, era_joint_state_p target_state, double 
   vel_factor) {
-/*  era_joint_state_t start_state;
+  era_joint_state_t start_state;
   era_velocity_state_t vel_state;
 
-  if (era_kinematics_limits_test_state(&arm->kin_limits, joint_state))
+  if (era_kinematics_limits_test_state(&arm->kin_limits, target_state))
     return ERA_ERROR_LIMITS;
 
   era_get_joint_state(arm, &start_state);
-  era_dynamics_limit_state(&start_state, joint_state, &arm->dyn_limits, 
+  era_dynamics_limit_state(&start_state, target_state, &arm->dyn_limits, 
     vel_factor, &vel_state);
 
-  if (!era_motors_move(&arm->motors, joint_state, &vel_state, epos_sinusoidal,
-    ERA_MOTORS_WAIT_FOREVER))
-    return ERA_ERROR_NONE;
-  else*/
+  era_motors_position_profile_t profile;
+  era_motors_position_profile_init(&profile, target_state, &vel_state,
+    &arm->dyn_limits.max_accel, &arm->dyn_limits.min_accel, 
+    epos_profile_sinusoidal);
+
+  if (!era_motors_position_profile_start(&arm->motors, &profile))
+    return era_motors_position_profile_wait(&arm->motors, 
+      ERA_MOTORS_WAIT_FOREVER);
+  else
     return ERA_ERROR_MOVE;
 }
 

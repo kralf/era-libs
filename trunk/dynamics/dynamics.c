@@ -23,16 +23,16 @@
 #include "dynamics.h"
 
 void era_dynamics_linear_state(era_joint_state_p start_state,
-  era_joint_state_p end_state, double time, era_velocity_state_p
+  era_joint_state_p target_state, double time, era_velocity_state_p
   vel_state) {
   int i;
   double* theta_start = (double*)start_state;
-  double* theta_end = (double*)end_state;
+  double* theta_target = (double*)target_state;
   double* omega = (double*)vel_state;
 
   for (i = 0; i < min(sizeof(era_joint_state_t)/sizeof(double),
     sizeof(era_velocity_state_t)/sizeof(double)); i++)
-    omega[i] = (theta_end[i]-theta_start[i])/time;
+    omega[i] = (theta_target[i]-theta_start[i])/time;
 }
 
 ssize_t era_dynamics_linear_profile(era_joint_trajectory_p trajectory,
@@ -56,17 +56,17 @@ ssize_t era_dynamics_linear_profile(era_joint_trajectory_p trajectory,
 }
 
 double era_dynamics_limit_state(era_joint_state_p start_state,
-  era_joint_state_p end_state, era_dynamics_limits_p limits, double
+  era_joint_state_p target_state, era_dynamics_limits_p limits, double
   vel_factor, era_velocity_state_p vel_state) {
   int i;
   double dtheta_max = 0.0, domega_max = 0.0;
   double* theta_start = (double*)start_state;
-  double* theta_end = (double*)end_state;
+  double* theta_target = (double*)target_state;
   double* omega = (double*)vel_state;
   double* omega_max = (double*)&limits->max_vel;
 
   for (i = 0; i < sizeof(era_joint_state_t)/sizeof(double); i++)
-    dtheta_max = max(dtheta_max, abs(theta_end[i]-theta_start[i]));
+    dtheta_max = max(dtheta_max, fabs(theta_target[i]-theta_start[i]));
 
   if (dtheta_max == 0.0) {
     for (i = 0; i < sizeof(era_velocity_state_t)/sizeof(double); i++)
@@ -77,8 +77,8 @@ double era_dynamics_limit_state(era_joint_state_p start_state,
 
   for (i = 0; i < min(sizeof(era_joint_state_t)/sizeof(double),
     sizeof(era_velocity_state_t)/sizeof(double)); i++) {
-    omega[i] = (theta_end[i]-theta_start[i])/dtheta_max;
-    domega_max = max(domega_max, abs(omega[i])*clip(vel_factor, 0.0, 1.0)*
+    omega[i] = (theta_target[i]-theta_start[i])/dtheta_max;
+    domega_max = max(domega_max, fabs(omega[i])*clip(vel_factor, 0.0, 1.0)*
       omega_max[i]);
   }
 

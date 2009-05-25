@@ -55,7 +55,7 @@ void era_motors_home_init(era_motors_p motors) {
       limit_pos = (gear_trans > 0.0) ? max_pos : min_pos;
 
     config_set_float(&node_a[i].config, EPOS_PARAMETER_HOME_OFFSET,
-      abs(limit_pos-home_pos));
+      fabs(limit_pos-home_pos));
   }
 }
 
@@ -65,7 +65,7 @@ int era_motors_home_start(era_motors_p motors, era_security_p security) {
 
   int result = EPOS_ERROR_NONE;
   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i)
-    result &= epos_home(&node_a[i], 0.0);
+    result |= epos_home(&node_a[i], 0.0);
 
   if (result) {
     era_motors_home_stop(motors);

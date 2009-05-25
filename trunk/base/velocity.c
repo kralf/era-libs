@@ -80,17 +80,17 @@ void era_velocity_destroy_profile(era_velocity_profile_p profile) {
 }
 
 void era_velocity_print_state(FILE* stream, era_velocity_state_p state) {
-  fprintf(stream, "%14s: % 8.2f °/s\n",
+  fprintf(stream, "%14s: % 8.2f deg/s\n",
     "shoulder_yaw", rad_to_deg(state->shoulder_yaw));
-  fprintf(stream, "%14s: % 8.2f °/s\n",
+  fprintf(stream, "%14s: % 8.2f deg/s\n",
     "shoulder_roll", rad_to_deg(state->shoulder_roll));
-  fprintf(stream, "%14s: % 8.2f °/s\n",
+  fprintf(stream, "%14s: % 8.2f deg/s\n",
     "shoulder_pitch", rad_to_deg(state->shoulder_pitch));
-  fprintf(stream, "%14s: % 8.2f °/s\n",
+  fprintf(stream, "%14s: % 8.2f deg/s\n",
     "elbow_pitch", rad_to_deg(state->elbow_pitch));
-  fprintf(stream, "%14s: % 8.2f °/s\n",
+  fprintf(stream, "%14s: % 8.2f deg/s\n",
     "tool_roll", rad_to_deg(state->tool_roll));
-  fprintf(stream, "%14s: % 8.2f °/s\n",
+  fprintf(stream, "%14s: % 8.2f deg/s\n",
     "tool_opening", rad_to_deg(state->tool_opening));
 }
 
@@ -107,8 +107,8 @@ void era_velocity_print_profile(FILE* stream, era_velocity_profile_p profile) {
   int i;
   for (i = 0; i < profile->num_points; i++) {
     fprintf(stream,
-      "%10.2f °/s  %10.2f °/s  %10.2f °/s  %10.2f °/s  %10.2f °/s  "
-      "%10.2f °/s  %12d\n",
+      "%10.2f deg/s  %10.2f deg/s  %10.2f deg/s  %10.2f deg/s  %10.2f deg/s  "
+      "%10.2f deg/s  %12d\n",
       rad_to_deg(profile->points[i].shoulder_yaw),
       rad_to_deg(profile->points[i].shoulder_roll),
       rad_to_deg(profile->points[i].shoulder_pitch),

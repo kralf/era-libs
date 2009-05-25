@@ -33,14 +33,14 @@
 /** \brief Calculate the velocity space state of a linear motion
   * Calculates the velocity space state from a defined transition time.
   * \param[in] start_state The joint space start state.
-  * \param[in] end_state The joint space goal state.
+  * \param[in] target_state The joint space target state.
   * \param[in] time The time required to move from the joint space start
   *   state to the joint space goal state in [s].
   * \param[out] vel_state The resulting velocity space state.
   */
 void era_dynamics_linear_state(
   era_joint_state_p start_state,
-  era_joint_state_p end_state,
+  era_joint_state_p target_state,
   double time,
   era_velocity_state_p vel_state);
 
@@ -64,7 +64,7 @@ ssize_t era_dynamics_linear_profile(
   * be chosen to be the product of the respective velocity limit and the
   * velocity factor.
   * \param[in] start_state The joint space start state.
-  * \param[in] end_state The joint space goal state.
+  * \param[in] target_state The joint space target state.
   * \param[in] limits The dynamic limits that will be used to calculate
   *   the velocity space state.
   * \param[in] vel_factor A velocity factor in the range 0 to 1.
@@ -73,7 +73,7 @@ ssize_t era_dynamics_linear_profile(
   */
 double era_dynamics_limit_state(
   era_joint_state_p start_state,
-  era_joint_state_p end_state,
+  era_joint_state_p target_state,
   era_dynamics_limits_p limits,
   double vel_factor,
   era_velocity_state_p vel_state);

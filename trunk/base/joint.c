@@ -80,17 +80,17 @@ void era_joint_destroy_trajectory(era_joint_trajectory_p trajectory) {
 }
 
 void era_joint_print_state(FILE* stream, era_joint_state_p state) {
-  fprintf(stream, "%14s: % 8.2f °\n",
+  fprintf(stream, "%14s: % 8.2f deg\n",
     "shoulder_yaw", rad_to_deg(state->shoulder_yaw));
-  fprintf(stream, "%14s: % 8.2f °\n",
+  fprintf(stream, "%14s: % 8.2f deg\n",
     "shoulder_roll", rad_to_deg(state->shoulder_roll));
-  fprintf(stream, "%14s: % 8.2f °\n",
+  fprintf(stream, "%14s: % 8.2f deg\n",
     "shoulder_pitch", rad_to_deg(state->shoulder_pitch));
-  fprintf(stream, "%14s: % 8.2f °\n",
+  fprintf(stream, "%14s: % 8.2f deg\n",
     "elbow_pitch", rad_to_deg(state->elbow_pitch));
-  fprintf(stream, "%14s: % 8.2f °\n",
+  fprintf(stream, "%14s: % 8.2f deg\n",
     "tool_roll", rad_to_deg(state->tool_roll));
-  fprintf(stream, "%14s: % 8.2f °\n",
+  fprintf(stream, "%14s: % 8.2f deg\n",
     "tool_opening", rad_to_deg(state->tool_opening));
 }
 
@@ -108,7 +108,8 @@ void era_joint_print_trajectory(FILE* stream, era_joint_trajectory_p
   int i;
   for (i = 0; i < trajectory->num_points; i++) {
     fprintf(stream,
-      "%12.2f °  %12.2f °  %12.2f °  %12.2f °  %12.2f °  %12.2f °  %12d\n",
+      "%12.2f deg  %12.2f deg  %12.2f deg  %12.2f deg  %12.2f deg  "
+      "%12.2f deg  %12d\n",
       rad_to_deg(trajectory->points[i].shoulder_yaw),
       rad_to_deg(trajectory->points[i].shoulder_roll),
       rad_to_deg(trajectory->points[i].shoulder_pitch),

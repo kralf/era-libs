@@ -50,7 +50,7 @@ int era_motors_position_profile_start(era_motors_p motors,
 
   int result = EPOS_ERROR_NONE;
   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i)
-    result &= epos_position_profile_start(&node_a[i], &profile_a[i]);
+    result |= epos_position_profile_start(&node_a[i], &profile_a[i]);
 
   if (result) {
     era_motors_position_profile_stop(motors);

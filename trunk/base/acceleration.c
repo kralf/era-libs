@@ -34,16 +34,16 @@ void era_acceleration_init_state(era_acceleration_state_p state) {
 
 void era_acceleration_print_state(FILE* stream, era_acceleration_state_p 
   state) {
-  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+  fprintf(stream, "%14s: % 8.2f deg/s^2\n",
     "shoulder_yaw", rad_to_deg(state->shoulder_yaw));
-  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+  fprintf(stream, "%14s: % 8.2f deg/s^2\n",
     "shoulder_roll", rad_to_deg(state->shoulder_roll));
-  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+  fprintf(stream, "%14s: % 8.2f deg/s^2\n",
     "shoulder_pitch", rad_to_deg(state->shoulder_pitch));
-  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+  fprintf(stream, "%14s: % 8.2f deg/s^2\n",
     "elbow_pitch", rad_to_deg(state->elbow_pitch));
-  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+  fprintf(stream, "%14s: % 8.2f deg/s^2\n",
     "tool_roll", rad_to_deg(state->tool_roll));
-  fprintf(stream, "%14s: % 8.2f °/s^2\n",
+  fprintf(stream, "%14s: % 8.2f deg/s^2\n",
     "tool_opening", rad_to_deg(state->tool_opening));
 }

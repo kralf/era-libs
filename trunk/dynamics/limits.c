@@ -28,8 +28,11 @@ const char* era_dynamics_limits_errors[] = {
 };
 
 void era_dynamics_limits_init(era_dynamics_limits_p limits,
-  era_velocity_state_p max_vel, era_acceleration_state_p max_accel) {
+  era_velocity_state_p max_vel, era_acceleration_state_p min_accel, 
+  era_acceleration_state_p max_accel) {
   limits->max_vel = *max_vel;
+
+  limits->min_accel = *min_accel;
   limits->max_accel = *max_accel;
 }
 
@@ -40,7 +43,7 @@ int era_dynamics_limits_test_velocity_state(era_dynamics_limits_p limits,
   double* omega_max = (double*)&limits->max_vel;
 
   for (i = 0; i < sizeof(era_velocity_state_t)/sizeof(double); ++i) {
-    if (abs(omega[i]) > abs(omega_max[i]))
+    if (fabs(omega[i]) > fabs(omega_max[i]))
       return ERA_DYNAMICS_LIMITS_ERROR_EXCEEDED;
   }
 
@@ -51,10 +54,12 @@ int era_dynamics_limits_test_acceleration_state(era_dynamics_limits_p limits,
   era_acceleration_state_p accel_state) {
   int i;
   double* omega_dot = (double*)accel_state;
+  double* omega_dot_min = (double*)&limits->min_accel;
   double* omega_dot_max = (double*)&limits->max_accel;
 
   for (i = 0; i < sizeof(era_acceleration_state_t)/sizeof(double); ++i) {
-    if (abs(omega_dot[i]) > abs(omega_dot_max[i]))
+    if ((omega_dot[i] < omega_dot_min[i]) ||
+      (omega_dot[i] > omega_dot_max[i]))
       return ERA_DYNAMICS_LIMITS_ERROR_EXCEEDED;
   }
 

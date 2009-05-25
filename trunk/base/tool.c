@@ -75,11 +75,11 @@ void era_tool_print_state(FILE* stream, era_tool_state_p state) {
     "y", state->y);
   fprintf(stream, "%7s: % 8.4f m\n",
     "z", state->z);
-  fprintf(stream, "%7s: % 8.2f °\n",
+  fprintf(stream, "%7s: % 8.2f deg\n",
     "yaw", rad_to_deg(state->yaw));
-  fprintf(stream, "%7s: % 8.2f °\n",
+  fprintf(stream, "%7s: % 8.2f deg\n",
     "roll", rad_to_deg(state->roll));
-  fprintf(stream, "%7s: % 8.2f °\n",
+  fprintf(stream, "%7s: % 8.2f deg\n",
     "opening", rad_to_deg(state->opening));
 }
 
@@ -96,7 +96,7 @@ void era_tool_print_trajectory(FILE* stream, era_tool_trajectory_p
   int i;
   for (i = 0; i < trajectory->num_points; i++) {
     fprintf(stream,
-      "%12.4f m  %12.4f m  %12.4f m  %12.2f °  %12.2f °  %12.2f °\n",
+      "%12.4f m  %12.4f m  %12.4f m  %12.2f deg  %12.2f deg  %12.2f deg\n",
       trajectory->points[i].x,
       trajectory->points[i].y,
       trajectory->points[i].z,

@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <motors/motors.h>
+#include <motors/home.h>
 
 #include "security.h"
 
@@ -46,10 +46,10 @@ int era_security_enable(era_security_p security, era_motors_p motors) {
     {security->switch_channel, epos_input_high, 1, 1};
 
   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
-    result &= epos_input_set_func(&node_a[i].input, 
+    result |= epos_input_set_func(&node_a[i].input, 
       (security->func == era_security_neg_switch_pos_estop) ?
       epos_input_pos_switch : epos_input_neg_switch, &estop_func);
-    result &= epos_input_set_func(&node_a[i].input, 
+    result |= epos_input_set_func(&node_a[i].input, 
       (security->func == era_security_neg_switch_pos_estop) ?
       epos_input_neg_switch : epos_input_pos_switch, &switch_func);
   }
@@ -65,9 +65,9 @@ int era_security_disable(era_security_p security, era_motors_p motors) {
   epos_node_p node_a = (epos_node_p)motors;
 
   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
-    result &= epos_input_set_enabled(&node_a[i].input, 
+    result |= epos_input_set_enabled(&node_a[i].input, 
       epos_input_neg_switch, 0);
-    result &= epos_input_set_enabled(&node_a[i].input, 
+    result |= epos_input_set_enabled(&node_a[i].input, 
       epos_input_pos_switch, 0);
   }
 
@@ -101,10 +101,10 @@ int era_security_enable_home(era_security_p security, era_motors_p motors) {
       (method == epos_home_neg_switch_index)) ? 
       era_security_neg_switch_pos_estop : era_security_pos_switch_neg_estop;
 
-    result &= epos_input_set_func(&node_a[i].input, 
+    result |= epos_input_set_func(&node_a[i].input, 
       (func == era_security_neg_switch_pos_estop) ?
       epos_input_pos_switch : epos_input_neg_switch, &estop_func);
-    result &= epos_input_set_func(&node_a[i].input, 
+    result |= epos_input_set_func(&node_a[i].input, 
       (func == era_security_neg_switch_pos_estop) ?
       epos_input_neg_switch : epos_input_pos_switch, &switch_func);
   }
