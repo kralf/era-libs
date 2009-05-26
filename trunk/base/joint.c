@@ -73,6 +73,7 @@ void era_joint_destroy_trajectory(era_joint_trajectory_p trajectory) {
 
     trajectory->num_points = 0;
     trajectory->points = 0;
+    trajectory->timestamps = 0;
 
     trajectory->num_limit_errors = 0;
     trajectory->limit_errors = 0;
@@ -80,17 +81,17 @@ void era_joint_destroy_trajectory(era_joint_trajectory_p trajectory) {
 }
 
 void era_joint_print_state(FILE* stream, era_joint_state_p state) {
-  fprintf(stream, "%14s: % 8.2f deg\n",
+  fprintf(stream, "%14s: %8.2f deg\n",
     "shoulder_yaw", rad_to_deg(state->shoulder_yaw));
-  fprintf(stream, "%14s: % 8.2f deg\n",
+  fprintf(stream, "%14s: %8.2f deg\n",
     "shoulder_roll", rad_to_deg(state->shoulder_roll));
-  fprintf(stream, "%14s: % 8.2f deg\n",
+  fprintf(stream, "%14s: %8.2f deg\n",
     "shoulder_pitch", rad_to_deg(state->shoulder_pitch));
-  fprintf(stream, "%14s: % 8.2f deg\n",
+  fprintf(stream, "%14s: %8.2f deg\n",
     "elbow_pitch", rad_to_deg(state->elbow_pitch));
-  fprintf(stream, "%14s: % 8.2f deg\n",
+  fprintf(stream, "%14s: %8.2f deg\n",
     "tool_roll", rad_to_deg(state->tool_roll));
-  fprintf(stream, "%14s: % 8.2f deg\n",
+  fprintf(stream, "%14s: %8.2f deg\n",
     "tool_opening", rad_to_deg(state->tool_opening));
 }
 
@@ -160,6 +161,10 @@ int era_joint_read_trajectory(const char* filename, era_joint_trajectory_p
           (trajectory->num_points+1)*sizeof(double));
         trajectory->timestamps[trajectory->num_points] = timestamp;
       }
+
+      trajectory->limit_errors = realloc(trajectory->limit_errors,
+        (trajectory->num_points+1)*sizeof(int));
+      trajectory->limit_errors[trajectory->num_points] = 0;
 
       ++trajectory->num_points;
     }

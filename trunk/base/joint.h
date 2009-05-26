@@ -91,7 +91,7 @@ void era_joint_destroy_trajectory(
   *   joint space state.
   * \param[in] state The joint space state that will be printed.
   */
-void era_joint_print_stateg(
+void era_joint_print_state(
   FILE* stream,
   era_joint_state_p state);
 

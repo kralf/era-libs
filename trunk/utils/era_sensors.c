@@ -19,34 +19,47 @@
  ***************************************************************************/
 
 #include <stdio.h>
+#include <signal.h>
 
-#include <base/era.h>
+#include <control/sensors.h>
+
+int quit = 0;
+
+void era_signaled(int signal) {
+  quit = 1;
+}
+
+void era_sensors_handle(era_joint_state_p joint_state, era_velocity_state_p 
+  vel_state, double frequency) {
+  era_joint_print_state(stdout, joint_state);
+  fprintf(stdout, "sensor thread frequency %5.1f Hz\n", frequency);
+  fprintf(stdout, "%c[7A\r", 0x1B);
+}
 
 int main(int argc, char **argv) {
-  era_joint_state_t joint_state;
-  if (argc < 8) {
-    fprintf(stderr, "usage: %s SHOULDER_YAW SHOULDER_ROLL SHOULDER_PITCH "
-      " ELBOW_PITCH TOOL_ROLL TOOL_OPENING VEL [PARAMS]\n", argv[0]);
+  if (argc < 2) {
+    fprintf(stderr, "usage: %s FREQ [PARAMS]\n", argv[0]);
     return -1;
   }
-  joint_state.shoulder_yaw = deg_to_rad(atof(argv[1]));
-  joint_state.shoulder_roll = deg_to_rad(atof(argv[2]));
-  joint_state.shoulder_pitch = deg_to_rad(atof(argv[3]));
-  joint_state.elbow_pitch = deg_to_rad(atof(argv[4]));
-  joint_state.tool_roll = deg_to_rad(atof(argv[5]));
-  joint_state.tool_opening = deg_to_rad(atof(argv[6]));
-  float vel_factor = atof(argv[7]);
+  float freq = atof(argv[1]);
 
+  thread_t thread;
+  thread_mutex_t mutex;
   era_arm_t arm;
+  thread_mutex_init(&mutex);
   era_init_arg(&arm, argc, argv, 0);
+
+  signal(SIGINT, era_signaled);
 
   if (era_open(&arm))
     return -1;
-  int result;
-  if (result = era_move_joints(&arm, &joint_state, vel_factor))
-    fprintf(stderr, "%s\n", era_errors[result]);
+  era_control_sensors_start(&thread, &arm, &mutex, era_sensors_handle, freq);
+  while (!quit) timer_sleep(0.1);
+  era_control_sensors_exit(&thread);
+  fprintf(stdout, "%c[7B\n", 0x1B);
   era_close(&arm);
 
   era_destroy(&arm);
+  thread_mutex_destroy(&mutex);
   return 0;
 }

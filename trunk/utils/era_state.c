@@ -23,7 +23,6 @@
 #include <math.h>
 
 #include <base/era.h>
-#include <timer.h>
 
 int quit = 0;
 
@@ -32,7 +31,6 @@ void era_signaled(int signal) {
 }
 
 int main(int argc, char **argv) {
-  double time;
   era_arm_t arm;
   era_init_arg(&arm, argc, argv, 0);
 
@@ -41,13 +39,10 @@ int main(int argc, char **argv) {
   if (era_open(&arm))
     return -1;
   while (!quit) {
-    timer_start(&time);
     era_print_state(stdout, &arm);
-    fprintf(stdout, "update frequency %5.1f Hz\n", 
-      timer_get_frequency(time));
-    fprintf(stdout, "%c[7A\r", 0x1B);
+    fprintf(stdout, "%c[6A\r", 0x1B);
   }
-  fprintf(stdout, "%c[7B\n", 0x1B);
+  fprintf(stdout, "%c[6B\n", 0x1B);
   era_close(&arm);
 
   era_destroy(&arm);

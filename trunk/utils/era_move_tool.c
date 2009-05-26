@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
     return -1;
   int result;
   if (result = era_move_tool(&arm, &tool_state, vel_factor))
-    printf("%s\n", era_errors[result]);
+    fprintf(stderr, "%s\n", era_errors[result]);
   era_close(&arm);
 
   era_destroy(&arm);

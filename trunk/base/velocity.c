@@ -73,6 +73,7 @@ void era_velocity_destroy_profile(era_velocity_profile_p profile) {
 
     profile->num_points = 0;
     profile->points = 0;
+    profile->timestamps = 0;
 
     profile->num_limit_errors = 0;
     profile->limit_errors = 0;
@@ -80,17 +81,17 @@ void era_velocity_destroy_profile(era_velocity_profile_p profile) {
 }
 
 void era_velocity_print_state(FILE* stream, era_velocity_state_p state) {
-  fprintf(stream, "%14s: % 8.2f deg/s\n",
+  fprintf(stream, "%14s: %8.2f deg/s\n",
     "shoulder_yaw", rad_to_deg(state->shoulder_yaw));
-  fprintf(stream, "%14s: % 8.2f deg/s\n",
+  fprintf(stream, "%14s: %8.2f deg/s\n",
     "shoulder_roll", rad_to_deg(state->shoulder_roll));
-  fprintf(stream, "%14s: % 8.2f deg/s\n",
+  fprintf(stream, "%14s: %8.2f deg/s\n",
     "shoulder_pitch", rad_to_deg(state->shoulder_pitch));
-  fprintf(stream, "%14s: % 8.2f deg/s\n",
+  fprintf(stream, "%14s: %8.2f deg/s\n",
     "elbow_pitch", rad_to_deg(state->elbow_pitch));
-  fprintf(stream, "%14s: % 8.2f deg/s\n",
+  fprintf(stream, "%14s: %8.2f deg/s\n",
     "tool_roll", rad_to_deg(state->tool_roll));
-  fprintf(stream, "%14s: % 8.2f deg/s\n",
+  fprintf(stream, "%14s: %8.2f deg/s\n",
     "tool_opening", rad_to_deg(state->tool_opening));
 }
 
@@ -157,6 +158,10 @@ int era_velocity_read_profile(const char* filename, era_velocity_profile_p
       profile->timestamps = realloc(profile->timestamps,
         (profile->num_points+1)*sizeof(double));
       profile->timestamps[profile->num_points] = timestamp;
+
+      profile->limit_errors = realloc(profile->limit_errors,
+        (profile->num_points+1)*sizeof(int));
+      profile->limit_errors[profile->num_points] = 0;
 
       ++profile->num_points;
     }

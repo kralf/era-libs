@@ -4,7 +4,7 @@ LDFLAGS += -L../drivers/vanilla/epos -lepos -L../config -lera-config \
 	-L../security -lera-security
 
 PREFIX = /usr/local
-OBJECTS = motors.o home.o position_profile.o
+OBJECTS = motors.o home.o velocity.o position_profile.o
 
 %.o: %.c %.h
 	$(CC) -c $(CFLAGS) $< -o $@

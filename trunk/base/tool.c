@@ -69,17 +69,17 @@ void era_tool_destroy_trajectory(era_tool_trajectory_p trajectory) {
 }
 
 void era_tool_print_state(FILE* stream, era_tool_state_p state) {
-  fprintf(stream, "%7s: % 8.4f m\n",
+  fprintf(stream, "%7s: %8.4f m\n",
     "x", state->x);
-  fprintf(stream, "%7s: % 8.4f m\n",
+  fprintf(stream, "%7s: %8.4f m\n",
     "y", state->y);
-  fprintf(stream, "%7s: % 8.4f m\n",
+  fprintf(stream, "%7s: %8.4f m\n",
     "z", state->z);
-  fprintf(stream, "%7s: % 8.2f deg\n",
+  fprintf(stream, "%7s: %8.2f deg\n",
     "yaw", rad_to_deg(state->yaw));
-  fprintf(stream, "%7s: % 8.2f deg\n",
+  fprintf(stream, "%7s: %8.2f deg\n",
     "roll", rad_to_deg(state->roll));
-  fprintf(stream, "%7s: % 8.2f deg\n",
+  fprintf(stream, "%7s: %8.2f deg\n",
     "opening", rad_to_deg(state->opening));
 }
 
