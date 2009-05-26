@@ -38,7 +38,7 @@ int era_control_sensors_start(thread_p thread, era_arm_p arm, thread_mutex_p
   sensor_arg->handler = handler;
   sensor_arg->timestamp = 0.0;
 
-  if (!thread_start(thread, era_control_sensors_run, sensor_arg, frequency))
+  if (!thread_start(thread, era_control_sensors_run, 0, sensor_arg, frequency))
     return ERA_CONTROL_SENSORS_ERROR_NONE;
   else
     return ERA_CONTROL_SENSORS_ERROR_START;

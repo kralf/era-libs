@@ -50,12 +50,12 @@ int main(int argc, char **argv) {
   int result;
   thread_mutex_t mutex;
   era_arm_t arm;
-  era_velocity_profile_t profile;
+  era_trajectory_t trajectory;
   thread_mutex_init(&mutex);
   era_init_arg(&arm, argc, argv, 0);
 
-  if ((result = era_velocity_read_profile(file, &profile)) < 0) {
-    fprintf(stderr, "%s\n", era_velocity_errors[-result]);
+  if ((result = era_trajectory_read(file, &trajectory)) < 0) {
+    fprintf(stderr, "%s\n", era_trajectory_errors[-result]);
     return -1;
   }
 
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
   if (era_open(&arm))
     return -1;
   if (!(result = era_control_open_loop_start(&control_thread, &arm, 
-    &mutex, &profile))) {
+    &mutex, &trajectory, freq))) {
     era_control_sensors_start(&sensor_thread, &arm, &mutex, 
       era_sensors_handle, freq);
     thread_wait_exit(&control_thread);

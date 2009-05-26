@@ -6,7 +6,7 @@ PREFIX = /usr/local
 
 OBJS = era_init era_tool_state era_joint_state era_velocity_state era_state \
 	era_home era_move_joints era_move_tool era_move_home era_sensors \
-	era_trajectory_eval era_open_loop
+	era_trajectory_eval era_open_loop era_closed_loop
 
 all: $(OBJS)
 

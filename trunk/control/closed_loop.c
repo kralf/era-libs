@@ -22,24 +22,24 @@
 
 #include <motors/velocity.h>
 
-#include "open_loop.h"
+#include "closed_loop.h"
 
-const char* era_control_open_loop_errors[] = {
+const char* era_control_closed_loop_errors[] = {
   "success",
-  "error starting open-loop control thread",
-  "open-loop control limit error",
+  "error starting closed-loop control thread",
+  "closed-loop control limit error",
 };
 
-void* era_control_open_loop_run(void* arg);
-void era_control_open_loop_cleanup(void* arg);
+void* era_control_closed_loop_run(void* arg);
+void era_control_closed_loop_cleanup(void* arg);
 
-int era_control_open_loop_start(thread_p thread, era_arm_p arm, thread_mutex_p
+int era_control_closed_loop_start(thread_p thread, era_arm_p arm, thread_mutex_p
   mutex, era_trajectory_p trajectory, double frequency) {
 //   if (era_dynamics_limits_test_velocity_profile(&arm->dyn_limits, profile))
-//     return ERA_CONTROL_OPEN_LOOP_ERROR_LIMITS;
+//     return ERA_CONTROL_CLOSED_LOOP_ERROR_LIMITS;
 
-  era_control_open_loop_arg_p control_arg = 
-    malloc(sizeof(era_control_open_loop_arg_t));
+  era_control_closed_loop_arg_p control_arg = 
+    malloc(sizeof(era_control_closed_loop_arg_t));
 
   control_arg->arm = arm;
   control_arg->mutex = mutex;
@@ -55,25 +55,25 @@ int era_control_open_loop_start(thread_p thread, era_arm_p arm, thread_mutex_p
   thread_mutex_lock(control_arg->mutex);
   if (!era_move_joints(control_arg->arm, &joint_state, 1.0) &&
     !era_motors_velocity_start(&control_arg->arm->motors) &&
-    !thread_start(thread, era_control_open_loop_run, 
-      era_control_open_loop_cleanup, control_arg, frequency)) {
+    !thread_start(thread, era_control_closed_loop_run, 
+      era_control_closed_loop_cleanup, control_arg, frequency)) {
     thread_mutex_unlock(control_arg->mutex);
-    return ERA_CONTROL_OPEN_LOOP_ERROR_NONE;
+    return ERA_CONTROL_CLOSED_LOOP_ERROR_NONE;
   }
   else {
     thread_mutex_unlock(control_arg->mutex);
-    return ERA_CONTROL_OPEN_LOOP_ERROR_START;
+    return ERA_CONTROL_CLOSED_LOOP_ERROR_START;
   }
 }
 
-void era_control_open_loop_exit(thread_p thread) {
+void era_control_closed_loop_exit(thread_p thread) {
   thread_exit(thread, 1);
 }
 
-void* era_control_open_loop_run(void* arg) {
+void* era_control_closed_loop_run(void* arg) {
   double time = 0.0;
   era_velocity_state_t vel_state;
-  era_control_open_loop_arg_p control_arg = arg;
+  era_control_closed_loop_arg_p control_arg = arg;
 
   if (control_arg->start_time == 0.0)
     timer_start(&control_arg->start_time);
@@ -96,8 +96,8 @@ void* era_control_open_loop_run(void* arg) {
   return 0;
 }
 
-void era_control_open_loop_cleanup(void* arg) {
-  era_control_open_loop_arg_p control_arg = arg;
+void era_control_closed_loop_cleanup(void* arg) {
+  era_control_closed_loop_arg_p control_arg = arg;
 
   thread_mutex_lock(control_arg->mutex);
   era_motors_velocity_stop(&control_arg->arm->motors);

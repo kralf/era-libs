@@ -97,11 +97,11 @@ int era_trajectory_write(
   * \param[in] seg_index The index of the trajectory segment to start with 
   *   the linear search.
   * \param[out] joint_state The joint space state of the trajectory at the
-  *   given time.
-  * \param[out] vel_state The velocity space state of the trajectory at the
-  *   given time.
+  *   given time. Can be null.
+  * \param[out] vel_state The optivelocity space state of the trajectory at the
+  *   given time. Can be null.
   * \param[out] accel_state The acceleration space state of the trajectory at 
-  *   the given time.
+  *   the given time. Can be null.
   * \return The index of the evaluated trajectory segment or the negative 
   *   error code.
   */

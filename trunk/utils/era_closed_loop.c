@@ -19,56 +19,63 @@
  ***************************************************************************/
 
 #include <stdio.h>
+#include <signal.h>
 
-#include <base/era.h>
-#include <base/trajectory.h>
+#include <control/closed_loop.h>
+#include <control/sensors.h>
+
+thread_t control_thread, sensor_thread;
+
+int quit = 0;
+
+void era_signaled(int signal) {
+  era_control_closed_loop_exit(&control_thread);
+}
+
+void era_sensors_handle(era_joint_state_p joint_state, era_velocity_state_p 
+  vel_state, double frequency) {
+  era_joint_print_state(stdout, joint_state);
+  fprintf(stdout, "sensor thread frequency %5.1f Hz\n", frequency);
+  fprintf(stdout, "%c[7A\r", 0x1B);
+}
 
 int main(int argc, char **argv) {
   if (argc < 3) {
-    fprintf(stderr, "usage: %s FILE STEPSIZE\n", argv[0]);
+    fprintf(stderr, "usage: %s FILE FREQ [PARAMS]\n", argv[0]);
     return -1;
   }
   const char* file = argv[1];
-  double step_size = atof(argv[2]);
-
-  era_trajectory_t trajectory;
-  era_joint_state_t joint_state;
-  era_velocity_state_t vel_state;
-  era_acceleration_state_t accel_state;
+  float freq = atof(argv[2]);
 
   int result;
-  if ((result = era_trajectory_read(file, &trajectory)) < 0)
-    fprintf(stderr, "%s\n", era_trajectory_errors[-result]);
-  double t = 0.0;
-  int i = 0;
-  while ((i = era_trajectory_evaluate(&trajectory, t, i, &joint_state,
-    &vel_state, &accel_state)) >= 0) {
-    fprintf(stdout, "%lf ", t);
-    fprintf(stdout, "%lf %lf %lf %lf %lf %lf ",
-      joint_state.shoulder_yaw,
-      joint_state.shoulder_roll,
-      joint_state.shoulder_pitch,
-      joint_state.elbow_pitch,
-      joint_state.tool_roll,
-      joint_state.tool_opening);
-    fprintf(stdout, "%lf %lf %lf %lf %lf %lf ",
-      vel_state.shoulder_yaw,
-      vel_state.shoulder_roll,
-      vel_state.shoulder_pitch,
-      vel_state.elbow_pitch,
-      vel_state.tool_roll,
-      vel_state.tool_opening);
-    fprintf(stdout, "%lf %lf %lf %lf %lf %lf\n",
-      accel_state.shoulder_yaw,
-      accel_state.shoulder_roll,
-      accel_state.shoulder_pitch,
-      accel_state.elbow_pitch,
-      accel_state.tool_roll,
-      accel_state.tool_opening);
+  thread_mutex_t mutex;
+  era_arm_t arm;
+  era_trajectory_t trajectory;
+  thread_mutex_init(&mutex);
+  era_init_arg(&arm, argc, argv, 0);
 
-    t += step_size;
+  if ((result = era_trajectory_read(file, &trajectory)) < 0) {
+    fprintf(stderr, "%s\n", era_trajectory_errors[-result]);
+    return -1;
   }
 
-  era_trajectory_destroy(&trajectory);
+  signal(SIGINT, era_signaled);
+
+  if (era_open(&arm))
+    return -1;
+  if (!(result = era_control_closed_loop_start(&control_thread, &arm, 
+    &mutex, &trajectory, freq))) {
+    era_control_sensors_start(&sensor_thread, &arm, &mutex, 
+      era_sensors_handle, freq);
+    thread_wait_exit(&control_thread);
+    era_control_sensors_exit(&sensor_thread);
+    fprintf(stdout, "%c[7B\n", 0x1B);
+  }
+  else
+    fprintf(stderr, "%s\n", era_control_closed_loop_errors[result]);
+  era_close(&arm);
+
+  era_destroy(&arm);
+  thread_mutex_destroy(&mutex);
   return 0;
 }
