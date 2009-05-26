@@ -53,17 +53,17 @@ typedef struct era_joint_state_t {
   double tool_opening;    //!< The tool's opening angle in [rad].
 } era_joint_state_t, *era_joint_state_p;
 
-/** \brief Structure defining the joint space trajectory
+/** \brief Structure defining the joint space path
   */
-typedef struct era_joint_trajectory_t {
-  ssize_t num_points;          //!< The number of trajectory points.
+typedef struct era_joint_path_t {
+  ssize_t num_points;          //!< The number of path points.
 
-  era_joint_state_p points;    //!< The points of the joint space trajectory.
+  era_joint_state_p points;    //!< The points of the joint space path.
   double* timestamps;          //!< The associated timestamps in [s].
 
-  ssize_t num_limit_errors;    //!< The number of trajectory limit errors.
+  ssize_t num_limit_errors;    //!< The number of path limit errors.
   int* limit_errors;           //!< The limit error associated with each point.
-} era_joint_trajectory_t, *era_joint_trajectory_p;
+} era_joint_path_t, *era_joint_path_p;
 
 /** \brief Initialize a joint space state
   * \param[in] state The joint space state to be initialized with zeros.
@@ -71,20 +71,19 @@ typedef struct era_joint_trajectory_t {
 void era_joint_init_state(
   era_joint_state_p state);
 
-/** \brief Initialize a joint space trajectory
-  * \param[in] trajectory The joint space trajectory to be initialized
-  *   with zero states.
-  * \param[in] num_points The number of joint space trajectory points.
+/** \brief Initialize a joint space path
+  * \param[in] path The joint space path to be initialized with zero states.
+  * \param[in] num_points The number of joint space path points.
   */
-void era_joint_init_trajectory(
-  era_joint_trajectory_p trajectory,
+void era_joint_init_path(
+  era_joint_path_p path,
   ssize_t num_points);
 
-/** \brief Destroy a joint space trajectory
-  * \param[in] trajectory The joint space trajectory to be destroyed.
+/** \brief Destroy a joint space path
+  * \param[in] path The joint space path to be destroyed.
   */
-void era_joint_destroy_trajectory(
-  era_joint_trajectory_p trajectory);
+void era_joint_destroy_path(
+  era_joint_path_p path);
 
 /** \brief Print a joint space state
   * \param[in] stream The output stream that will be used for printing the
@@ -95,36 +94,36 @@ void era_joint_print_state(
   FILE* stream,
   era_joint_state_p state);
 
-/** \brief Print a joint space trajectory
+/** \brief Print a joint space path
   * \param[in] stream The output stream that will be used for printing the
-  *   joint space trajectory.
-  * \param[in] trajectory The joint space trajectory that will be printed.
+  *   joint space path.
+  * \param[in] path The joint space path that will be printed.
   */
-void era_joint_print_trajectory(
+void era_joint_print_path(
   FILE* stream,
-  era_joint_trajectory_p trajectory);
+  era_joint_path_p path);
 
-/** \brief Read joint space trajectory from file
-  * \note A trajectory will be allocated and must be destroyed by the caller.
+/** \brief Read joint space path from file
+  * \note A path will be allocated and must be destroyed by the caller.
   * \param[in] filename The name of the file containing the joint
-  *   space trajectory.
-  * \param[out] trajectory The read joint space trajectory.
-  * \return The number of joint space trajectory points read from the file
+  *   space path.
+  * \param[out] path The read joint space path.
+  * \return The number of joint space path points read from the file
   *   or the negative error code.
   */
-int era_joint_read_trajectory(
+int era_joint_read_path(
   const char* filename,
-  era_joint_trajectory_p trajectory);
+  era_joint_path_p path);
 
-/** \brief Write joint space trajectory to file
-  * \param[in] filename The name of the file the joint space trajectory
+/** \brief Write joint space path to file
+  * \param[in] filename The name of the file the joint space path
   *   will be written to.
-  * \param[in] trajectory The joint space trajectory to be written.
-  * \return The number of joint space trajectory points written to the file
+  * \param[in] path The joint space path to be written.
+  * \return The number of joint space path points written to the file
   *   or the negative error code.
   */
-int era_joint_write_trajectory(
+int era_joint_write_path(
   const char* filename,
-  era_joint_trajectory_p trajectory);
+  era_joint_path_p path);
 
 #endif

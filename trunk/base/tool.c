@@ -36,35 +36,34 @@ void era_tool_init_state(era_tool_state_p state) {
   memset(state, 0, sizeof(era_tool_state_t));
 }
 
-void era_tool_init_trajectory(era_tool_trajectory_p trajectory,
-  ssize_t num_points) {
+void era_tool_init_path(era_tool_path_p path, ssize_t num_points) {
   int i;
 
-  trajectory->num_points = num_points;
+  path->num_points = num_points;
 
   if (num_points) {
-    trajectory->points = malloc(num_points*sizeof(era_tool_trajectory_t));
-    trajectory->timestamps = malloc(num_points*sizeof(double));
+    path->points = malloc(num_points*sizeof(era_tool_path_t));
+    path->timestamps = malloc(num_points*sizeof(double));
 
     for (i = 0; i < num_points; ++i) {
-      era_tool_init_state(&trajectory->points[i]);
-      trajectory->timestamps[i] = 0.0;
+      era_tool_init_state(&path->points[i]);
+      path->timestamps[i] = 0.0;
     }
   }
   else {
-    trajectory->points = 0;
-    trajectory->timestamps = 0;
+    path->points = 0;
+    path->timestamps = 0;
   }
 }
 
-void era_tool_destroy_trajectory(era_tool_trajectory_p trajectory) {
-  if (trajectory->num_points) {
-    free(trajectory->points);
-    free(trajectory->timestamps);
+void era_tool_destroy_path(era_tool_path_p path) {
+  if (path->num_points) {
+    free(path->points);
+    free(path->timestamps);
 
-    trajectory->num_points = 0;
-    trajectory->points = 0;
-    trajectory->timestamps = 0;
+    path->num_points = 0;
+    path->points = 0;
+    path->timestamps = 0;
   }
 }
 
@@ -83,8 +82,7 @@ void era_tool_print_state(FILE* stream, era_tool_state_p state) {
     "opening", rad_to_deg(state->opening));
 }
 
-void era_tool_print_trajectory(FILE* stream, era_tool_trajectory_p
-  trajectory) {
+void era_tool_print_path(FILE* stream, era_tool_path_p path) {
   fprintf(stream, "%14s  %14s  %14s  %14s  %14s  %14s\n",
     "x",
     "y",
@@ -94,20 +92,19 @@ void era_tool_print_trajectory(FILE* stream, era_tool_trajectory_p
     "opening");
 
   int i;
-  for (i = 0; i < trajectory->num_points; i++) {
+  for (i = 0; i < path->num_points; i++) {
     fprintf(stream,
       "%12.4f m  %12.4f m  %12.4f m  %12.2f deg  %12.2f deg  %12.2f deg\n",
-      trajectory->points[i].x,
-      trajectory->points[i].y,
-      trajectory->points[i].z,
-      rad_to_deg(trajectory->points[i].yaw),
-      rad_to_deg(trajectory->points[i].roll),
-      rad_to_deg(trajectory->points[i].opening));
+      path->points[i].x,
+      path->points[i].y,
+      path->points[i].z,
+      rad_to_deg(path->points[i].yaw),
+      rad_to_deg(path->points[i].roll),
+      rad_to_deg(path->points[i].opening));
   }
 }
 
-int era_tool_read_trajectory(const char* filename, era_tool_trajectory_p
-  trajectory) {
+int era_tool_read_path(const char* filename, era_tool_path_p path) {
   int i, result;
   FILE* file;
   char buffer[1024];
@@ -115,7 +112,7 @@ int era_tool_read_trajectory(const char* filename, era_tool_trajectory_p
   era_tool_state_t point;
   double timestamp;
 
-  era_tool_init_trajectory(trajectory, 0);
+  era_tool_init_path(path, 0);
 
   file = fopen(filename, "r");
   if (file == NULL)
@@ -137,45 +134,43 @@ int era_tool_read_trajectory(const char* filename, era_tool_trajectory_p
         return -ERA_TOOL_ERROR_FILE_FORMAT;
       }
 
-      trajectory->points = realloc(trajectory->points,
-        (trajectory->num_points+1)*sizeof(era_tool_state_t));
-      trajectory->points[trajectory->num_points] = point;
+      path->points = realloc(path->points,
+        (path->num_points+1)*sizeof(era_tool_state_t));
+      path->points[path->num_points] = point;
 
       if (result == 7) {
-        trajectory->timestamps = realloc(trajectory->timestamps,
-          (trajectory->num_points+1)*sizeof(double));
-        trajectory->timestamps[trajectory->num_points] = timestamp;
+        path->timestamps = realloc(path->timestamps,
+          (path->num_points+1)*sizeof(double));
+        path->timestamps[path->num_points] = timestamp;
       }
 
-      ++trajectory->num_points;
+      ++path->num_points;
     }
   }
 
   fclose(file);
 
-  return trajectory->num_points;
+  return path->num_points;
 }
 
-int era_tool_write_trajectory(const char* filename, era_tool_trajectory_p
-  trajectory) {
+int era_tool_write_path(const char* filename, era_tool_path_p path) {
   int i;
   FILE* file;
   char buffer[1024];
 
   file = fopen(filename, "w");
-
   if (file == NULL)
     return -ERA_TOOL_ERROR_FILE_CREATE;
 
-  for (i = 0; i < trajectory->num_points; ++i) {
+  for (i = 0; i < path->num_points; ++i) {
     sprintf(buffer, "%.6f %.6f %.6f %.6f %.6f %.6f %.6f\n",
-      trajectory->points[i].x,
-      trajectory->points[i].y,
-      trajectory->points[i].z,
-      trajectory->points[i].yaw,
-      trajectory->points[i].roll,
-      trajectory->points[i].opening,
-      trajectory->timestamps[i]);
+      path->points[i].x,
+      path->points[i].y,
+      path->points[i].z,
+      path->points[i].yaw,
+      path->points[i].roll,
+      path->points[i].opening,
+      path->timestamps[i]);
 
     if (fputs(buffer, file) <= 0) {
       fclose(file);
@@ -185,5 +180,5 @@ int era_tool_write_trajectory(const char* filename, era_tool_trajectory_p
 
   fclose(file);
 
-  return trajectory->num_points;
+  return path->num_points;
 }

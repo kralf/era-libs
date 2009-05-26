@@ -69,15 +69,15 @@ int era_kinematics_limits_test_state(
   era_kinematics_limits_p limits,
   era_joint_state_p state);
 
-/** \brief Test a joint space trajectory against kinematic limits
-  * \param[in] limits The kinematic limits the given trajectory will be
+/** \brief Test a joint space path against kinematic limits
+  * \param[in] limits The kinematic limits the given path will be
   *   tested against.
-  * \param[in] trajectory The joint space trajectory that will be tested
-  *   against the specified kinematic limits.
-  * \return The number of bad trajectory points.
+  * \param[in] path The joint space path that will be tested against the 
+  *   specified kinematic limits.
+  * \return The number of bad path points.
   */
-ssize_t era_kinematics_limits_test_trajectory(
+ssize_t era_kinematics_limits_test_path(
   era_kinematics_limits_p limits,
-  era_joint_trajectory_p trajectory);
+  era_joint_path_p path);
 
 #endif

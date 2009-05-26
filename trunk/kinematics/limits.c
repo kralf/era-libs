@@ -54,17 +54,17 @@ int era_kinematics_limits_test_state(era_kinematics_limits_p limits,
   return ERA_KINEMATICS_LIMITS_ERROR_NONE;
 }
 
-ssize_t era_kinematics_limits_test_trajectory(era_kinematics_limits_p limits,
-  era_joint_trajectory_p trajectory) {
-  trajectory->num_limit_errors = 0;
+ssize_t era_kinematics_limits_test_path(era_kinematics_limits_p limits,
+  era_joint_path_p path) {
+  path->num_limit_errors = 0;
 
   int i;
-  for (i = 0; i < trajectory->num_points; ++i) {
-    trajectory->limit_errors[i] = era_kinematics_limits_test_state(limits,
-      &trajectory->points[i]);
-    trajectory->num_limit_errors +=
-      (trajectory->limit_errors[i] != ERA_KINEMATICS_LIMITS_ERROR_NONE);
+  for (i = 0; i < path->num_points; ++i) {
+    path->limit_errors[i] = era_kinematics_limits_test_state(limits,
+      &path->points[i]);
+    path->num_limit_errors +=
+      (path->limit_errors[i] != ERA_KINEMATICS_LIMITS_ERROR_NONE);
   }
 
-  return trajectory->num_limit_errors;
+  return path->num_limit_errors;
 }

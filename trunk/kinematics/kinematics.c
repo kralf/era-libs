@@ -57,16 +57,14 @@ void era_kinematics_forward_state(era_geometry_p geometry, era_joint_state_p
   tool_state->opening = theta[5];
 }
 
-ssize_t era_kinematics_forward_trajectory(era_geometry_p geometry,
-  era_joint_trajectory_p joint_trajectory, era_tool_trajectory_p
-  tool_trajectory) {
+ssize_t era_kinematics_forward_path(era_geometry_p geometry, era_joint_path_p 
+  joint_path, era_tool_path_p tool_path) {
   int i;
-  ssize_t num_points = min(joint_trajectory->num_points,
-    tool_trajectory->num_points);
+  ssize_t num_points = min(joint_path->num_points, tool_path->num_points);
 
   for (i = 0; i < num_points; i++)
-    era_kinematics_forward_state(geometry, &joint_trajectory->points[i],
-      &tool_trajectory->points[i]);
+    era_kinematics_forward_state(geometry, &joint_path->points[i],
+      &tool_path->points[i]);
 
   return num_points;
 }
@@ -120,16 +118,14 @@ void era_kinematics_inverse_state(era_geometry_p geometry, era_tool_state_p
     joint_state->shoulder_roll = 0.1;
 }
 
-ssize_t era_kinematics_inverse_trajectory(era_geometry_p geometry,
-  era_tool_trajectory_p tool_trajectory, era_joint_trajectory_p
-  joint_trajectory) {
+ssize_t era_kinematics_inverse_path(era_geometry_p geometry, era_tool_path_p 
+  tool_path, era_joint_path_p joint_path) {
   int i;
-  ssize_t num_points = min(tool_trajectory->num_points,
-    joint_trajectory->num_points);
+  ssize_t num_points = min(tool_path->num_points, joint_path->num_points);
 
   for (i = 0; i < num_points; i++)
-    era_kinematics_inverse_state(geometry, &tool_trajectory->points[i],
-      &joint_trajectory->points[i]);
+    era_kinematics_inverse_state(geometry, &tool_path->points[i],
+      &joint_path->points[i]);
 
   return num_points;
 }

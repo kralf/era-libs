@@ -52,14 +52,14 @@ typedef struct era_tool_state_t {
   double opening;  //!< The tool's opening angle [rad].
 } era_tool_state_t, *era_tool_state_p;
 
-/** \brief Structure defining the tool space trajectory
+/** \brief Structure defining the tool space path
   */
-typedef struct era_tool_trajectory_t {
-  ssize_t num_points;          //!< The number of trajectory points.
+typedef struct era_tool_path_t {
+  ssize_t num_points;          //!< The number of path points.
 
-  era_tool_state_p points;     //!< The points of the tool space trajectory.
+  era_tool_state_p points;     //!< The points of the tool space path.
   double* timestamps;          //!< The associated timestamps in [s].
-} era_tool_trajectory_t, *era_tool_trajectory_p;
+} era_tool_path_t, *era_tool_path_p;
 
 /** \brief Initialize a tool space state
   * \param[in] state The tool space state to be initialized with zeros.
@@ -67,20 +67,19 @@ typedef struct era_tool_trajectory_t {
 void era_tool_init_state(
   era_tool_state_p state);
 
-/** \brief Initialize a tool space trajectory
-  * \param[in] trajectory The tool space trajectory to be initialized
-  *   with zero states.
-  * \param[in] num_points The number of tool space trajectory points.
+/** \brief Initialize a tool space path
+  * \param[in] path The tool space path to be initialized with zero states.
+  * \param[in] num_points The number of tool space path points.
   */
-void era_tool_init_trajectory(
-  era_tool_trajectory_p trajectory,
+void era_tool_init_path(
+  era_tool_path_p path,
   ssize_t num_points);
 
-/** \brief Destroy a tool space trajectory
-  * \param[in] trajectory The tool space trajectory to be destroyed.
+/** \brief Destroy a tool space path
+  * \param[in] path The tool space path to be destroyed.
   */
-void era_tool_destroy_trajectory(
-  era_tool_trajectory_p trajectory);
+void era_tool_destroy_path(
+  era_tool_path_p path);
 
 /** \brief Print a tool space state
   * \param[in] stream The output stream that will be used for printing the
@@ -91,36 +90,35 @@ void era_tool_print_state(
   FILE* stream,
   era_tool_state_p state);
 
-/** \brief Print a tool space trajectory
+/** \brief Print a tool space path
   * \param[in] stream The output stream that will be used for printing the
-  *   tool space trajectory.
-  * \param[in] trajectory The tool space trajectory that will be printed.
+  *   tool space path.
+  * \param[in] path The tool space path that will be printed.
   */
-void era_tool_print_trajectory(
+void era_tool_print_path(
   FILE* stream,
-  era_tool_trajectory_p trajectory);
+  era_tool_path_p path);
 
-/** \brief Read tool space trajectory from file
-  * \note A trajectory will be allocated and must be destroyed by the caller.
-  * \param[in] filename The name of the file containing the tool
-  *   space trajectory.
-  * \param[out] trajectory The read tool space trajectory.
-  * \return The number of tool space trajectory points read from the file
+/** \brief Read tool space path from file
+  * \note A path will be allocated and must be destroyed by the caller.
+  * \param[in] filename The name of the file containing the tool space path.
+  * \param[out] path The read tool space path.
+  * \return The number of tool space path points read from the file
   *   or the negative error code.
   */
-int era_tool_read_trajectory(
+int era_tool_read_path(
   const char* filename,
-  era_tool_trajectory_p trajectory);
+  era_tool_path_p path);
 
-/** \brief Write tool space trajectory to file
-  * \param[in] filename The name of the file the tool space trajectory
+/** \brief Write tool space path to file
+  * \param[in] filename The name of the file the tool space path
   *   will be written to.
-  * \param[in] trajectory The tool space trajectory to be written.
-  * \return The number of tool space trajectory points written to the file
+  * \param[in] path The tool space path to be written.
+  * \return The number of tool space path points written to the file
   *   or the negative error code.
   */
-int era_tool_write_trajectory(
+int era_tool_write_path(
   const char* filename,
-  era_tool_trajectory_p trajectory);
+  era_tool_path_p path);
 
 #endif

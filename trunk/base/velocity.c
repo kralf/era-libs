@@ -179,7 +179,6 @@ int era_velocity_write_profile(const char* filename, era_velocity_profile_p
   char buffer[1024];
 
   file = fopen(filename, "w");
-
   if (file == NULL)
     return -ERA_VELOCITY_ERROR_FILE_CREATE;
 

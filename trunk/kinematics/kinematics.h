@@ -42,20 +42,20 @@ void era_kinematics_forward_state(
   era_joint_state_p joint_state,
   era_tool_state_p tool_state);
 
-/** \brief Calculate forward kinematics for a trajectory
+/** \brief Calculate forward kinematics for a path
   * \note The trajectories should be equal in the number of points.
   * \param[in] geometry The arm geometry that will be considered in the
   *   forward kinematic calculations.
-  * \param[in] joint_trajectory The joint space trajectory for which the tool
-  *   space trajectory will be calculated.
-  * \param[out] tool_trajectory The tool space trajectory that results from
-  *   the forward kinematic calculations.
-  * \return The number of converted trajectory points.
+  * \param[in] joint_path The joint space path for which the tool space 
+  *   path will be calculated.
+  * \param[out] tool_path The tool space path that results from the 
+  *   forward kinematic calculations.
+  * \return The number of converted path points.
   */
-ssize_t era_kinematics_forward_trajectory(
+ssize_t era_kinematics_forward_path(
   era_geometry_p geometry,
-  era_joint_trajectory_p joint_trajectory,
-  era_tool_trajectory_p tool_trajectory);
+  era_joint_path_p joint_path,
+  era_tool_path_p tool_path);
 
 /** \brief Calculate inverse kinematics for a single state
   * \param[in] geometry The arm geometry that will be considered in the
@@ -70,20 +70,20 @@ void era_kinematics_inverse_state(
   era_tool_state_p tool_state,
   era_joint_state_p joint_state);
 
-/** \brief Calculate inverse kinematics for a trajectory
+/** \brief Calculate inverse kinematics for a path
   * \note The trajectories should be equal in the number of points.
   * \param[in] geometry The arm geometry that will be considered in the
   *   inverse kinematic calculations.
-  * \param[in] tool_trajectory The tool space trajectory for which the joint
-  *   space trajectory will be calculated.
-  * \param[out] joint_trajectory The joint space trajectory that results from
+  * \param[in] tool_path The tool space path for which the joint space 
+  *   path will be calculated.
+  * \param[out] joint_path The joint space path that results from
   *   the inverse kinematic calculations.
-  * \return The number of converted trajectory points.
+  * \return The number of converted path points.
   */
-ssize_t era_kinematics_inverse_trajectory(
+ssize_t era_kinematics_inverse_path(
   era_geometry_p geometry,
-  era_tool_trajectory_p tool_trajectory,
-  era_joint_trajectory_p joint_trajectory);
+  era_tool_path_p tool_path,
+  era_joint_path_p joint_path);
 
 /** \brief Calculate and set the tool's yaw angle
   * \param[in,out] tool_state The tool space state for which the yaw angle 

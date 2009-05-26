@@ -36,47 +36,47 @@ void era_joint_init_state(era_joint_state_p state) {
   memset(state, 0, sizeof(era_joint_state_t));
 }
 
-void era_joint_init_trajectory(era_joint_trajectory_p trajectory,
+void era_joint_init_path(era_joint_path_p path,
   ssize_t num_points) {
   int i;
 
-  trajectory->num_points = num_points;
-  trajectory->num_limit_errors = 0;
+  path->num_points = num_points;
+  path->num_limit_errors = 0;
 
   if (num_points) {
-    trajectory->points = malloc(num_points*sizeof(era_joint_trajectory_t));
-    trajectory->timestamps = malloc(num_points*sizeof(double));
+    path->points = malloc(num_points*sizeof(era_joint_path_t));
+    path->timestamps = malloc(num_points*sizeof(double));
 
-    trajectory->limit_errors = malloc(num_points*sizeof(int));
+    path->limit_errors = malloc(num_points*sizeof(int));
 
     for (i = 0; i < num_points; ++i) {
-      era_joint_init_state(&trajectory->points[i]);
-      trajectory->timestamps[i] = 0.0;
+      era_joint_init_state(&path->points[i]);
+      path->timestamps[i] = 0.0;
 
-      trajectory->limit_errors = ERA_JOINT_ERROR_NONE;
+      path->limit_errors = ERA_JOINT_ERROR_NONE;
     }
   }
   else {
-    trajectory->points = 0;
-    trajectory->timestamps = 0;
+    path->points = 0;
+    path->timestamps = 0;
 
-    trajectory->limit_errors = 0;
+    path->limit_errors = 0;
   }
 }
 
-void era_joint_destroy_trajectory(era_joint_trajectory_p trajectory) {
-  if (trajectory->num_points) {
-    free(trajectory->points);
-    free(trajectory->timestamps);
+void era_joint_destroy_path(era_joint_path_p path) {
+  if (path->num_points) {
+    free(path->points);
+    free(path->timestamps);
 
-    free(trajectory->limit_errors);
+    free(path->limit_errors);
 
-    trajectory->num_points = 0;
-    trajectory->points = 0;
-    trajectory->timestamps = 0;
+    path->num_points = 0;
+    path->points = 0;
+    path->timestamps = 0;
 
-    trajectory->num_limit_errors = 0;
-    trajectory->limit_errors = 0;
+    path->num_limit_errors = 0;
+    path->limit_errors = 0;
   }
 }
 
@@ -95,8 +95,7 @@ void era_joint_print_state(FILE* stream, era_joint_state_p state) {
     "tool_opening", rad_to_deg(state->tool_opening));
 }
 
-void era_joint_print_trajectory(FILE* stream, era_joint_trajectory_p
-  trajectory) {
+void era_joint_print_path(FILE* stream, era_joint_path_p path) {
   fprintf(stream, "%14s  %14s  %14s  %14s  %14s  %14s  %12s\n",
     "shoulder_yaw",
     "shoulder_roll",
@@ -107,22 +106,21 @@ void era_joint_print_trajectory(FILE* stream, era_joint_trajectory_p
     "limit_error");
 
   int i;
-  for (i = 0; i < trajectory->num_points; i++) {
+  for (i = 0; i < path->num_points; i++) {
     fprintf(stream,
       "%12.2f deg  %12.2f deg  %12.2f deg  %12.2f deg  %12.2f deg  "
       "%12.2f deg  %12d\n",
-      rad_to_deg(trajectory->points[i].shoulder_yaw),
-      rad_to_deg(trajectory->points[i].shoulder_roll),
-      rad_to_deg(trajectory->points[i].shoulder_pitch),
-      rad_to_deg(trajectory->points[i].elbow_pitch),
-      rad_to_deg(trajectory->points[i].tool_roll),
-      rad_to_deg(trajectory->points[i].tool_opening),
-      trajectory->limit_errors[i]);
+      rad_to_deg(path->points[i].shoulder_yaw),
+      rad_to_deg(path->points[i].shoulder_roll),
+      rad_to_deg(path->points[i].shoulder_pitch),
+      rad_to_deg(path->points[i].elbow_pitch),
+      rad_to_deg(path->points[i].tool_roll),
+      rad_to_deg(path->points[i].tool_opening),
+      path->limit_errors[i]);
   }
 }
 
-int era_joint_read_trajectory(const char* filename, era_joint_trajectory_p
-  trajectory) {
+int era_joint_read_path(const char* filename, era_joint_path_p path) {
   int i, result;
   FILE* file;
   char buffer[1024];
@@ -130,7 +128,7 @@ int era_joint_read_trajectory(const char* filename, era_joint_trajectory_p
   era_joint_state_t point;
   double timestamp;
 
-  era_joint_init_trajectory(trajectory, 0);
+  era_joint_init_path(path, 0);
 
   file = fopen(filename, "r");
   if (file == NULL)
@@ -152,49 +150,47 @@ int era_joint_read_trajectory(const char* filename, era_joint_trajectory_p
         return -ERA_JOINT_ERROR_FILE_FORMAT;
       }
 
-      trajectory->points = realloc(trajectory->points,
-        (trajectory->num_points+1)*sizeof(era_joint_state_t));
-      trajectory->points[trajectory->num_points] = point;
+      path->points = realloc(path->points,
+        (path->num_points+1)*sizeof(era_joint_state_t));
+      path->points[path->num_points] = point;
 
       if (result == 7) {
-        trajectory->timestamps = realloc(trajectory->timestamps,
-          (trajectory->num_points+1)*sizeof(double));
-        trajectory->timestamps[trajectory->num_points] = timestamp;
+        path->timestamps = realloc(path->timestamps,
+          (path->num_points+1)*sizeof(double));
+        path->timestamps[path->num_points] = timestamp;
       }
 
-      trajectory->limit_errors = realloc(trajectory->limit_errors,
-        (trajectory->num_points+1)*sizeof(int));
-      trajectory->limit_errors[trajectory->num_points] = 0;
+      path->limit_errors = realloc(path->limit_errors,
+        (path->num_points+1)*sizeof(int));
+      path->limit_errors[path->num_points] = 0;
 
-      ++trajectory->num_points;
+      ++path->num_points;
     }
   }
 
   fclose(file);
 
-  return trajectory->num_points;
+  return path->num_points;
 }
 
-int era_joint_write_trajectory(const char* filename, era_joint_trajectory_p
-  trajectory) {
+int era_joint_write_path(const char* filename, era_joint_path_p path) {
   int i;
   FILE* file;
   char buffer[1024];
 
   file = fopen(filename, "w");
-
   if (file == NULL)
     return -ERA_JOINT_ERROR_FILE_CREATE;
 
-  for (i = 0; i < trajectory->num_points; ++i) {
+  for (i = 0; i < path->num_points; ++i) {
     sprintf(buffer, "%.6f %.6f %.6f %.6f %.6f %.6f %.6f\n",
-      trajectory->points[i].shoulder_yaw,
-      trajectory->points[i].shoulder_roll,
-      trajectory->points[i].shoulder_pitch,
-      trajectory->points[i].elbow_pitch,
-      trajectory->points[i].tool_roll,
-      trajectory->points[i].tool_opening,
-      trajectory->timestamps[i]);
+      path->points[i].shoulder_yaw,
+      path->points[i].shoulder_roll,
+      path->points[i].shoulder_pitch,
+      path->points[i].elbow_pitch,
+      path->points[i].tool_roll,
+      path->points[i].tool_opening,
+      path->timestamps[i]);
 
     if (fputs(buffer, file) <= 0) {
       fclose(file);
@@ -204,5 +200,5 @@ int era_joint_write_trajectory(const char* filename, era_joint_trajectory_p
 
   fclose(file);
 
-  return trajectory->num_points;
+  return path->num_points;
 }
