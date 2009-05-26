@@ -22,21 +22,13 @@
 #include <signal.h>
 
 #include <control/closed_loop.h>
-#include <control/sensors.h>
 
-thread_t control_thread, sensor_thread;
+thread_t control_thread;
 
 int quit = 0;
 
 void era_signaled(int signal) {
   era_control_closed_loop_exit(&control_thread);
-}
-
-void era_sensors_handle(era_joint_state_p joint_state, era_velocity_state_p 
-  vel_state, double frequency) {
-  era_joint_print_state(stdout, joint_state);
-  fprintf(stdout, "sensor thread frequency %5.1f Hz\n", frequency);
-  fprintf(stdout, "%c[7A\r", 0x1B);
 }
 
 int main(int argc, char **argv) {
@@ -64,13 +56,8 @@ int main(int argc, char **argv) {
   if (era_open(&arm))
     return -1;
   if (!(result = era_control_closed_loop_start(&control_thread, &arm, 
-    &mutex, &trajectory, freq))) {
-    era_control_sensors_start(&sensor_thread, &arm, &mutex, 
-      era_sensors_handle, freq);
+    &mutex, &trajectory, freq)))
     thread_wait_exit(&control_thread);
-    era_control_sensors_exit(&sensor_thread);
-    fprintf(stdout, "%c[7B\n", 0x1B);
-  }
   else
     fprintf(stderr, "%s\n", era_control_closed_loop_errors[result]);
   era_close(&arm);

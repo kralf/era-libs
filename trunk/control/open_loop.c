@@ -72,26 +72,42 @@ void era_control_open_loop_exit(thread_p thread) {
 
 void* era_control_open_loop_run(void* arg) {
   double time = 0.0;
-  era_velocity_state_t vel_state;
+  era_joint_state_t act_joint_state, dem_joint_state;
+  era_velocity_state_t dem_vel_state;
   era_control_open_loop_arg_p control_arg = arg;
+
+  double* act_joint_state_a = (double*)&act_joint_state;
+  double* dem_joint_state_a = (double*)&dem_joint_state;
+  double* dem_vel_state_a = (double*)&dem_vel_state;
 
   if (control_arg->start_time == 0.0)
     timer_start(&control_arg->start_time);
   else
     time = timer_stop(control_arg->start_time);
 
-  thread_mutex_lock(control_arg->mutex);
   control_arg->seg_index = era_trajectory_evaluate(control_arg->trajectory, 
-    time, control_arg->seg_index, 0, &vel_state, 0);
-
+    time, control_arg->seg_index, &dem_joint_state, &dem_vel_state, 0);
   if (control_arg->seg_index < 0) {
-    thread_mutex_unlock(control_arg->mutex);
     thread_self_exit();
+    return 0;
   }
-  else {
-    era_motors_velocity_set_state(&control_arg->arm->motors, &vel_state);
-    thread_mutex_unlock(control_arg->mutex);
+
+  thread_mutex_lock(control_arg->mutex);
+  era_get_joint_state(control_arg->arm, &act_joint_state);
+
+  int i;
+  fprintf(stdout, "%lf ", timer_stop(control_arg->start_time));
+  for (i = 0; i < sizeof(era_joint_state_t)/sizeof(double); ++i) {
+    fprintf(stdout, "%lf %lf %lf ", 
+      act_joint_state_a[i], 
+      dem_joint_state_a[i], 
+      dem_vel_state_a[i]);
   }
+  fprintf(stdout, "\n");
+
+  if ((time < 2.0) || (time > 3.0))
+    era_motors_velocity_set_state(&control_arg->arm->motors, &dem_vel_state);
+  thread_mutex_unlock(control_arg->mutex);
 
   return 0;
 }

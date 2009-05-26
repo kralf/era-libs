@@ -30,15 +30,46 @@
 #include <base/era.h>
 #include <base/trajectory.h>
 
+/** \brief Predefined closed-loop control constants
+  */
+#define ERA_CONTROL_CLOSED_LOOP_PARAMETER_P         "p-gain"
+#define ERA_CONTROL_CLOSED_LOOP_PARAMETER_I         "i-gain"
+
 /** \brief Predefined closed-loop control error codes
   */
-#define ERA_CONTROL_CLOSED_LOOP_ERROR_NONE               0
-#define ERA_CONTROL_CLOSED_LOOP_ERROR_START              1
-#define ERA_CONTROL_CLOSED_LOOP_ERROR_LIMITS             2
+#define ERA_CONTROL_CLOSED_LOOP_ERROR_NONE          0
+#define ERA_CONTROL_CLOSED_LOOP_ERROR_START         1
+#define ERA_CONTROL_CLOSED_LOOP_ERROR_LIMITS        2
 
 /** \brief Predefined closed-loop control error descriptions
   */
 extern const char* era_control_closed_loop_errors[];
+
+/** \brief Structure defining a closed-loop controller's P-gain
+  */
+typedef struct era_control_closed_loop_p_t {
+  double shoulder_yaw;              //!< The shoulder yaw P-gain.
+  double shoulder_roll;             //!< The shoulder roll P-gain.
+  double shoulder_pitch;            //!< The shoulder pitch P-gain.
+
+  double elbow_pitch;               //!< The elbow pitch P-gain.
+
+  double tool_roll;                 //!< The tool roll P-gain.
+  double tool_opening;              //!< The tool opening P-gain.
+} era_control_closed_loop_p_t, *era_control_closed_loop_p_p;
+
+/** \brief Structure defining a closed-loop controller's P-gain
+  */
+typedef struct era_control_closed_loop_i_t {
+  double shoulder_yaw;              //!< The shoulder yaw I-gain.
+  double shoulder_roll;             //!< The shoulder roll I-gain.
+  double shoulder_pitch;            //!< The shoulder pitch I-gain.
+
+  double elbow_pitch;               //!< The elbow pitch I-gain.
+
+  double tool_roll;                 //!< The tool roll I-gain.
+  double tool_opening;              //!< The tool opening I-gain.
+} era_control_closed_loop_i_t, *era_control_closed_loop_i_p;
 
 /** \brief Structure defining the closed-loop controller's thread arguments 
   */
@@ -48,8 +79,15 @@ typedef struct era_control_closed_loop_arg_t {
 
   era_trajectory_p trajectory;      //!< The trajectory to be executed.
 
+  era_control_closed_loop_p_t p;    //!< The controller's P-gain.
+  era_control_closed_loop_i_t i;    //!< The controller's I-gain.
+
   int seg_index;                    //!< The recent trajectory segment index.
-  double start_time;                //!< The controller's start time.
+  double start_time;                //!< The controller's start time in [s].
+
+  era_joint_state_t error;          //!< The recent control error.
+  era_velocity_state_t output;      //!< The recent control output.
+  double timestamp;                 //!< The most recent timestamp in [s].
 } era_control_closed_loop_arg_t, *era_control_closed_loop_arg_p;
 
 /** \brief Start a closed-loop control thread
