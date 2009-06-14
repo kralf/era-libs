@@ -166,7 +166,6 @@ void* era_control_closed_loop_run(void* arg) {
 
   int i;
   double t_s = (timestamp > 0.0) ? control_arg->timestamp-timestamp : 0.0;
-  fprintf(stdout, "%lf ", control_arg->timestamp-control_arg->start_time);
   for (i = 0; i < sizeof(era_joint_state_t)/sizeof(double); ++i) {
     double e = dem_joint_state_a[i]-act_joint_state_a[i];
     double a = p_a[i]*(0.5*t_s/i_a[i]+1.0);
@@ -178,16 +177,10 @@ void* era_control_closed_loop_run(void* arg) {
 
     error_a[i] = e;
     output_a[i] = u;
-
-    fprintf(stdout, "%lf %lf %lf ", 
-      act_joint_state_a[i], 
-      dem_joint_state_a[i], 
-      dem_vel_state_a[i]);
   }
-  fprintf(stdout, "\n");
 
-  if ((time < 2.0) || (time > 3.0))
-    era_motors_velocity_set_state(&control_arg->arm->motors, &dem_vel_state);
+  era_motors_velocity_set_state(&control_arg->arm->motors, &dem_vel_state);
+
   thread_mutex_unlock(control_arg->mutex);
 
   return 0;
