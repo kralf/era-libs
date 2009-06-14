@@ -1,6 +1,6 @@
 CFLAGS += -I../drivers/vanilla/epos -I../drivers/vanilla/can \
 	-I../posix/config -I../ -fPIC
-LDFLAGS += -L../motors -lera-motors
+LDFLAGS +=
 
 PREFIX = /usr/local
 OBJECTS = security.o
