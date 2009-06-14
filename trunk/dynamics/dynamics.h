@@ -55,7 +55,7 @@ void era_dynamics_linear_state(
   * \return The number of calculated profile points.
   */
 ssize_t era_dynamics_linear_profile(
-  era_joint_trajectory_p trajectory,
+  era_joint_path_p trajectory,
   era_velocity_profile_p profile);
 
 /** \brief Calculate the velocity space state of a linear limit motion
@@ -94,7 +94,7 @@ double era_dynamics_limit_state(
   * \return The number of calculated profile points.
   */
 ssize_t era_dynamics_limit_profile(
-  era_joint_trajectory_p trajectory,
+  era_joint_path_p trajectory,
   era_dynamics_limits_p limits,
   double vel_factor,
   era_velocity_profile_p profile);

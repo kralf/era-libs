@@ -35,7 +35,7 @@ void era_dynamics_linear_state(era_joint_state_p start_state,
     omega[i] = (theta_target[i]-theta_start[i])/time;
 }
 
-ssize_t era_dynamics_linear_profile(era_joint_trajectory_p trajectory,
+ssize_t era_dynamics_linear_profile(era_joint_path_p trajectory,
   era_velocity_profile_p profile) {
   int i;
   ssize_t num_points = min(trajectory->num_points, profile->num_points);
@@ -88,7 +88,7 @@ double era_dynamics_limit_state(era_joint_state_p start_state,
   return dtheta_max/domega_max;
 }
 
-ssize_t era_dynamics_limit_profile(era_joint_trajectory_p trajectory,
+ssize_t era_dynamics_limit_profile(era_joint_path_p trajectory,
   era_dynamics_limits_p limits, double vel_factor, era_velocity_profile_p
   profile) {
   int i;
