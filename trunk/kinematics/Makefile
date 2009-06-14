@@ -1,5 +1,5 @@
 CFLAGS += -I../ -fPIC
-LDFLAGS += -L../base -lera-base
+LDFLAGS +=
 
 PREFIX = /usr/local
 OBJECTS = kinematics.o limits.o
