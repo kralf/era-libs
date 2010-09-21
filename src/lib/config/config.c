@@ -221,13 +221,14 @@ void era_config_init_arg(era_config_p config, int argc, char **argv,
       ERA_CONFIG_ARG_PREFIX, era_config_joint_prefixes[i]);
 
   if (config_init_arg(&config->arm, argc, argv, arm_prefix)) {
-    config_print_help(stdout, &can_default_config, CAN_CONFIG_ARG_PREFIX);
     config_print_help(stdout, &era_config_default.arm, arm_prefix);
     
     config_p default_joint_config_a = (config_p)&era_config_default.joints;
     for (i = 0; i < sizeof(era_config_joint_t)/sizeof(config_t); ++i)
       config_print_help(stdout, &default_joint_config_a[i], joint_prefixes[i]);
     exit(0);
+
+    config_print_help(stdout, &can_default_config, CAN_CONFIG_ARG_PREFIX);
   }
     
   config_init_arg(&config->arm, argc, argv, arm_prefix);
