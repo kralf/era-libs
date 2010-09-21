@@ -22,7 +22,6 @@
 #include <string.h>
 
 #include "base/global.h"
-#include "config/parameters.h"
 #include "kinematics/kinematics.h"
 #include "motors/position_profile.h"
 
@@ -37,162 +36,8 @@ const char* era_errors[] = {
   "ERA limit error",
 };
 
-param_t era_default_global_params[] = {
-  {ERA_PARAMETER_ARM_SECURITY_FUNC, "0"},
-  {ERA_PARAMETER_ARM_ESTOP_CHANNEL, "5"},
-  {ERA_PARAMETER_ARM_SWITCH_CHANNEL, "6"},
-  {ERA_PARAMETER_ARM_UPPER_LENGTH, "0.2305"},
-  {ERA_PARAMETER_ARM_LOWER_LENGTH, "0.224"},
-  {ERA_PARAMETER_ARM_TOOL_LENGTH, "0.188"},
-};
-
-param_t era_default_shoulder_yaw_joint_params[] = {
-  {EPOS_PARAMETER_ID, "1"},
-  {EPOS_PARAMETER_SENSOR_TYPE, "1"},
-  {EPOS_PARAMETER_SENSOR_PULSES, "500"},
-  {EPOS_PARAMETER_MOTOR_CURRENT, "2.5"},
-  {EPOS_PARAMETER_GEAR_TRANSMISSION, "-460.0"},
-
-  {EPOS_PARAMETER_HOME_METHOD, "2"},
-  {EPOS_PARAMETER_HOME_CURRENT, "1.7"},
-  {EPOS_PARAMETER_HOME_VELOCITY, "3.0"},
-  {EPOS_PARAMETER_HOME_ACCELERATION, "3.0"},
-  {EPOS_PARAMETER_HOME_POSITION, "0.0"},
-
-  {ERA_PARAMETER_JOINT_MIN_POSITION, "-70.5"},
-  {ERA_PARAMETER_JOINT_MAX_POSITION, "28.1"},
-  {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
-  {ERA_PARAMETER_JOINT_MAX_VELOCITY, "20.0"},
-  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-20.0"},
-  {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "20.0"},
-};
-
-param_t era_default_shoulder_roll_joint_params[] = {
-  {EPOS_PARAMETER_ID, "2"},
-  {EPOS_PARAMETER_SENSOR_TYPE, "1"},
-  {EPOS_PARAMETER_SENSOR_PULSES, "500"},
-  {EPOS_PARAMETER_MOTOR_CURRENT, "2.5"},
-  {EPOS_PARAMETER_GEAR_TRANSMISSION, "-415.0"},
-
-  {EPOS_PARAMETER_HOME_METHOD, "1"},
-  {EPOS_PARAMETER_HOME_CURRENT, "1.2"},
-  {EPOS_PARAMETER_HOME_VELOCITY, "2.5"},
-  {EPOS_PARAMETER_HOME_ACCELERATION, "2.5"},
-  {EPOS_PARAMETER_HOME_POSITION, "10.0"},
-
-  {ERA_PARAMETER_JOINT_MIN_POSITION, "0.0"},
-  {ERA_PARAMETER_JOINT_MAX_POSITION, "69.7"},
-  {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
-  {ERA_PARAMETER_JOINT_MAX_VELOCITY, "15.0"},
-  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-15.0"},
-  {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "15.0"},
-};
-
-param_t era_default_shoulder_pitch_joint_params[] = {
-  {EPOS_PARAMETER_ID, "3"},
-  {EPOS_PARAMETER_SENSOR_TYPE, "1"},
-  {EPOS_PARAMETER_SENSOR_PULSES, "500"},
-  {EPOS_PARAMETER_MOTOR_CURRENT, "2.5"},
-  {EPOS_PARAMETER_GEAR_TRANSMISSION, "400.0"},
-
-  {EPOS_PARAMETER_HOME_METHOD, "1"},
-  {EPOS_PARAMETER_HOME_CURRENT, "1.4"},
-  {EPOS_PARAMETER_HOME_VELOCITY, "2.0"},
-  {EPOS_PARAMETER_HOME_ACCELERATION, "2.0"},
-  {EPOS_PARAMETER_HOME_POSITION, "0.0"},
-
-  {ERA_PARAMETER_JOINT_MIN_POSITION, "-18.7"},
-  {ERA_PARAMETER_JOINT_MAX_POSITION, "65.7"},
-  {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
-  {ERA_PARAMETER_JOINT_MAX_VELOCITY, "15.0"},
-  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-15.0"},
-  {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "15.0"},
-};
-
-param_t era_default_elbow_pitch_joint_params[] = {
-  {EPOS_PARAMETER_ID, "4"},
-  {EPOS_PARAMETER_SENSOR_TYPE, "1"},
-  {EPOS_PARAMETER_SENSOR_PULSES, "500"},
-  {EPOS_PARAMETER_MOTOR_CURRENT, "2.0"},
-  {EPOS_PARAMETER_GEAR_TRANSMISSION, "400.0"},
-
-  {EPOS_PARAMETER_HOME_METHOD, "1"},
-  {EPOS_PARAMETER_HOME_CURRENT, "1.4"},
-  {EPOS_PARAMETER_HOME_VELOCITY, "2.0"},
-  {EPOS_PARAMETER_HOME_ACCELERATION, "2.0"},
-  {EPOS_PARAMETER_HOME_POSITION, "25.0"},
-
-  {ERA_PARAMETER_JOINT_MIN_POSITION, "0.9"},
-  {ERA_PARAMETER_JOINT_MAX_POSITION, "102.5"},
-  {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
-  {ERA_PARAMETER_JOINT_MAX_VELOCITY, "15.0"},
-  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-15.0"},
-  {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "15.0"},
-};
-
-param_t era_default_tool_roll_joint_params[] = {
-  {EPOS_PARAMETER_ID, "5"},
-  {EPOS_PARAMETER_SENSOR_TYPE, "1"},
-  {EPOS_PARAMETER_SENSOR_PULSES, "512"},
-  {EPOS_PARAMETER_MOTOR_CURRENT, "0.3"},
-  {EPOS_PARAMETER_GEAR_TRANSMISSION, "-193.43"},
-
-  {EPOS_PARAMETER_HOME_METHOD, "1"},
-  {EPOS_PARAMETER_HOME_CURRENT, "0.15"},
-  {EPOS_PARAMETER_HOME_VELOCITY, "15.0"},
-  {EPOS_PARAMETER_HOME_ACCELERATION, "15.0"},
-  {EPOS_PARAMETER_HOME_POSITION, "-10.0"},
-
-  {ERA_PARAMETER_JOINT_MIN_POSITION, "-158.0"},
-  {ERA_PARAMETER_JOINT_MAX_POSITION, "150.0"},
-  {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
-  {ERA_PARAMETER_JOINT_MAX_VELOCITY, "60.0"},
-  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-60.0"},
-  {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "60.0"},
-};
-
-param_t era_default_tool_opening_joint_params[] = {
-  {EPOS_PARAMETER_ID, "6"},
-  {EPOS_PARAMETER_SENSOR_TYPE, "1"},
-  {EPOS_PARAMETER_SENSOR_PULSES, "512"},
-  {EPOS_PARAMETER_MOTOR_CURRENT, "0.3"},
-  {EPOS_PARAMETER_GEAR_TRANSMISSION, "-137.75"},
-
-  {EPOS_PARAMETER_HOME_METHOD, "-1"},
-  {EPOS_PARAMETER_HOME_CURRENT, "0.1"},
-  {EPOS_PARAMETER_HOME_VELOCITY, "10.0"},
-  {EPOS_PARAMETER_HOME_ACCELERATION, "10.0"},
-  {EPOS_PARAMETER_HOME_POSITION, "0.0"},
-
-  {ERA_PARAMETER_JOINT_MIN_POSITION, "-65.3"},
-  {ERA_PARAMETER_JOINT_MAX_POSITION, "27.0"},
-  {ERA_PARAMETER_JOINT_POSITION_MARGIN, "1.0"},
-  {ERA_PARAMETER_JOINT_MAX_VELOCITY, "30.0"},
-  {ERA_PARAMETER_JOINT_MIN_ACCELERATION, "-30.0"},
-  {ERA_PARAMETER_JOINT_MAX_ACCELERATION, "30.0"},
-};
-
-era_config_t era_default_config = {
-  { era_default_global_params,
-    sizeof(era_default_global_params)/sizeof(param_t) },
-  { 
-    { era_default_shoulder_yaw_joint_params,
-      sizeof(era_default_shoulder_yaw_joint_params)/sizeof(param_t) },
-    { era_default_shoulder_roll_joint_params,
-      sizeof(era_default_shoulder_roll_joint_params)/sizeof(param_t) },
-    { era_default_shoulder_pitch_joint_params,
-      sizeof(era_default_shoulder_pitch_joint_params)/sizeof(param_t) },
-    { era_default_elbow_pitch_joint_params,
-      sizeof(era_default_elbow_pitch_joint_params)/sizeof(param_t) },
-    { era_default_tool_roll_joint_params,
-      sizeof(era_default_tool_roll_joint_params)/sizeof(param_t) },
-    { era_default_tool_opening_joint_params,
-      sizeof(era_default_tool_opening_joint_params)/sizeof(param_t) },
-  },
-};
-
 void era_init(era_arm_p arm, can_device_p can_dev, era_config_p config) {
-  era_config_init_default(&arm->config, &era_default_config);
+  era_config_init_default(&arm->config, &era_config_default);
   if (config)
     era_config_set(&arm->config, config);
 
@@ -231,7 +76,7 @@ void era_init_arg(era_arm_p arm, int argc, char **argv, const char* prefix) {
 
   era_config_t config;
   era_config_init_arg(&config, argc, argv, (prefix) ? prefix : 
-    EPOS_CONFIG_ARG_PREFIX);
+    ERA_CONFIG_ARG_PREFIX);
     
   era_init(arm, can_dev, &config);
 

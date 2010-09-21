@@ -27,17 +27,19 @@
 
 #include <tulibs/config.h>
 
+#include "config/parameters.h"
+
 /** \brief Predefined ERA configuration constants
   */
-#define ERA_CONFIG_ARG_PREFIX                   "--era-"
+#define ERA_CONFIG_ARG_PREFIX                   "era"
 
-#define ERA_CONFIG_ARG_PREFIX_ARM               "arm-"
-#define ERA_CONFIG_ARG_PREFIX_SHOULDER_YAW      "shoulder-yaw-"
-#define ERA_CONFIG_ARG_PREFIX_SHOULDER_ROLL     "shoulder-roll-"
-#define ERA_CONFIG_ARG_PREFIX_SHOULDER_PITCH    "shoulder-pitch-"
-#define ERA_CONFIG_ARG_PREFIX_ELBOW_PITCH       "elbow-pitch-"
-#define ERA_CONFIG_ARG_PREFIX_TOOL_ROLL         "tool-roll-"
-#define ERA_CONFIG_ARG_PREFIX_TOOL_OPENING      "tool-opening-"
+#define ERA_CONFIG_ARG_PREFIX_ARM               "arm"
+#define ERA_CONFIG_ARG_PREFIX_SHOULDER_YAW      "shoulder-yaw"
+#define ERA_CONFIG_ARG_PREFIX_SHOULDER_ROLL     "shoulder-roll"
+#define ERA_CONFIG_ARG_PREFIX_SHOULDER_PITCH    "shoulder-pitch"
+#define ERA_CONFIG_ARG_PREFIX_ELBOW_PITCH       "elbow-pitch"
+#define ERA_CONFIG_ARG_PREFIX_TOOL_ROLL         "tool-roll"
+#define ERA_CONFIG_ARG_PREFIX_TOOL_OPENING      "tool-opening"
 
 /** \brief Predefined joint configuration prefixes
   */
@@ -62,6 +64,10 @@ typedef struct era_config_t {
   config_t arm;                 //!< The arm's configuration parameters.
   era_config_joint_t joints;    //!< The arm's joint configuration parameters.
 } era_config_t, *era_config_p;
+
+/** \brief Predefined ERA default configuration
+  */
+extern era_config_t era_config_default;
 
 /** \brief Initialize an empty arm configuration
   * \param[in] config The arm configuration to be initialized.

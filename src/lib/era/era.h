@@ -31,6 +31,7 @@
 #include "base/joint.h"
 #include "base/velocity.h"
 #include "base/acceleration.h"
+#include "config/config.h"
 #include "motors/motors.h"
 #include "security/security.h"
 #include "kinematics/limits.h"
@@ -48,10 +49,6 @@
 /** \brief Predefined ERA error descriptions
   */
 extern const char* era_errors[];
-
-/** \brief Predefined BlueBotics ERA-5/1 default configuration
-  */
-extern era_config_t era_default_config;
 
 /** \brief Initialize the arm
   * \param[in] arm The arm to be initialized.
