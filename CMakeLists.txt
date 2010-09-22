@@ -9,7 +9,7 @@ remake_project(
   SUMMARY "Driver libraries for the Embedded Robot Arm (ERA)."
   AUTHOR "Ralf Kaestner"
   CONTACT "ralf.kaestner@gmail.com"
-  HOME "http://aslforge.ethz.ch/projects/libfirecam"
+  HOME "http://aslforge.ethz.ch/projects/era-libs"
   LICENSE "GNU Lesser General Public License (LGPL)"
   PREFIX era-
   INSTALL /usr
