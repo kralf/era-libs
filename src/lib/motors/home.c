@@ -47,8 +47,8 @@ void era_motors_home_init(era_motors_p motors) {
       ERA_PARAMETER_JOINT_MAX_POSITION);
     double limit_pos;
 
-    if ((method == epos_home_neg_switch_index) ||
-      (method == epos_home_neg_switch) ||
+    if ((method == epos_home_neg_limit_index) ||
+      (method == epos_home_neg_limit) ||
       (method == epos_home_neg_current_index) ||
       (method == epos_home_neg_current))
       limit_pos = (gear_trans > 0.0) ? min_pos : max_pos;

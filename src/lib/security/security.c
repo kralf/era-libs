@@ -48,10 +48,10 @@ int era_security_enable(era_security_p security, era_motors_p motors) {
   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
     result |= epos_input_set_func(&node_a[i].input, 
       (security->func == era_security_neg_switch_pos_estop) ?
-      epos_input_pos_switch : epos_input_neg_switch, &estop_func);
+      epos_input_pos_limit : epos_input_neg_limit, &estop_func);
     result |= epos_input_set_func(&node_a[i].input, 
       (security->func == era_security_neg_switch_pos_estop) ?
-      epos_input_neg_switch : epos_input_pos_switch, &switch_func);
+      epos_input_neg_limit : epos_input_pos_limit, &switch_func);
   }
 
   if (result)
@@ -66,9 +66,9 @@ int era_security_disable(era_security_p security, era_motors_p motors) {
 
   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
     result |= epos_input_set_enabled(&node_a[i].input, 
-      epos_input_neg_switch, 0);
+      epos_input_neg_limit, 0);
     result |= epos_input_set_enabled(&node_a[i].input, 
-      epos_input_pos_switch, 0);
+      epos_input_pos_limit, 0);
   }
 
   if (result)
@@ -83,8 +83,8 @@ int era_security_enable_home(era_security_p security, era_motors_p motors) {
 
   /* Check for limit switch states */
   for (i = 0; i < sizeof(era_motors_t)/sizeof(epos_node_t); ++i) {
-    if (epos_input_get_func_state(&node_a[i].input, epos_input_neg_switch) ||
-      epos_input_get_func_state(&node_a[i].input, epos_input_pos_switch))
+    if (epos_input_get_func_state(&node_a[i].input, epos_input_neg_limit) ||
+      epos_input_get_func_state(&node_a[i].input, epos_input_pos_limit))
       return ERA_SECURITY_ERROR_ENABLE;
   }
 
@@ -97,16 +97,16 @@ int era_security_enable_home(era_security_p security, era_motors_p motors) {
     epos_home_method_t method = config_get_int(&node_a[i].config, 
       EPOS_PARAMETER_HOME_METHOD);
 
-    era_security_func_t func = ((method == epos_home_neg_switch) ||
-      (method == epos_home_neg_switch_index)) ? 
+    era_security_func_t func = ((method == epos_home_neg_limit) ||
+      (method == epos_home_neg_limit_index)) ? 
       era_security_neg_switch_pos_estop : era_security_pos_switch_neg_estop;
 
     result |= epos_input_set_func(&node_a[i].input, 
       (func == era_security_neg_switch_pos_estop) ?
-      epos_input_pos_switch : epos_input_neg_switch, &estop_func);
+      epos_input_pos_limit : epos_input_neg_limit, &estop_func);
     result |= epos_input_set_func(&node_a[i].input, 
       (func == era_security_neg_switch_pos_estop) ?
-      epos_input_neg_switch : epos_input_pos_switch, &switch_func);
+      epos_input_neg_limit : epos_input_pos_limit, &switch_func);
   }
 
   if (result)
