@@ -90,12 +90,15 @@ void era_config_init_default(
   * \param[in] argv The list of supplied command line arguments.
   * \param[in] prefix An optional argument prefix that will be stripped from 
   *   the parameter keys.
+  * \param[in] args An optional string naming the expected arguments.
+  * \return The resulting configuration error code.
   */
-void era_config_init_arg(
+int era_config_init_arg(
   era_config_p config,
   int argc,
   char **argv,
-  const char* prefix);
+  const char* prefix,
+  const char* args);
 
 /** \brief Destroy an arm configuration
   * \param[in] config The arm configuration to be destroyed.
@@ -111,6 +114,18 @@ void era_config_destroy(
 void era_config_print(
   FILE* stream,
   era_config_p config);
+
+/** \brief Print help for an arm configuration
+  * \param[in] stream The output stream that will be used for printing the
+  *   arm configuration help.
+  * \param[in] config The arm configuration for which help will be printed.
+  * \param[in] prefix An optional argument prefix that will be prepended to
+  *   the parameter keys.
+  */
+void era_config_print_help(
+  FILE* stream,
+  era_config_p config,
+  const char* prefix);
 
 /** \brief Set arm configuration parameters from a source arm configuration.
   * \param[in] dst_config The arm configuration to set the parameters for.

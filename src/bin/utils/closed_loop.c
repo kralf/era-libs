@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <signal.h>
 
+#include "era.h"
 #include "control/closed_loop.h"
 
 thread_t control_thread;
@@ -32,20 +33,17 @@ void era_signaled(int signal) {
 }
 
 int main(int argc, char **argv) {
-  if (argc < 3) {
-    fprintf(stderr, "usage: %s FILE FREQ [PARAMS]\n", argv[0]);
-    return -1;
-  }
-  const char* file = argv[1];
-  float freq = atof(argv[2]);
-
   int result;
   thread_mutex_t mutex;
   era_arm_t arm;
   era_trajectory_t trajectory;
-  thread_mutex_init(&mutex);
-  era_init_arg(&arm, argc, argv, 0);
 
+  if (era_init_arg(&arm, argc, argv, 0, "FILE FREQUENCY"))
+    return -1;
+  const char* file = argv[1];
+  float freq = atof(argv[2]);
+
+  thread_mutex_init(&mutex);
   if ((result = era_trajectory_read(file, &trajectory)) < 0) {
     fprintf(stderr, "%s\n", era_trajectory_errors[-result]);
     return -1;

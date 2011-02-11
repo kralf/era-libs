@@ -66,12 +66,15 @@ void era_init(
   * \param[in] argc The number of supplied command line arguments.
   * \param[in] argv The list of supplied command line arguments.
   * \param[in] prefix An optional argument prefix.
+  * \param[in] args An optional string naming the expected arguments.
+  * \return The resulting configuration error code.
   */
-void era_init_arg(
+int era_init_arg(
   era_arm_p arm,
   int argc,
   char **argv,
-  const char* prefix);
+  const char* prefix,
+  const char* args);
 
 /** \brief Destroy the arm
   * \note This method automatically destroys the arm's EPOS nodes.

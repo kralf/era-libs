@@ -70,17 +70,29 @@ void era_init(era_arm_p arm, can_device_p can_dev, era_config_p config) {
       ERA_PARAMETER_JOINT_MAX_ACCELERATION, (double*)&max_accel));
 }
 
-void era_init_arg(era_arm_p arm, int argc, char **argv, const char* prefix) {
+int era_init_arg(era_arm_p arm, int argc, char **argv, const char* prefix,
+    const char* args) {
+  int result;
   can_device_p can_dev = malloc(sizeof(can_device_t));
-  can_init_arg(can_dev, argc, argv, 0);
 
-  era_config_t config;
-  era_config_init_arg(&config, argc, argv, (prefix) ? prefix : 
-    ERA_CONFIG_ARG_PREFIX);
-    
-  era_init(arm, can_dev, &config);
+  if (!(result = can_init_arg(can_dev, argc, argv, 0, args))) {
+    era_config_t config;
+    if (result = era_config_init_arg(&config, argc, argv, (prefix) ? prefix :
+        ERA_CONFIG_ARG_PREFIX, args)) {
+      config_print_usage(stdout, argv[0], args, result);
+      era_config_print_help(stdout, &era_config_default,
+        ERA_CONFIG_ARG_PREFIX);
+      config_print_help(stdout, &can_default_config, CAN_CONFIG_ARG_PREFIX);
+    }
+    else
+      era_init(arm, can_dev, &config);
 
-  era_config_destroy(&config);
+    era_config_destroy(&config);
+  }
+  else
+    era_config_print_help(stdout, &era_config_default, ERA_CONFIG_ARG_PREFIX);
+
+  return result;
 }
 
 void era_destroy(era_arm_p arm) {

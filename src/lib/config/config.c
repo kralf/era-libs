@@ -209,37 +209,26 @@ void era_config_init_default(era_config_p config, era_config_p
     config_init_default(&joint_config_a[i], &default_joint_config_a[i]);
 }
 
-void era_config_init_arg(era_config_p config, int argc, char **argv, 
-  const char* prefix) {
-  char arm_prefix[256];
+int era_config_init_arg(era_config_p config, int argc, char **argv,
+    const char* prefix, const char* args) {
+  char arm_prefix[256], joint_prefix[256];
+  int result, i;
+  
   sprintf(arm_prefix, "%s-%s", (prefix) ? prefix : ERA_CONFIG_ARG_PREFIX, 
     ERA_CONFIG_ARG_PREFIX_ARM);
-  char joint_prefixes[sizeof(era_config_joint_t)/sizeof(config_t)][256];
-  int i;
-  for (i = 0; i < sizeof(era_config_joint_t)/sizeof(config_t); ++i)
-    sprintf(joint_prefixes[i], "%s-%s", (prefix) ? prefix :
-      ERA_CONFIG_ARG_PREFIX, era_config_joint_prefixes[i]);
-
-  if (config_init_arg(&config->arm, argc, argv, arm_prefix)) {
-    config_print_help(stdout, &era_config_default.arm, arm_prefix);
-    config_p default_joint_config_a = (config_p)&era_config_default.joints;
-    for (i = 0; i < sizeof(era_config_joint_t)/sizeof(config_t); ++i)
-      config_print_help(stdout, &default_joint_config_a[i], joint_prefixes[i]);
-    config_print_help(stdout, &can_default_config, CAN_CONFIG_ARG_PREFIX);
-    
-    exit(0);
+  if (!(result = config_init_arg(&config->arm, argc, argv, arm_prefix,
+      args))) {
+    config_p joint_config_a = (config_p)&config->joints;
+    for (i = 0; i < sizeof(era_config_joint_t)/sizeof(config_t); ++i) {
+      sprintf(joint_prefix, "%s-%s", (prefix) ? prefix : ERA_CONFIG_ARG_PREFIX,
+        era_config_joint_prefixes[i]);
+      if (result = config_init_arg(&joint_config_a[i], argc, argv,
+          joint_prefix, args))
+        break;
+    }
   }
-    
-  config_init_arg(&config->arm, argc, argv, arm_prefix);
 
-  config_p joint_config_a = (config_p)&config->joints;
-  for (i = 0; i < sizeof(era_config_joint_t)/sizeof(config_t); ++i) {
-    char joint_prefix[256];
-    sprintf(joint_prefix, "%s-%s", (prefix) ? prefix : ERA_CONFIG_ARG_PREFIX, 
-      era_config_joint_prefixes[i]);
-
-    config_init_arg(&joint_config_a[i], argc, argv, joint_prefix);
-  }
+  return result;
 }
 
 void era_config_destroy(era_config_p config) {
@@ -258,6 +247,23 @@ void era_config_print(FILE* stream, era_config_p config) {
   int i;
   for (i = 0; i < sizeof(era_config_joint_t)/sizeof(config_t); ++i)
     config_print(stream, &joint_config_a[i]);
+}
+
+void era_config_print_help(FILE* stream, era_config_p config, const char*
+    prefix) {
+  char arm_prefix[256], joint_prefix[256];
+  int i;
+
+  sprintf(arm_prefix, "%s-%s", (prefix) ? prefix : ERA_CONFIG_ARG_PREFIX,
+    ERA_CONFIG_ARG_PREFIX_ARM);
+  config_print_help(stdout, &era_config_default.arm, arm_prefix);
+  
+  config_p default_joint_config_a = (config_p)&era_config_default.joints;
+  for (i = 0; i < sizeof(era_config_joint_t)/sizeof(config_t); ++i) {
+    sprintf(joint_prefix, "%s-%s", (prefix) ? prefix : ERA_CONFIG_ARG_PREFIX,
+      era_config_joint_prefixes[i]);
+    config_print_help(stdout, &default_joint_config_a[i], joint_prefix);
+  }
 }
 
 void era_config_set(era_config_p dst_config, era_config_p src_config) {

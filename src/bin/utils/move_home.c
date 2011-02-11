@@ -23,14 +23,11 @@
 #include "era.h"
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    fprintf(stderr, "usage: %s VEL [PARAMS]\n", argv[0]);
-    return -1;
-  }
-  float vel_factor = atof(argv[1]);
-
   era_arm_t arm;
-  era_init_arg(&arm, argc, argv, 0);
+
+  if (era_init_arg(&arm, argc, argv, 0, "VELOCITY"))
+    return -1;
+  float vel_factor = atof(argv[1]);
 
   if (era_open(&arm))
     return -1;

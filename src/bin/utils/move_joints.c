@@ -23,12 +23,12 @@
 #include "era.h"
 
 int main(int argc, char **argv) {
+  era_arm_t arm;
   era_joint_state_t joint_state;
-  if (argc < 8) {
-    fprintf(stderr, "usage: %s SHOULDER_YAW SHOULDER_ROLL SHOULDER_PITCH "
-      " ELBOW_PITCH TOOL_ROLL TOOL_OPENING VEL [PARAMS]\n", argv[0]);
+
+  if (era_init_arg(&arm, argc, argv, 0, "SHOULDER_YAW SHOULDER_ROLL "
+    "SHOULDER_PITCH ELBOW_PITCH TOOL_ROLL TOOL_OPENING VELOCITY"))
     return -1;
-  }
   joint_state.shoulder_yaw = deg_to_rad(atof(argv[1]));
   joint_state.shoulder_roll = deg_to_rad(atof(argv[2]));
   joint_state.shoulder_pitch = deg_to_rad(atof(argv[3]));
@@ -36,9 +36,6 @@ int main(int argc, char **argv) {
   joint_state.tool_roll = deg_to_rad(atof(argv[5]));
   joint_state.tool_opening = deg_to_rad(atof(argv[6]));
   float vel_factor = atof(argv[7]);
-
-  era_arm_t arm;
-  era_init_arg(&arm, argc, argv, 0);
 
   if (era_open(&arm))
     return -1;

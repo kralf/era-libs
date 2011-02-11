@@ -32,7 +32,9 @@ void era_signaled(int signal) {
 
 int main(int argc, char **argv) {
   era_arm_t arm;
-  era_init_arg(&arm, argc, argv, 0);
+  
+  if (era_init_arg(&arm, argc, argv, 0, 0))
+    return -1;
 
   signal(SIGINT, era_signaled);
 

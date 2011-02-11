@@ -24,8 +24,10 @@
 
 int main(int argc, char **argv) {
   era_arm_t arm;
-  era_init_arg(&arm, argc, argv, 0);
 
+  if (era_init_arg(&arm, argc, argv, 0, 0))
+    return -1;
+  
   if (era_open(&arm))
     return -1;
   era_close(&arm);

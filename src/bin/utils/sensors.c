@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <signal.h>
 
+#include "era.h"
 #include "control/sensors.h"
 
 int quit = 0;
@@ -37,18 +38,15 @@ void era_sensors_handle(era_joint_state_p joint_state, era_velocity_state_p
 }
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    fprintf(stderr, "usage: %s FREQ [PARAMS]\n", argv[0]);
-    return -1;
-  }
-  float freq = atof(argv[1]);
-
   thread_t thread;
   thread_mutex_t mutex;
   era_arm_t arm;
-  thread_mutex_init(&mutex);
-  era_init_arg(&arm, argc, argv, 0);
 
+  if (era_init_arg(&arm, argc, argv, 0, "FREQUENCY"))
+    return -1;
+  float freq = atof(argv[1]);
+
+  thread_mutex_init(&mutex);
   signal(SIGINT, era_signaled);
 
   if (era_open(&arm))
