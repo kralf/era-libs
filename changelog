@@ -1,0 +1,841 @@
+era-libs (0.1-152) unstable; urgency=low
+
+  * Added changelog
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sat, 13 Jul 2013 06:50:00 +0100
+
+era-libs (0.1-151) unstable; urgency=low
+
+  * Adapted configuration support of command line arguments
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 11 Feb 2011 11:44:30 +0100
+
+era-libs (0.1-150) unstable; urgency=low
+
+  * Adapted homing method and input functionality naming to changes in
+    libepos
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 17 Nov 2010 16:30:01 +0100
+
+era-libs (0.1-149) unstable; urgency=low
+
+  * Some CMakeLists file fixes
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 22 Sep 2010 07:05:32 +0200
+
+era-libs (0.1-148) unstable; urgency=low
+
+  * Fixed bug in era_config_init_arg()
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 14:37:09 +0200
+
+era-libs (0.1-147) unstable; urgency=low
+
+  * Changed command line help display order
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 14:35:46 +0200
+
+era-libs (0.1-146) unstable; urgency=low
+
+  * Added libcan config help output
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 14:33:25 +0200
+
+era-libs (0.1-145) unstable; urgency=low
+
+  * Moved default configuration to era_config_default
+  * Adapted era_config_init_arg() to changes in libtulibs-config
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 14:02:20 +0200
+
+era-libs (0.1-144) unstable; urgency=low
+
+  * Added missing CMakeLists.txt
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 12:56:54 +0200
+
+era-libs (0.1-143) unstable; urgency=low
+
+  * Initial revision of ReMake port
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 12:56:31 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * CARMEN interface for the arm accepts position commands
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 15 Jun 2009 12:40:04 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Preliminary CARMEN interface for the arm
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 15 Jun 2009 09:56:50 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Removed debugging and analysis code from ERA controllers
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 14 Jun 2009 21:38:52 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fixed coding bug in libera-dynamics
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 14 Jun 2009 21:23:53 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Removed cyclic ERA library interdependencies
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 14 Jun 2009 21:15:02 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * CARMEN ERA module under construction
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 14 Jun 2009 21:13:23 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Marc's presentation setup
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 26 May 2009 22:57:58 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Spline trajectory-based open-loop control
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 26 May 2009 19:11:47 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Trajectory evaluation
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 26 May 2009 17:20:51 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Added circle tool path and velocity profile
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 26 May 2009 16:39:21 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Open loop control back online
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 26 May 2009 14:51:28 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Simple arm motion using linear velocities
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 25 May 2009 18:28:59 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Acceleration state and limit testing
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 24 May 2009 18:13:21 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Arm homing and calibration
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 15 May 2009 14:47:44 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * arm homing work for single joint, EPOS library modifications
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 14 May 2009 18:53:01 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Missing libera-base Makefile
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 05 May 2009 13:07:38 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Revised trunk: base, kinematics, and dynamics library
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 05 May 2009 11:49:11 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * New CPC-USB kernel driver
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 25 Feb 2009 14:54:32 +0100
+
+era-libs (0.1) unstable; urgency=low
+
+  * bugfixes in serial to CAN comm
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 16 Jun 2008 18:43:22 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * extended trajectory testing
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 05 Jun 2008 15:34:08 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+    * Status at Markus presentation.
+
+ -- Dizan Vasquez <dichodaemon@gmail.com>  Thu, 29 May 2008 13:59:06 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Hack
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 29 May 2008 12:11:04 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * sandbox added
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 28 May 2008 22:59:06 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * added velocity profile stuff
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 28 May 2008 22:32:14 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * velocity profile control
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 28 May 2008 22:16:24 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * trajectory modifications
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 27 May 2008 19:16:17 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * added timer functionalities
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 26 May 2008 19:02:31 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * auto-refreshing print display
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 26 May 2008 14:21:44 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * safe kinematics
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 26 May 2008 13:48:32 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * limit calibrations
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sun, 25 May 2008 23:19:14 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * limit search still risky
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 23 May 2008 21:20:20 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * kinematics initialization
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 22 May 2008 20:19:47 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Velocity calculations verified
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 21 May 2008 17:58:00 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * last minute changes
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 21 May 2008 13:09:09 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Utilities for initialization and homing
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 20 May 2008 21:03:00 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Started libera-controller
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 07 May 2008 20:35:12 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * libera-kinematics includes trajectory code
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 06 May 2008 19:39:59 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * libera-kinematics cleaned up and documented
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 05 May 2008 23:48:02 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * created libera-kinematics for kinematics code
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 05 May 2008 19:15:22 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * created student branches
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Mon, 05 May 2008 18:04:56 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * more trunk structure cleanups
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 30 Apr 2008 10:27:27 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * trunk structure cleanups
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 30 Apr 2008 10:25:11 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Removed non-sources from report directory
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 05 Jul 2007 15:25:20 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Report title updated
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Thu, 05 Jul 2007 15:22:52 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Fri, 22 Jun 2007 14:13:13 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Fri, 22 Jun 2007 13:13:54 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Fri, 22 Jun 2007 13:13:20 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Fri, 22 Jun 2007 13:06:36 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 22 Jun 2007 13:00:44 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Fri, 22 Jun 2007 12:54:11 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 22 Jun 2007 12:49:41 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Fri, 22 Jun 2007 12:25:15 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Fri, 22 Jun 2007 10:39:01 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Thu, 21 Jun 2007 14:05:12 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Thu, 21 Jun 2007 13:01:33 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Thu, 21 Jun 2007 12:52:21 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Thu, 21 Jun 2007 11:13:58 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Thu, 21 Jun 2007 11:11:19 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Wed, 20 Jun 2007 23:15:13 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 20 Jun 2007 14:59:32 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 20 Jun 2007 14:27:05 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 20 Jun 2007 09:34:54 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 20 Jun 2007 09:33:29 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 19 Jun 2007 22:58:29 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Tue, 19 Jun 2007 18:06:59 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 19 Jun 2007 12:54:43 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 19 Jun 2007 08:59:22 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Mon, 18 Jun 2007 23:00:54 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Mon, 18 Jun 2007 21:23:25 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Mon, 18 Jun 2007 17:21:51 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sun, 17 Jun 2007 16:06:46 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sun, 17 Jun 2007 03:27:26 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sun, 17 Jun 2007 00:39:13 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * change to eps?
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Fri, 15 Jun 2007 17:53:41 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 15 Jun 2007 13:10:47 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 15 Jun 2007 13:10:23 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 15 Jun 2007 09:23:40 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 15 Jun 2007 09:22:12 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 15 Jun 2007 09:18:02 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 15 Jun 2007 08:16:14 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Thu, 14 Jun 2007 12:43:00 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Thu, 14 Jun 2007 12:42:31 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 13 Jun 2007 17:19:31 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 13 Jun 2007 16:44:30 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 13 Jun 2007 16:41:49 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * add docu
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 13 Jun 2007 16:04:41 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 12 Jun 2007 22:59:59 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Mon, 11 Jun 2007 17:04:24 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sun, 10 Jun 2007 23:54:14 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Sun, 10 Jun 2007 22:47:51 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sat, 09 Jun 2007 21:24:48 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Thu, 07 Jun 2007 19:33:15 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Thu, 07 Jun 2007 15:52:31 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Thu, 07 Jun 2007 15:52:04 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Wed, 06 Jun 2007 23:12:30 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Wed, 06 Jun 2007 22:06:32 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Wed, 06 Jun 2007 18:16:51 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 05 Jun 2007 22:43:08 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 05 Jun 2007 22:42:36 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 05 Jun 2007 22:42:04 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 05 Jun 2007 10:56:57 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 05 Jun 2007 10:51:42 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Add part of documentation on the communication
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Mon, 04 Jun 2007 18:11:31 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Add documentation to libserial.*
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Thu, 31 May 2007 18:36:55 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Thu, 31 May 2007 15:38:26 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Add function write_datafile and a testfile to determine timeconsumption for
+    sending/receiving the dataframes
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 30 May 2007 17:41:45 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 29 May 2007 16:07:26 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 29 May 2007 12:49:32 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Mon, 28 May 2007 21:15:43 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fritz: first version velocity mode
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Mon, 28 May 2007 20:02:43 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Mon, 28 May 2007 12:13:16 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fritz: adding report files
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sun, 27 May 2007 23:19:56 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fritz: adding comments
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Thu, 24 May 2007 14:29:00 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Add function for reading a scriptfile
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 23 May 2007 16:33:03 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Add docu
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Tue, 22 May 2007 23:21:05 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 22 May 2007 18:40:05 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 22 May 2007 11:31:45 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 22 May 2007 10:44:53 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Mon, 21 May 2007 23:13:42 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Mon, 21 May 2007 17:31:27 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sun, 20 May 2007 21:56:58 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sun, 20 May 2007 21:56:03 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Add error handling to libepos and libserial
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 16 May 2007 16:07:59 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * initial doxyfile
+
+ -- Roland Philippsen <roland.philippsen@gmx.net>  Wed, 16 May 2007 13:05:23 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Add errorcode handling
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Mon, 14 May 2007 22:48:45 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 11 May 2007 14:08:08 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Add RS232-specific error messages handling
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Thu, 10 May 2007 14:01:15 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 08 May 2007 12:51:10 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * inverse.c working on robot
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 08 May 2007 12:14:32 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 04 May 2007 00:28:17 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Thu, 03 May 2007 13:16:01 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Thu, 03 May 2007 13:14:48 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * A little clean up!
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 02 May 2007 17:21:53 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * clean up
+
+ -- Marc Rauer <marc.rauer@student.ethz.ch>  Wed, 02 May 2007 15:59:49 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fritz: Start: Kinematik und serial gemeinsam
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 01 May 2007 21:35:41 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * programs added
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 01 May 2007 18:07:32 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fritz: kinematik weiter geschrieben
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Fri, 20 Apr 2007 23:16:45 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fritz: Matlab Inverse Kinematics mit virtual reality toolbox
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 10 Apr 2007 00:06:35 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fritz: Kinematik.tex geschrieben
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Tue, 10 Apr 2007 00:02:14 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fritz: pdf der Vorlage hochgeladen
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sat, 31 Mar 2007 01:37:34 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * Fritz: Berichtvorlage in report-Ordner kopiert
+
+ -- Fritz Stoeckli <fritz.stoeckli@student.ethz.ch>  Sat, 31 Mar 2007 01:29:23 +0200
+
+era-libs (0.1) unstable; urgency=low
+
+  * vendor documents and project proposal
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 28 Mar 2007 11:42:04 +0200
