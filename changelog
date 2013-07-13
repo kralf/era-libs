@@ -1,60 +1,66 @@
-era-libs (0.1-152) unstable; urgency=low
+era-libs (0.1-109) unstable; urgency=low
+
+  * Release distributions
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sat, 13 Jul 2013 07:13:00 +0100
+
+era-libs (0.1-108) unstable; urgency=low
 
   * Added changelog
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Sat, 13 Jul 2013 06:50:00 +0100
 
-era-libs (0.1-151) unstable; urgency=low
+era-libs (0.1-107) unstable; urgency=low
 
   * Adapted configuration support of command line arguments
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 11 Feb 2011 11:44:30 +0100
 
-era-libs (0.1-150) unstable; urgency=low
+era-libs (0.1-106) unstable; urgency=low
 
   * Adapted homing method and input functionality naming to changes in
     libepos
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 17 Nov 2010 16:30:01 +0100
 
-era-libs (0.1-149) unstable; urgency=low
+era-libs (0.1-105) unstable; urgency=low
 
   * Some CMakeLists file fixes
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 22 Sep 2010 07:05:32 +0200
 
-era-libs (0.1-148) unstable; urgency=low
+era-libs (0.1-104) unstable; urgency=low
 
   * Fixed bug in era_config_init_arg()
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 14:37:09 +0200
 
-era-libs (0.1-147) unstable; urgency=low
+era-libs (0.1-103) unstable; urgency=low
 
   * Changed command line help display order
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 14:35:46 +0200
 
-era-libs (0.1-146) unstable; urgency=low
+era-libs (0.1-102) unstable; urgency=low
 
   * Added libcan config help output
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 14:33:25 +0200
 
-era-libs (0.1-145) unstable; urgency=low
+era-libs (0.1-101) unstable; urgency=low
 
   * Moved default configuration to era_config_default
   * Adapted era_config_init_arg() to changes in libtulibs-config
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 14:02:20 +0200
 
-era-libs (0.1-144) unstable; urgency=low
+era-libs (0.1-100) unstable; urgency=low
 
   * Added missing CMakeLists.txt
 
  -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 21 Sep 2010 12:56:54 +0200
 
-era-libs (0.1-143) unstable; urgency=low
+era-libs (0.1-99) unstable; urgency=low
 
   * Initial revision of ReMake port
 
