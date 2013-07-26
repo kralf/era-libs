@@ -1,5 +1,5 @@
 remake_add_library(
   control
-  LINK ${TULIBS_THREAD_LIBRARY}
+  LINK ${TULIBS_LIBRARIES}
 )
 remake_add_headers(INSTALL control)

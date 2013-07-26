@@ -1,3 +1,9 @@
+era-libs (0.1-111) unstable; urgency=low
+
+  * Added pkg-config file
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Fri, 26 Jul 2013 10:19:00 +0100
+
 era-libs (0.1-110) unstable; urgency=low
 
   * Fixed executable linkage under precise

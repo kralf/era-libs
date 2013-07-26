@@ -1,5 +1,5 @@
 remake_add_library(
   motors
-  LINK ${EPOS_LIBRARY}
+  LINK ${LIBEPOS_LIBRARIES}
 )
 remake_add_headers(INSTALL motors)
