@@ -28,13 +28,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/** \brief Predefined tool space state error codes
+/** \name Error Codes
+  * \brief Predefined tool space state error codes
   */
+//@{
 #define ERA_TOOL_ERROR_NONE                  0
 #define ERA_TOOL_ERROR_FILE_OPEN             1
 #define ERA_TOOL_ERROR_FILE_FORMAT           2
 #define ERA_TOOL_ERROR_FILE_CREATE           3
 #define ERA_TOOL_ERROR_FILE_WRITE            4
+//@}
 
 /** \brief Predefined tool space state error descriptions
   */

@@ -27,12 +27,12 @@
 #include "config/config.h"
 
 const char* era_config_joint_prefixes[] = {
-  ERA_CONFIG_ARG_PREFIX_SHOULDER_YAW,
-  ERA_CONFIG_ARG_PREFIX_SHOULDER_ROLL,
-  ERA_CONFIG_ARG_PREFIX_SHOULDER_PITCH,
-  ERA_CONFIG_ARG_PREFIX_ELBOW_PITCH,
-  ERA_CONFIG_ARG_PREFIX_TOOL_ROLL,
-  ERA_CONFIG_ARG_PREFIX_TOOL_OPENING,
+  ERA_ARG_PREFIX_SHOULDER_YAW,
+  ERA_ARG_PREFIX_SHOULDER_ROLL,
+  ERA_ARG_PREFIX_SHOULDER_PITCH,
+  ERA_ARG_PREFIX_ELBOW_PITCH,
+  ERA_ARG_PREFIX_TOOL_ROLL,
+  ERA_ARG_PREFIX_TOOL_OPENING,
 };
 
 param_t era_config_default_global_params[] = {
@@ -214,13 +214,13 @@ int era_config_init_arg(era_config_p config, int argc, char **argv,
   char arm_prefix[256], joint_prefix[256];
   int result, i;
   
-  sprintf(arm_prefix, "%s-%s", (prefix) ? prefix : ERA_CONFIG_ARG_PREFIX, 
-    ERA_CONFIG_ARG_PREFIX_ARM);
+  sprintf(arm_prefix, "%s-%s", (prefix) ? prefix : ERA_ARG_PREFIX, 
+    ERA_ARG_PREFIX_ARM);
   if (!(result = config_init_arg(&config->arm, argc, argv, arm_prefix,
       args))) {
     config_p joint_config_a = (config_p)&config->joints;
     for (i = 0; i < sizeof(era_config_joint_t)/sizeof(config_t); ++i) {
-      sprintf(joint_prefix, "%s-%s", (prefix) ? prefix : ERA_CONFIG_ARG_PREFIX,
+      sprintf(joint_prefix, "%s-%s", (prefix) ? prefix : ERA_ARG_PREFIX,
         era_config_joint_prefixes[i]);
       if (result = config_init_arg(&joint_config_a[i], argc, argv,
           joint_prefix, args))
@@ -254,13 +254,13 @@ void era_config_print_help(FILE* stream, era_config_p config, const char*
   char arm_prefix[256], joint_prefix[256];
   int i;
 
-  sprintf(arm_prefix, "%s-%s", (prefix) ? prefix : ERA_CONFIG_ARG_PREFIX,
-    ERA_CONFIG_ARG_PREFIX_ARM);
+  sprintf(arm_prefix, "%s-%s", (prefix) ? prefix : ERA_ARG_PREFIX,
+    ERA_ARG_PREFIX_ARM);
   config_print_help(stdout, &era_config_default.arm, arm_prefix);
   
   config_p default_joint_config_a = (config_p)&era_config_default.joints;
   for (i = 0; i < sizeof(era_config_joint_t)/sizeof(config_t); ++i) {
-    sprintf(joint_prefix, "%s-%s", (prefix) ? prefix : ERA_CONFIG_ARG_PREFIX,
+    sprintf(joint_prefix, "%s-%s", (prefix) ? prefix : ERA_ARG_PREFIX,
       era_config_joint_prefixes[i]);
     config_print_help(stdout, &default_joint_config_a[i], joint_prefix);
   }

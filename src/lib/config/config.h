@@ -29,17 +29,20 @@
 
 #include "config/parameters.h"
 
-/** \brief Predefined ERA configuration constants
+/** \name Argument Prefixes
+  * \brief Predefined ERA argument prefixes
   */
-#define ERA_CONFIG_ARG_PREFIX                   "era"
+//@{
+#define ERA_ARG_PREFIX                   "era"
 
-#define ERA_CONFIG_ARG_PREFIX_ARM               "arm"
-#define ERA_CONFIG_ARG_PREFIX_SHOULDER_YAW      "shoulder-yaw"
-#define ERA_CONFIG_ARG_PREFIX_SHOULDER_ROLL     "shoulder-roll"
-#define ERA_CONFIG_ARG_PREFIX_SHOULDER_PITCH    "shoulder-pitch"
-#define ERA_CONFIG_ARG_PREFIX_ELBOW_PITCH       "elbow-pitch"
-#define ERA_CONFIG_ARG_PREFIX_TOOL_ROLL         "tool-roll"
-#define ERA_CONFIG_ARG_PREFIX_TOOL_OPENING      "tool-opening"
+#define ERA_ARG_PREFIX_ARM               "arm"
+#define ERA_ARG_PREFIX_SHOULDER_YAW      "shoulder-yaw"
+#define ERA_ARG_PREFIX_SHOULDER_ROLL     "shoulder-roll"
+#define ERA_ARG_PREFIX_SHOULDER_PITCH    "shoulder-pitch"
+#define ERA_ARG_PREFIX_ELBOW_PITCH       "elbow-pitch"
+#define ERA_ARG_PREFIX_TOOL_ROLL         "tool-roll"
+#define ERA_ARG_PREFIX_TOOL_OPENING      "tool-opening"
+//@}
 
 /** \brief Predefined joint configuration prefixes
   */

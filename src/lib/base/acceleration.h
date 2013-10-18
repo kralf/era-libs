@@ -28,9 +28,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/** \brief Predefined acceleration space state error codes
+/** \name Error Codes
+  * \brief Predefined acceleration space state error codes
   */
+//@{
 #define ERA_ACCELERATION_ERROR_NONE                  0
+//@}
 
 /** \brief Predefined acceleration space state error descriptions
   */

@@ -33,10 +33,13 @@
 
 #include "motors/motors.h"
 
-/** \brief Predefined motor position profile control error codes
+/** \name Error Codes
+  * \brief Predefined motor position profile control error codes
   */
+//@{
 #define ERA_MOTORS_POSITION_PROFILE_ERROR_NONE               0
 #define ERA_MOTORS_POSITION_PROFILE_ERROR_START              1
+//@}
 
 /** \brief Structure defining an arm position profile control operation
   */

@@ -37,14 +37,17 @@
 #include "kinematics/limits.h"
 #include "dynamics/limits.h"
 
-/** \brief Predefined ERA error codes
+/** \name Error Codes
+  * \brief Predefined ERA error codes
   */
+//@{
 #define ERA_ERROR_NONE                     0
 #define ERA_ERROR_OPEN                     1
 #define ERA_ERROR_CLOSE                    2
 #define ERA_ERROR_HOME                     3
 #define ERA_ERROR_MOVE                     4
 #define ERA_ERROR_LIMITS                   5
+//@}
 
 /** \brief Predefined ERA error descriptions
   */

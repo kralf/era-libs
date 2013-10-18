@@ -27,11 +27,14 @@
 
 #include "base/joint.h"
 
-/** \brief Predefined kinematic limits error codes
+/** \name Error Codes
+  * \brief Predefined kinematic limits error codes
   */
+//@{
 #define ERA_KINEMATICS_LIMITS_ERROR_NONE               0
 #define ERA_KINEMATICS_LIMITS_ERROR_EXCEEDED           1
 #define ERA_KINEMATICS_LIMITS_ERROR_SINGULARITY        2
+//@}
 
 /** \brief Predefined kinematic limits error descriptions
   */

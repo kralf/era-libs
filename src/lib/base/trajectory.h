@@ -32,14 +32,17 @@
 #include "base/velocity.h"
 #include "base/acceleration.h"
 
-/** \brief Predefined trajectory error codes
+/** \name Error Codes
+  * \brief Predefined trajectory error codes
   */
+//@{
 #define ERA_TRAJECTORY_ERROR_NONE                  0
 #define ERA_TRAJECTORY_ERROR_FILE_OPEN             1
 #define ERA_TRAJECTORY_ERROR_FILE_FORMAT           2
 #define ERA_TRAJECTORY_ERROR_FILE_CREATE           3
 #define ERA_TRAJECTORY_ERROR_FILE_WRITE            4
 #define ERA_TRAJECTORY_ERROR_UNDEFINED             5
+//@}
 
 /** \brief Predefined trajectory error descriptions
   */

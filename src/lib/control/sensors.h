@@ -29,10 +29,13 @@
 
 #include "base/arm.h"
 
-/** \brief Predefined sensor error codes
+/** \name Error Codes
+  * \brief Predefined sensor error codes
   */
+//@{
 #define ERA_CONTROL_SENSORS_ERROR_NONE               0
 #define ERA_CONTROL_SENSORS_ERROR_START              1
+//@}
 
 /** \brief Predefined sensor error descriptions
   */

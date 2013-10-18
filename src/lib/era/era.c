@@ -78,11 +78,10 @@ int era_init_arg(era_arm_p arm, int argc, char **argv, const char* prefix,
   if (!(result = can_init_arg(can_dev, argc, argv, 0, args))) {
     era_config_t config;
     if (result = era_config_init_arg(&config, argc, argv, (prefix) ? prefix :
-        ERA_CONFIG_ARG_PREFIX, args)) {
+        ERA_ARG_PREFIX, args)) {
       config_print_usage(stdout, argv[0], args, result);
-      era_config_print_help(stdout, &era_config_default,
-        ERA_CONFIG_ARG_PREFIX);
-      config_print_help(stdout, &can_default_config, CAN_CONFIG_ARG_PREFIX);
+      era_config_print_help(stdout, &era_config_default, ERA_ARG_PREFIX);
+      config_print_help(stdout, &can_default_config, CAN_ARG_PREFIX);
     }
     else
       era_init(arm, can_dev, &config);
@@ -90,7 +89,7 @@ int era_init_arg(era_arm_p arm, int argc, char **argv, const char* prefix,
     era_config_destroy(&config);
   }
   else
-    era_config_print_help(stdout, &era_config_default, ERA_CONFIG_ARG_PREFIX);
+    era_config_print_help(stdout, &era_config_default, ERA_ARG_PREFIX);
 
   return result;
 }

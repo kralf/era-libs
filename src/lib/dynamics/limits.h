@@ -28,10 +28,13 @@
 #include "base/velocity.h"
 #include "base/acceleration.h"
 
-/** \brief Predefined dynamic limits error codes
+/** \name Error Codes
+  * \brief Predefined dynamic limits error codes
   */
+//@{
 #define ERA_DYNAMICS_LIMITS_ERROR_NONE               0
 #define ERA_DYNAMICS_LIMITS_ERROR_EXCEEDED           1
+//@}
 
 /** \brief Predefined dynamic limits error descriptions
   */

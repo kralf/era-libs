@@ -30,16 +30,22 @@
 #include "base/arm.h"
 #include "base/trajectory.h"
 
-/** \brief Predefined closed-loop control constants
+/** \name Constants
+  * \brief Predefined closed-loop control constants
   */
+//@{
 #define ERA_CONTROL_CLOSED_LOOP_PARAMETER_P         "p-gain"
 #define ERA_CONTROL_CLOSED_LOOP_PARAMETER_I         "i-gain"
+//@}
 
-/** \brief Predefined closed-loop control error codes
+/** \name Error Codes
+  * \brief Predefined closed-loop control error codes
   */
+//@{
 #define ERA_CONTROL_CLOSED_LOOP_ERROR_NONE          0
 #define ERA_CONTROL_CLOSED_LOOP_ERROR_START         1
 #define ERA_CONTROL_CLOSED_LOOP_ERROR_LIMITS        2
+//@}
 
 /** \brief Predefined closed-loop control error descriptions
   */

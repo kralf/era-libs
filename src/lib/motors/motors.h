@@ -29,17 +29,23 @@
 
 #include "config/config.h"
 
-/** \brief Predefined motors constants
+/** \name Constants
+  * \brief Predefined motors constants
   */
+//@{
 #define ERA_MOTORS_WAIT_FOREVER             -1.0
+//@}
 
-/** \brief Predefined motors error codes
+/** \name Error Codes
+  * \brief Predefined motors error codes
   */
+//@{
 #define ERA_MOTORS_ERROR_NONE               0
 #define ERA_MOTORS_ERROR_OPEN               1
 #define ERA_MOTORS_ERROR_CLOSE              2
 #define ERA_MOTORS_ERROR_MOVE               3
 #define ERA_MOTORS_ERROR_WAIT_TIMEOUT       4
+//@}
 
 struct era_security_t;
 

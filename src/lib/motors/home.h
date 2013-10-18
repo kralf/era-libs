@@ -30,10 +30,13 @@
 #include "motors/home.h"
 #include "motors/motors.h"
 
-/** \brief Predefined motor homing error codes
+/** \name Error Codes
+  * \brief Predefined motor homing error codes
   */
+//@{
 #define ERA_MOTORS_HOME_ERROR_NONE               0
 #define ERA_MOTORS_HOME_ERROR_START              1
+//@}
 
 /** \brief Predefined motor homing error descriptions
   */

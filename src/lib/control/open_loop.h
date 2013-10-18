@@ -30,11 +30,14 @@
 #include "base/arm.h"
 #include "base/trajectory.h"
 
-/** \brief Predefined open-loop control error codes
+/** \name Error Codes
+  * \brief Predefined open-loop control error codes
   */
+//@{
 #define ERA_CONTROL_OPEN_LOOP_ERROR_NONE               0
 #define ERA_CONTROL_OPEN_LOOP_ERROR_START              1
 #define ERA_CONTROL_OPEN_LOOP_ERROR_LIMITS             2
+//@}
 
 /** \brief Predefined open-loop control error descriptions
   */

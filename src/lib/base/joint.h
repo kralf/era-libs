@@ -28,13 +28,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/** \brief Predefined joint space state error codes
+/** \name Error Codes
+  * \brief Predefined joint space state error codes
   */
+//@{
 #define ERA_JOINT_ERROR_NONE                  0
 #define ERA_JOINT_ERROR_FILE_OPEN             1
 #define ERA_JOINT_ERROR_FILE_FORMAT           2
 #define ERA_JOINT_ERROR_FILE_CREATE           3
 #define ERA_JOINT_ERROR_FILE_WRITE            4
+//@}
 
 /** \brief Predefined joint space state error descriptions
   */

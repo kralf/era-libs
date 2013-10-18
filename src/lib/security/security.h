@@ -25,11 +25,14 @@
   * Security functions for the BlueBotics ERA-5/1.
   */
 
-/** \brief Predefined ERA security codes
+/** \name Error Codes
+  * \brief Predefined ERA security codes
   */
+//@{
 #define ERA_SECURITY_ERROR_NONE               0
 #define ERA_SECURITY_ERROR_ENABLE             1
 #define ERA_SECURITY_ERROR_DISABLE            2
+//@}
 
 struct era_motors_t;
 

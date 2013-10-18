@@ -25,8 +25,10 @@
   * Configuration parameters for the BlueBotics ERA-5/1.
   */
 
-/** \brief Predefined ERA parameter constants
+/** \name Parameters
+  * \brief Predefined ERA parameters
   */
+//@{
 #define ERA_PARAMETER_ARM_SECURITY_FUNC             "security-func"
 #define ERA_PARAMETER_ARM_ESTOP_CHANNEL             "estop-channel"
 #define ERA_PARAMETER_ARM_SWITCH_CHANNEL            "switch-channel"
@@ -40,5 +42,6 @@
 #define ERA_PARAMETER_JOINT_MAX_VELOCITY            "max-vel"
 #define ERA_PARAMETER_JOINT_MIN_ACCELERATION        "min-accel"
 #define ERA_PARAMETER_JOINT_MAX_ACCELERATION        "max-accel"
+//@}
 
 #endif

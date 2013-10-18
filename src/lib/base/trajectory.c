@@ -149,13 +149,14 @@ int era_trajectory_evaluate(era_trajectory_p trajectory, double time,
   for (i = 0; i < sizeof(era_trajectory_t)/sizeof(spline_t); ++i) {
     if (joint_state_a) 
       seg_index = spline_evaluate_linear_search(&spline_a[i], 
-        spline_base_function, time, seg_index, &joint_state_a[i]);
+        spline_eval_type_base_function, time, seg_index, &joint_state_a[i]);
     if (vel_state_a) 
       seg_index = spline_evaluate_linear_search(&spline_a[i], 
-        spline_first_derivative, time, seg_index, &vel_state_a[i]);
+        spline_eval_type_first_derivative, time, seg_index, &vel_state_a[i]);
     if (accel_state_a) 
       seg_index = spline_evaluate_linear_search(&spline_a[i], 
-        spline_second_derivative, time, seg_index, &accel_state_a[i]);
+        spline_eval_type_second_derivative, time, seg_index,
+        &accel_state_a[i]);
 
     if (seg_index < 0)
       return -ERA_TRAJECTORY_ERROR_UNDEFINED;
